@@ -14,22 +14,23 @@ class ProductManager {
     this.#path = path;
     this.#format = "utf-8";
     this.#products = [];
-    // this.#initialFileProduct();
+    this.#initialFileProduct();
   }
 
-  // #initialFileProduct() {
-  //   if (fs.existsSync(this.#path)) {
-  //     let fileProducts = fs.readFileSync(this.#path, this.#format);
-  //     if (fileProducts.toString() === "") {
-  //       fs.writeFileSync(this.#path, "[]");
-  //     } else {
-  //       this.#products = JSON.parse(fs.readFileSync(this.#path, this.#format));
-  //     }
-  //   } else {
-  //     fs.writeFileSync(this.#path, "[]");
-  //   }
-
-  // }
+  #initialFileProduct() {
+    if (fs.existsSync(this.#path)) {
+      let fileProducts = fs.readFileSync(this.#path, this.#format);
+      if (fileProducts.toString() === "") {
+        return fs.writeFileSync(this.#path, "[]");
+      } else {
+        return (this.#products = JSON.parse(
+          fs.readFileSync(this.#path, this.#format)
+        ));
+      }
+    } else {
+      return fs.writeFileSync(this.#path, "[]");
+    }
+  }
 
   // Restablese el objeto error con unos valores por defecto
   #restarError() {
@@ -67,14 +68,27 @@ class ProductManager {
   }
 
   async #getProductsFile() {
-    return JSON.parse(await fs.promises.readFile(this.#path, this.#format));
+    try {
+      const productsFiles = await fs.promises.readFile(
+        this.#path,
+        this.#format
+      );
+      return JSON.parse(productsFiles);
+    } catch (error) {
+      console.log(`Error al devolver lista de productos: ${error}`);
+    }
+    // return JSON.parse(await fs.promises.readFile(this.#path, this.#format));
   }
 
   async #seveProductFile() {
-    return await fs.promises.writeFile(
-      this.#path,
-      JSON.stringify(this.#products, null, "\t")
-    );
+    try {
+      return await fs.promises.writeFile(
+        this.#path,
+        JSON.stringify(this.#products, null, "\t")
+      );
+    } catch (error) {
+      return console.log(`Error al gravar producto en el archivo ${error} `);
+    }
   }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
@@ -95,7 +109,14 @@ class ProductManager {
       this.#products.push(newProduct);
 
       await this.#seveProductFile();
-      return console.log(`Se agrego efectivamente el producto : ${title}`);
+      // await fs.promises.writeFile(
+      //   this.#path,
+      //   JSON.stringify(this.#products, null, "\t")
+      // );
+
+      // return await this.#seveProductFile().then((res) =>
+      //   console.log(`Se agrego efectivamente el producto : ${title}`)
+      // );
     } else {
       return console.log(`Error: ${this.#error.message}`);
     }
@@ -105,49 +126,74 @@ class ProductManager {
 
   // Retorna un array de productos
   async getProductos() {
-    const productsFiles = JSON.parse(
-      await fs.promises.readFile(this.#path, this.#format)
-    );
-    return console.log(productsFiles);
+    try {
+      const productsFiles = await fs.promises.readFile(
+        this.#path,
+        this.#format
+      );
+      return console.log(JSON.parse(productsFiles));
+    } catch (error) {
+      return console.log(`Error al devolver lista de productos: ${error}`);
+    }
   }
 
   // Busca el id que se pasa por parametro en el array de producto, si lo encuentra lo retorna caso contrario devuelve un mensjae
   async getProductosByID(id) {
-    const productsFiles = await this.#getProductsFile();
-    const resultadoBusqueda = productsFiles.find(
-      (product) => product.id === id
-    );
-    return resultadoBusqueda ?? `Not found`;
+    try {
+      let productsFiles = await this.#getProductsFile();
+      let resultadoBusqueda = productsFiles.find(
+        (product) => product.id === id
+      );
+      let resultado = resultadoBusqueda ?? `Not found`;
+      return resultado;
+    } catch (error) {
+      return console.log(`Error al obtener Porducto por id ${error}`);
+    }
   }
 
   async updateProduct({ id, ...dataProducts }) {
-    const productsFiles = await this.#getProductsFile();
-    const productsUpdate = productsFiles.map((product) => {
-      if (product.id === id) {
-        let productUpdate = { ...product, ...dataProducts };
-        return productUpdate;
-      }
-      return product;
-    });
-    this.#products = productsUpdate;
-    await this.#seveProductFile();
+    try {
+      const productsFiles = await this.#getProductsFile();
+
+      const productsUpdate = productsFiles.map((product) => {
+        if (product.id === id) {
+          let productUpdate = { ...product, ...dataProducts };
+          return productUpdate;
+        }
+        return product;
+      });
+
+      this.#products = productsUpdate;
+      await this.#seveProductFile();
+      return console.log(
+        `Se actualizo correctamente el producto con el id ${id}`
+      );
+    } catch (error) {
+      return console.log(`Error al actualizar elemento ${id}, ${error}`);
+    }
   }
 
   async deleteProduct(id) {
-    let productFind = await this.getProductosByID(id);
+    try {
+      let productFind = await this.getProductosByID(id);
 
-    if (productFind !== "Not found") {
-      const productsFiles = await this.#getProductsFile();
+      if (productFind !== "Not found") {
+        const productsFiles = await this.#getProductsFile();
+        let productsDelete = productsFiles.filter(
+          (product) => product.id != id
+        );
 
-      let productsDelete = productsFiles.filter((product) => product.id != id);
+        this.#products = productsDelete;
+        await this.#seveProductFile();
 
-      this.#products = productsDelete;
-      await this.#seveProductFile();
-      return console.log(
-        `Se elimino correctamente el producto con el id ${id}`
-      );
-    } else {
-      return console.log(productFind);
+        return console.log(
+          `Se elimino correctamente el producto con el id ${id}`
+        );
+      } else {
+        return console.log(productFind);
+      }
+    } catch (error) {
+      return console.log(`Error al elimiar elemento ${id}, ${error}`);
     }
   }
 }
@@ -156,23 +202,42 @@ const product = new ProductManager("./ListProducts.json");
 
 // console.log("----- Listado de Productos ------");
 // //  product.getProductos().then(datos =>console.log(datos) );
-// product.getProductos();
+await product.getProductos();
 
 // // console.log("----- Push de Productos ------");
-// product.addProduct("nike", "Zapatilla Blanca", 1000, "Sin imagen", "02301", 10);
-// product.addProduct("adidas ", "Zapatilla Roja", 2000, "Sin imagen", "01235", 1);
-// product.addProduct("Gola", "Zapatialla verde", 1500, "Sin imagen", "1235", 2);
-// product.addProduct("Puma", "Botin negro", 3000, "Sin imagen", "01254", 5);
+await product.addProduct(
+  "nike",
+  "Zapatilla Blanca",
+  1000,
+  "Sin imagen",
+  2301,
+  10
+);
+await product.addProduct("Zapatilla Roja", 2000, "Sin imagen", 1235, 1);
+await product.addProduct(
+  "Gola",
+  "Zapatialla verde",
+  1500,
+  "Sin imagen",
+  1235,
+  2
+);
+await product.addProduct("Puma", "Botin negro", 3000, "Sin imagen", 1254, 5);
+await product.addProduct("Gola", "Zapatialla Azul", 500, "Sin imagen", 5896, 2);
+await product.addProduct("Puma", "Botin Gris", 3000, "Sin imagen", 3524, 5);
 
 // console.log("----- Eliminacion de Productos ------");
-// product.deleteProduct(3);
+await product.deleteProduct(2);
+await product.deleteProduct(3);
+await product.deleteProduct(4);
+await product.deleteProduct(15);
 
 // console.log("----- Actualizacion de Productos ------");
-// product.updateProduct({ id: 1, title: "nike ", price: 30 });
+await product.updateProduct({ id: 231, title: "Otra maraca ", price: 30 });
 
 // console.log("----- Listado de Productos ------");
-// product.getProductos();
+product.getProductos();
 
 // console.log("----- Filtro de Productos ------");
-// product.getProductosByID(12);
-console.log(product.getProductosByID(1));
+
+console.log(await product.getProductosByID(6));
