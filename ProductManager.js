@@ -1,12 +1,10 @@
 import fs from "fs";
 
-
 class ProductManager {
   #products;
   #error;
   #format;
   #path;
-
 
   constructor(path = "./ListProducts.json") {
     this.#error = {
@@ -15,30 +13,23 @@ class ProductManager {
     };
     this.#path = path;
     this.#format = "utf-8";
-    this.#products =  [];
-    this.#initialFileProduct();
-    
-   
+    this.#products = [];
+    // this.#initialFileProduct();
   }
 
+  // #initialFileProduct() {
+  //   if (fs.existsSync(this.#path)) {
+  //     let fileProducts = fs.readFileSync(this.#path, this.#format);
+  //     if (fileProducts.toString() === "") {
+  //       fs.writeFileSync(this.#path, "[]");
+  //     } else {
+  //       this.#products = JSON.parse(fs.readFileSync(this.#path, this.#format));
+  //     }
+  //   } else {
+  //     fs.writeFileSync(this.#path, "[]");
+  //   }
 
-   #initialFileProduct(){
-    let contentFile;
-
-    if(fs.existsSync(this.#path)){
-      let fileProducts =  fs.readFileSync(this.#path, this.#format);
-
-      if(fileProducts.toString() === ''){
-        fs.writeFileSync(this.#path,'[]');
-      }
-      else {
-        this.#products = JSON.parse( fs.readFileSync(this.#path, this.#format))
-      }
-
-    }else{
-      contentFile = fs.writeFileSync(this.#path,'[]');
-    }
-  }
+  // }
 
   // Restablese el objeto error con unos valores por defecto
   #restarError() {
@@ -48,7 +39,6 @@ class ProductManager {
     };
   }
 
-
   // Genera el id para los productos de marena incremental
   #generateID() {
     return this.#products.length === 0
@@ -57,7 +47,7 @@ class ProductManager {
   }
 
   // Verifica si el el contenido de code no se encuetra repetido
-  #validateCode(code) {    
+  #validateCode(code) {
     const resultSearch = this.#products.find(
       (product) => product.code === code
     );
@@ -69,20 +59,15 @@ class ProductManager {
 
   //Valida que los campos no esten vacios y si no lo estan invocan el metodo validateCode
   #validateKeys(title, description, price, thumbnail, code, stock) {
-
     if (!title || !description || !price || !thumbnail || !code || !stock) {
       this.#error.message = "No se aceptan campos vacios";
     } else {
       this.#validateCode(code);
     }
-
   }
 
   async #getProductsFile() {
-
-    const ListProducts = await fs.promises.readFile(this.#path, this.#format);
-    return JSON.parse( ListProducts );
-    
+    return JSON.parse(await fs.promises.readFile(this.#path, this.#format));
   }
 
   async #seveProductFile() {
@@ -93,12 +78,11 @@ class ProductManager {
   }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
- async addProduct(title, description, price, thumbnail, code, stock) {
-    console.log(this.#products);
+  async addProduct(title, description, price, thumbnail, code, stock) {
     this.#validateKeys(title, description, price, thumbnail, code, stock);
 
     if (this.#error.result) {
-      this.#products.push({
+      let newProduct = {
         id: this.#generateID(),
         title,
         description,
@@ -106,21 +90,24 @@ class ProductManager {
         thumbnail,
         code,
         stock,
-      });
-      
-      await this.#seveProductFile();
-      console.log(`Se agrego efectivamente el producto : ${title}`);
+      };
 
+      this.#products.push(newProduct);
+
+      await this.#seveProductFile();
+      return console.log(`Se agrego efectivamente el producto : ${title}`);
     } else {
-      console.log(`Error: ${this.#error.message}`);
+      return console.log(`Error: ${this.#error.message}`);
     }
 
     this.#restarError();
   }
 
   // Retorna un array de productos
-   async getProductos() {
-    const productsFiles = await this.#getProductsFile();
+  async getProductos() {
+    const productsFiles = JSON.parse(
+      await fs.promises.readFile(this.#path, this.#format)
+    );
     return console.log(productsFiles);
   }
 
@@ -133,85 +120,59 @@ class ProductManager {
     return resultadoBusqueda ?? `Not found`;
   }
 
-  async updateProduct({id, ...dataProducts}){
+  async updateProduct({ id, ...dataProducts }) {
     const productsFiles = await this.#getProductsFile();
-    const productsUpdate = productsFiles.map(product => {
-
-        if(product.id === id){
-         let productUpdate =  { ...product, ...dataProducts };
-         return productUpdate;
-        }
-        return product;
+    const productsUpdate = productsFiles.map((product) => {
+      if (product.id === id) {
+        let productUpdate = { ...product, ...dataProducts };
+        return productUpdate;
+      }
+      return product;
     });
     this.#products = productsUpdate;
-    this.#seveProductFile();
-
+    await this.#seveProductFile();
   }
 
-  async deleteProduct(id){
-    const productsFiles = await this.#getProductsFile();
-    const productsDelete= productsFiles.filter(product => {product.id !== id
-    });
-    console.log(productsDelete);
-    this.#products = productsDelete;
-    this.#seveProductFile();
+  async deleteProduct(id) {
+    let productFind = await this.getProductosByID(id);
+
+    if (productFind !== "Not found") {
+      const productsFiles = await this.#getProductsFile();
+
+      let productsDelete = productsFiles.filter((product) => product.id != id);
+
+      this.#products = productsDelete;
+      await this.#seveProductFile();
+      return console.log(
+        `Se elimino correctamente el producto con el id ${id}`
+      );
+    } else {
+      return console.log(productFind);
+    }
   }
 }
 
 const product = new ProductManager("./ListProducts.json");
 
-// // // console.log("----- Listado de Productos ------");
+// console.log("----- Listado de Productos ------");
 // //  product.getProductos().then(datos =>console.log(datos) );
- product.getProductos();
+// product.getProductos();
 
-// console.log("----- Push de Productos ------");
-product.addProduct(
-  "producto prueba",
-  "Este es un producto prueba",
-  200,
-  "Sin imagen",
-  "abc123",
-  25
-);
+// // console.log("----- Push de Productos ------");
+// product.addProduct("nike", "Zapatilla Blanca", 1000, "Sin imagen", "02301", 10);
+// product.addProduct("adidas ", "Zapatilla Roja", 2000, "Sin imagen", "01235", 1);
+// product.addProduct("Gola", "Zapatialla verde", 1500, "Sin imagen", "1235", 2);
+// product.addProduct("Puma", "Botin negro", 3000, "Sin imagen", "01254", 5);
 
-// product.updateProduct(
-//   {id: 1,
-//   title: "producto ",
-//   detalle: "Este "}
-// );
+// console.log("----- Eliminacion de Productos ------");
+// product.deleteProduct(3);
 
-// product.deleteProduct(1);
-// product.addProduct(
-//   "producto prueba 2",
-//   "Este es un producto prueba 2",
-//   20,
-//   "Sin imagen",
-//   "abc122",
-//   25
-// );
-
-// product.addProduct(
-//   "producto prueba",
-//   "Este es un producto prueba",
-//   200,
-//   "Sin imagen",
-//   "abc123",
-//   25
-// );
-
-// product.addProduct(
-//   "producto prueba 3",
-//   "Este es un producto prueba 3",
-//   2,
-//   "Sin imagen",
-//   "abc124",
-//   25
-// );
+// console.log("----- Actualizacion de Productos ------");
+// product.updateProduct({ id: 1, title: "nike ", price: 30 });
 
 // console.log("----- Listado de Productos ------");
-// console.log(product.getProductos());
+// product.getProductos();
 
 // console.log("----- Filtro de Productos ------");
-// console.log(product.getProductosByID(12));
-
-// console.log(product.getProductosByID(1));
+// product.getProductosByID(12);
+console.log(product.getProductosByID(1));

@@ -1,11 +1,29 @@
 [
 	{
 		"id": 1,
-		"title": "producto prueba",
-		"description": "Este es un producto prueba",
-		"price": 200,
+		"title": "nike ",
+		"description": "Zapatilla Blanca",
+		"price": 30,
 		"thumbnail": "Sin imagen",
-		"code": "abc123",
-		"stock": 25
+		"code": "02301",
+		"stock": 10
+	},
+	{
+		"id": 2,
+		"title": "adidas ",
+		"description": "Zapatilla Roja",
+		"price": 2000,
+		"thumbnail": "Sin imagen",
+		"code": "01235",
+		"stock": 1
+	},
+	{
+		"id": 4,
+		"title": "Puma",
+		"description": "Botin negro",
+		"price": 3000,
+		"thumbnail": "Sin imagen",
+		"code": "01254",
+		"stock": 5
 	}
 ]
