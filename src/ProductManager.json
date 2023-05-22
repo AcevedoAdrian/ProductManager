@@ -1,0 +1,20 @@
+[
+	{
+		"id": 1,
+		"title": "nike",
+		"description": "Zapatilla Air",
+		"price": 100,
+		"thumbnail": "Sin imagen",
+		"code": 2301,
+		"stock": 5
+	},
+	{
+		"id": 2,
+		"title": "Puma",
+		"description": "Zapatilla Roja",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": 1235,
+		"stock": 1
+	}
+]

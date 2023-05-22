@@ -1,6 +1,6 @@
 import fs from "fs";
 
-class ProductManager {
+export default class ProductManager {
   #products;
   #error;
   #format;
@@ -109,14 +109,6 @@ class ProductManager {
       this.#products.push(newProduct);
 
       await this.#seveProductFile();
-      // await fs.promises.writeFile(
-      //   this.#path,
-      //   JSON.stringify(this.#products, null, "\t")
-      // );
-
-      // return await this.#seveProductFile().then((res) =>
-      //   console.log(`Se agrego efectivamente el producto : ${title}`)
-      // );
     } else {
       return console.log(`Error: ${this.#error.message}`);
     }
@@ -131,7 +123,7 @@ class ProductManager {
         this.#path,
         this.#format
       );
-      return console.log(JSON.parse(productsFiles));
+      return JSON.parse(productsFiles);
     } catch (error) {
       return console.log(`Error al devolver lista de productos: ${error}`);
     }
@@ -144,8 +136,8 @@ class ProductManager {
       let resultadoBusqueda = productsFiles.find(
         (product) => product.id === id
       );
-      let resultado = resultadoBusqueda ?? `Not found`;
-      return resultado;
+
+      return resultadoBusqueda;
     } catch (error) {
       return console.log(`Error al obtener Porducto por id ${error}`);
     }
@@ -177,7 +169,7 @@ class ProductManager {
     try {
       let productFind = await this.getProductosByID(id);
 
-      if (productFind !== "Not found") {
+      if (!productFind) {
         const productsFiles = await this.#getProductsFile();
         let productsDelete = productsFiles.filter(
           (product) => product.id != id
@@ -198,46 +190,46 @@ class ProductManager {
   }
 }
 
-const product = new ProductManager("./ListProducts.json");
+// const product = new ProductManager("./ListProducts.json");
 
-// console.log("----- Listado de Productos ------");
-// //  product.getProductos().then(datos =>console.log(datos) );
-await product.getProductos();
+// // console.log("----- Listado de Productos ------");
+// // //  product.getProductos().then(datos =>console.log(datos) );
+// await product.getProductos();
 
-// // console.log("----- Push de Productos ------");
-await product.addProduct(
-  "nike",
-  "Zapatilla Blanca",
-  1000,
-  "Sin imagen",
-  2301,
-  10
-);
-await product.addProduct("Zapatilla Roja", 2000, "Sin imagen", 1235, 1);
-await product.addProduct(
-  "Gola",
-  "Zapatialla verde",
-  1500,
-  "Sin imagen",
-  1235,
-  2
-);
-await product.addProduct("Puma", "Botin negro", 3000, "Sin imagen", 1254, 5);
-await product.addProduct("Gola", "Zapatialla Azul", 500, "Sin imagen", 5896, 2);
-await product.addProduct("Puma", "Botin Gris", 3000, "Sin imagen", 3524, 5);
+// // // console.log("----- Push de Productos ------");
+// await product.addProduct(
+//   "nike",
+//   "Zapatilla Blanca",
+//   1000,
+//   "Sin imagen",
+//   2301,
+//   10
+// );
+// await product.addProduct("Zapatilla Roja", 2000, "Sin imagen", 1235, 1);
+// await product.addProduct(
+//   "Gola",
+//   "Zapatialla verde",
+//   1500,
+//   "Sin imagen",
+//   1235,
+//   2
+// );
+// await product.addProduct("Puma", "Botin negro", 3000, "Sin imagen", 1254, 5);
+// await product.addProduct("Gola", "Zapatialla Azul", 500, "Sin imagen", 5896, 2);
+// await product.addProduct("Puma", "Botin Gris", 3000, "Sin imagen", 3524, 5);
 
-// console.log("----- Eliminacion de Productos ------");
-await product.deleteProduct(2);
-await product.deleteProduct(3);
-await product.deleteProduct(4);
-await product.deleteProduct(15);
+// // console.log("----- Eliminacion de Productos ------");
+// await product.deleteProduct(2);
+// await product.deleteProduct(3);
+// await product.deleteProduct(4);
+// await product.deleteProduct(15);
 
-// console.log("----- Actualizacion de Productos ------");
-await product.updateProduct({ id: 231, title: "Otra maraca ", price: 30 });
+// // console.log("----- Actualizacion de Productos ------");
+// await product.updateProduct({ id: 231, title: "Otra maraca ", price: 30 });
 
-// console.log("----- Listado de Productos ------");
-product.getProductos();
+// // console.log("----- Listado de Productos ------");
+// product.getProductos();
 
-// console.log("----- Filtro de Productos ------");
+// // console.log("----- Filtro de Productos ------");
 
-console.log(await product.getProductosByID(6));
+// console.log(await product.getProductosByID(6));
