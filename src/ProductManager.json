@@ -1,7 +1,7 @@
 [
 	{
 		"id": 1,
-		"title": "nike",
+		"title": "Nike",
 		"description": "Zapatilla Air",
 		"price": 100,
 		"thumbnail": "Sin imagen",
@@ -16,5 +16,32 @@
 		"thumbnail": "Sin imagen",
 		"code": 1235,
 		"stock": 1
+	},
+	{
+		"id": 3,
+		"title": "Gola",
+		"description": "Zapatialla",
+		"price": 1500,
+		"thumbnail": "Sin imagen",
+		"code": 1255,
+		"stock": 2
+	},
+	{
+		"id": 4,
+		"title": "Adidas",
+		"description": "Zapatilla verde",
+		"price": 200,
+		"thumbnail": "Sin imagen",
+		"code": 125,
+		"stock": 1
+	},
+	{
+		"id": 5,
+		"title": "Lacoste",
+		"description": "Zapatialla Negra",
+		"price": 1500,
+		"thumbnail": "Sin imagen",
+		"code": 128,
+		"stock": 2
 	}
 ]

@@ -2,10 +2,25 @@ import ProductManager from "./ProductManager.js";
 import express from "express";
 
 const product = new ProductManager("./src/ProductManager.json");
-await product.addProduct("nike", "Zapatilla Air", 100, "Sin imagen", 2301, 5);
+await product.addProduct("Nike", "Zapatilla Air", 100, "Sin imagen", 2301, 5);
 await product.addProduct("Puma", "Zapatilla Roja", 200, "Sin imagen", 1235, 1);
-await product.addProduct("Gola", "Zapatialla", 1500, "Sin imagen", 1235, 2);
-
+await product.addProduct("Gola", "Zapatialla", 1500, "Sin imagen", 1255, 2);
+await product.addProduct(
+  "Adidas",
+  "Zapatilla verde",
+  200,
+  "Sin imagen",
+  125,
+  1
+);
+await product.addProduct(
+  "Lacoste",
+  "Zapatialla Negra",
+  1500,
+  "Sin imagen",
+  128,
+  2
+);
 const app = express();
 const PORT = 8080;
 
@@ -32,7 +47,7 @@ app.get("/products", async (req, res) => {
       let limit = +productByLimit;
       res.send(prodcutAll.slice(0, limit));
     } else {
-      res.send(prodcutAll);
+      res.json({ prodcutAll });
     }
   } catch (error) {
     res.send(error);
