@@ -1,16 +1,12 @@
+import { log } from "console";
 import fs from "fs";
 
 export default class ProductManager {
   #products;
-  #error;
   #format;
   #path;
 
   constructor(path = "../../ProductManager.json") {
-    this.#error = {
-      result: false,
-      message: "",
-    };
     this.#path = path;
     this.#format = "utf-8";
     this.#products = [];
@@ -33,14 +29,6 @@ export default class ProductManager {
     }
   }
 
-  // Restablese el objeto error con unos valores por defecto
-  #restarError() {
-    this.#error = {
-      result: false,
-      message: "",
-    };
-  }
-
   // Genera el id para los productos de marena incremental
   #generateID() {
     return this.#products.length === 0
@@ -54,17 +42,17 @@ export default class ProductManager {
       (product) => product.code === code
     );
 
-    resultSearch
-      ? (this.#error.message = `Ya existe el ${code} en el sistema `)
-      : (this.#error.result = true);
+    return resultSearch
+      ? { error: true, message: `Ya existe el ${code} en el sistema ` }
+      : { error: false };
   }
 
   //Valida que los campos no esten vacios y si no lo estan invocan el metodo validateCode
-  #validateKeys(title, description, price, thumbnail, code, stock) {
-    if (!title || !description || !price || !thumbnail || !code || !stock) {
-      this.#error.message = "No se aceptan campos vacios";
+  #validateKeys(title, description, price, code, stock) {
+    if (!title || !description || !price || !code || !stock) {
+      return { error: true, message: "No se aceptan campos vacios" };
     } else {
-      this.#validateCode(code);
+      return this.#validateCode(code);
     }
   }
 
@@ -76,27 +64,33 @@ export default class ProductManager {
       );
       return JSON.parse(productsFiles);
     } catch (error) {
-      console.log(`Error al devolver lista de productos: ${error}`);
+      return { message: `Error al devolver lista de productos: ${error}` };
     }
     // return JSON.parse(await fs.promises.readFile(this.#path, this.#format));
   }
 
   async #seveProductFile() {
     try {
-      return await fs.promises.writeFile(
+      const repuesta = await fs.promises.writeFile(
         this.#path,
         JSON.stringify(this.#products, null, "\t")
       );
+      return repuesta;
     } catch (error) {
-      return console.log(`Error al gravar producto en el archivo ${error} `);
+      return { message: `Error al grabar producto en el archivo ${error} ` };
     }
   }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
   async addProduct(title, description, price, thumbnail, code, stock) {
-    this.#validateKeys(title, description, price, thumbnail, code, stock);
-
-    if (this.#error.result) {
+    const responseValidat = this.#validateKeys(
+      title,
+      description,
+      price,
+      code,
+      stock
+    );
+    if (!responseValidat.error) {
       let newProduct = {
         id: this.#generateID(),
         title,
@@ -108,86 +102,71 @@ export default class ProductManager {
       };
 
       this.#products.push(newProduct);
-
-      await this.#seveProductFile();
+      return await this.#seveProductFile();
     } else {
-      return console.log(`Error: ${this.#error.message}`);
+      // return { status: "error", message: `${responseValidat.message}` };
+      return responseValidat;
     }
-
-    this.#restarError();
   }
 
   // Retorna un array de productos
-  async getProductos() {
-    try {
-      const productsFiles = await fs.promises.readFile(
-        this.#path,
-        this.#format
-      );
-      console.log(JSON.parse(productsFiles));
-      return JSON.parse(productsFiles);
-    } catch (error) {
-      return console.log(`Error al devolver lista de productos: ${error}`);
-    }
+  async getAllProductos() {
+    // try {
+    const productsFiles = await fs.promises.readFile(this.#path, this.#format);
+    return JSON.parse(productsFiles);
+    // } catch (error) {
+    //   return { error: `Error al devolver lista de productos: ${error}` };
+    // }
   }
 
   // Busca el id que se pasa por parametro en el array de producto, si lo encuentra lo retorna caso contrario devuelve un mensjae
-  async getProductosByID(id) {
-    try {
-      let productsFiles = await this.#getProductsFile();
-      let resultadoBusqueda = productsFiles.find(
-        (product) => product.id === id
-      );
-
-      return resultadoBusqueda;
-    } catch (error) {
-      return console.log(`Error al obtener Porducto por id ${error}`);
-    }
+  async getProductsByID(id) {
+    // try {
+    let productsFiles = await this.getAllProductos();
+    let resultadoBusqueda = productsFiles.find((product) => product.id === id);
+    return resultadoBusqueda;
+    // } catch (error) {
+    //   return { message: `Error al obtener Porducto por id ${error}` };
+    // }
   }
 
   async updateProduct({ id, ...dataProducts }) {
-    try {
-      const productsFiles = await this.#getProductsFile();
+    const productsFiles = await this.#getProductsFile();
 
-      const productsUpdate = productsFiles.map((product) => {
-        if (product.id === id) {
-          let productUpdate = { ...product, ...dataProducts };
-          return productUpdate;
-        }
-        return product;
-      });
+    const productsUpdate = productsFiles.map((product) => {
+      if (product.id === id) {
+        let productUpdate = { ...product, ...dataProducts };
+        return productUpdate;
+      }
+      return product;
+    });
 
-      this.#products = productsUpdate;
-      await this.#seveProductFile();
-      return console.log(
-        `Se actualizo correctamente el producto con el id ${id}`
-      );
-    } catch (error) {
-      return console.log(`Error al actualizar elemento ${id}, ${error}`);
-    }
+    this.#products = productsUpdate;
+    return await this.#seveProductFile();
+    // return {
+    //   message: `Se actualizo correctamente el producto con el id ${id}`,
+    // };
   }
 
   async deleteProduct(id) {
-    try {
-      let productFind = await this.getProductosByID(id);
+    // try {
+    let productFind = await this.getProductosByID(id);
 
-      if (!productFind) {
-        const productsFiles = await this.#getProductsFile();
-        let productsDelete = productsFiles.filter(
-          (product) => product.id != id
-        );
+    if (!productFind) {
+      const productsFiles = await this.#getProductsFile();
+      let productsDelete = productsFiles.filter((product) => product.id != id);
 
-        this.#products = productsDelete;
-        await this.#seveProductFile();
+      this.#products = productsDelete;
+      await this.#seveProductFile();
 
-        return console.log(
-          `Se elimino correctamente el producto con el id ${id}`
-        );
-      } else {
-        return console.log(productFind);
-      }
-    } catch (error) {
-      return console.log(`Error al elimiar elemento ${id}, ${error}`);
+      return console.log(
+        `Se elimino correctamente el producto con el id ${id}`
+      );
+    } else {
+      return console.log(productFind);
     }
+    // } catch (error) {
+    //   return { message: `Error al elimiar elemento ${id}, ${error}` };
+    // }
   }
 }

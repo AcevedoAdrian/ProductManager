@@ -3,6 +3,7 @@ import productsRouter from "./routes/product.routes.js";
 
 const app = express();
 const PORT = 8000;
+app.use(express.json());
 
 app.use("/api/products", productsRouter);
 
