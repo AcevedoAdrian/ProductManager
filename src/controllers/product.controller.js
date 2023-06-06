@@ -13,7 +13,7 @@ const getAllProducts = async (req, res) => {
       res.json({ status: "succses", payload: prodcutAll });
     }
   } catch (error) {
-    res.status(400).send({
+    res.status(500).send({
       status: "error",
       message: `Error al RETORNAR LISTA de productos: ${error}`,
     });
@@ -35,20 +35,21 @@ const getProductById = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(400).send({
+    res.status(500).send({
       status: "error",
       message: `Error al RETORNAR UN producto por id: ${error}`,
     });
   }
 };
 const saveProduct = async (req, res) => {
+  // console.log(req.body.file);
   try {
     let { title, description, price, thumbnail, code, stock } = req.body;
     let resAddProduct = await product.addProduct(
       title,
       description,
       price,
-      thumbnail,
+      (thumbnail = req.file || []),
       code,
       stock
     );
@@ -61,7 +62,7 @@ const saveProduct = async (req, res) => {
       res.status(400).send({ status: "error", message: resAddProduct.message });
     }
   } catch (error) {
-    res.status(400).send({
+    res.status(500).send({
       status: "error",
       message: `Error al AGREGAR un producto: ${error}`,
     });
@@ -92,10 +93,10 @@ const updateProduct = async (req, res) => {
       }
     }
   } catch (error) {
-    return {
+    return res.status(500).send({
       status: "error",
       message: `Error al ACTUALIZAR elemento ${idProduct}, ${error}`,
-    };
+    });
   }
 };
 const deleteProduct = async (req, res) => {
@@ -122,10 +123,10 @@ const deleteProduct = async (req, res) => {
       }
     }
   } catch (error) {
-    return {
+    return res.status(500).send({
       status: "error",
       message: `Error al ELIMINAR prudcto id: ${idProduct}, ${error}`,
-    };
+    });
   }
 };
 

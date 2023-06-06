@@ -2,8 +2,23 @@ import CartManager from "../services/CartManager.js";
 const carts = new CartManager("Carts.json");
 
 const newCart = async (req, res) => {
-  await carts.newCart();
-  res.send("Hola");
+  try {
+    let resNewProduct = await carts.newCart();
+
+    if (!resNewProduct) {
+      res.send({
+        status: "succses",
+        message: `Se CREO correctamente el carrito `,
+      });
+    } else {
+      res.status(400).send({ status: "error", message: resAddProduct.message });
+    }
+  } catch (error) {
+    res.status(400).send({
+      status: "error",
+      message: `Error al CREAR un carrito: ${error}`,
+    });
+  }
 };
 const getCartByID = async (req, res) => {
   try {
@@ -12,7 +27,7 @@ const getCartByID = async (req, res) => {
     if (!cartByID) {
       res.status(404).send({
         status: "error",
-        message: `Not Found: No se encontro carrito con el id ${idCard}`,
+        message: `Not Found: No se ENCONTRO carrito con el id ${idCard}`,
       });
     } else {
       res.send({
@@ -21,7 +36,7 @@ const getCartByID = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(400).send({
+    res.status(500).send({
       status: "error",
       message: `Error al BUSCAR carito id: ${error}`,
     });
@@ -40,22 +55,23 @@ const addProductsToCart = async (req, res) => {
       return res.status(404).json({ error: "Carrito no válido" });
     }
 
-    // Obtener el carrito por ID
-    const cart = await carts.getCartByID(cartId);
-
-    if (!cart) {
-      return res
-        .status(404)
-        .json({ error: `El carrito con el id ${cartId} no existe` });
-    }
-
     // Agregamos el producto al carrito
-    await carts.addProductsToCart(cart, productId);
-
-    res.json("Product agregado");
+    let resAddProductToCart = await carts.addProductsToCart(cartId, productId);
+    if (!resAddProductToCart) {
+      res.send({
+        status: "succses",
+        message: `Se agrego correctamente el producto ${productId} al carrito ${cartId}`,
+      });
+    } else {
+      res
+        .status(400)
+        .send({ status: "error", message: resAddProductToCart.message });
+    }
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "error en el servidor" });
+    res.status(500).send({
+      status: "error",
+      message: `Error al AGREGAR un producto al carrito: ${error}`,
+    });
   }
 };
 

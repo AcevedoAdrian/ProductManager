@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { uploader } from "../utilitis.js";
 import {
   getAllProducts,
   getProductById,
@@ -10,7 +11,7 @@ import {
 const router = Router();
 router.get("/", getAllProducts);
 router.get("/:pid", getProductById);
-router.post("/", saveProduct);
+router.post("/", uploader.array("file"), saveProduct);
 router.put("/:pid", updateProduct);
 router.delete("/:pid", deleteProduct);
 export default router;
