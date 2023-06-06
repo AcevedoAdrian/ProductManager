@@ -82,11 +82,9 @@ export default class CartManager {
   addProductsToCart = async (cartId, productId) => {
     //
     let carts = await this.getAllCarts();
-    console.log(carts.products);
+
     // Verificar si el producto ya existe en el carrito
-    const existingProduct = carts.products.find(
-      (product) => product.id === productId
-    );
+    const existingProduct = carts.find((products) => products.id === productId);
 
     if (existingProduct) {
       existingProduct.quantity++; // Incrementar la cantidad del producto
