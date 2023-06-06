@@ -15,7 +15,7 @@ const getAllProducts = async (req, res) => {
   } catch (error) {
     res.status(400).send({
       status: "error",
-      message: `Error al devolver lista de productos: ${error}`,
+      message: `Error al RETORNAR LISTA de productos: ${error}`,
     });
   }
 };
@@ -37,7 +37,7 @@ const getProductById = async (req, res) => {
   } catch (error) {
     res.status(400).send({
       status: "error",
-      message: `Error al devolver producto por id: ${error}`,
+      message: `Error al RETORNAR UN producto por id: ${error}`,
     });
   }
 };
@@ -63,11 +63,12 @@ const saveProduct = async (req, res) => {
   } catch (error) {
     res.status(400).send({
       status: "error",
-      message: `Error al agregar un producto: ${error}`,
+      message: `Error al AGREGAR un producto: ${error}`,
     });
   }
 };
 const updateProduct = async (req, res) => {
+  let idProduct = +req.params.pid;
   try {
     let content = req.body;
     let idProduct = +req.params.pid;
@@ -78,7 +79,6 @@ const updateProduct = async (req, res) => {
         message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
       });
     } else {
-      console.log(content);
       let resUpdateProduct = await product.updateProduct(idProduct, content);
       if (!resUpdateProduct) {
         res.send({
@@ -94,9 +94,45 @@ const updateProduct = async (req, res) => {
   } catch (error) {
     return {
       status: "error",
-      message: `Error al actualizar elemento ${id}, ${error}`,
+      message: `Error al ACTUALIZAR elemento ${idProduct}, ${error}`,
+    };
+  }
+};
+const deleteProduct = async (req, res) => {
+  let idProduct = +req.params.pid;
+  try {
+    let productByID = await product.getProductsByID(idProduct);
+    if (!productByID) {
+      res.status(404).send({
+        status: "error",
+        message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
+      });
+    } else {
+      let resDelete = await product.deleteProduct(idProduct);
+      if (!resDelete) {
+        res.send({
+          status: "succses",
+          message: `Se ELIMINO correctamente el producto ${idProduct}`,
+        });
+      } else {
+        res.send({
+          status: "Error",
+          message: `No se pudo ELIMINAR correctamente el producto ${idProduct}`,
+        });
+      }
+    }
+  } catch (error) {
+    return {
+      status: "error",
+      message: `Error al ELIMINAR prudcto id: ${idProduct}, ${error}`,
     };
   }
 };
 
-export { getAllProducts, getProductById, saveProduct, updateProduct };
+export {
+  getAllProducts,
+  getProductById,
+  saveProduct,
+  updateProduct,
+  deleteProduct,
+};

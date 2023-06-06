@@ -1,26 +1,8 @@
 [
 	{
 		"id": 1,
-		"title": "Air",
-		"description": "Zapatilla Blanca",
-		"price": 2500,
-		"thumbnail": "https://nike.com.ar/2200",
-		"code": 2200,
-		"stock": 10
-	},
-	{
-		"id": 2,
-		"title": "Air Max",
-		"description": "Zapatilla Negra",
-		"price": 2500,
-		"thumbnail": "https://nike.com.ar/2201",
-		"code": 2201,
-		"stock": 5
-	},
-	{
-		"id": 3,
-		"title": "Jordan",
-		"description": "Zapatilla Azul",
+		"title": "Air Jordan",
+		"description": "Zapatilla Violeta",
 		"price": 4500,
 		"thumbnail": "https://nike.com.ar/2300",
 		"code": 2300,

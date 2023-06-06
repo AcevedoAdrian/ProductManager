@@ -1,4 +1,3 @@
-import { log } from "console";
 import fs from "fs";
 
 export default class ProductManager {
@@ -130,9 +129,8 @@ export default class ProductManager {
     // }
   }
 
-  async updateProduct({ id, ...dataProducts }) {
+  async updateProduct(id, dataProducts) {
     const productsFiles = await this.#getProductsFile();
-
     const productsUpdate = productsFiles.map((product) => {
       if (product.id === id) {
         let productUpdate = { ...product, ...dataProducts };
@@ -140,7 +138,6 @@ export default class ProductManager {
       }
       return product;
     });
-
     this.#products = productsUpdate;
     return await this.#seveProductFile();
     // return {
@@ -150,21 +147,10 @@ export default class ProductManager {
 
   async deleteProduct(id) {
     // try {
-    let productFind = await this.getProductosByID(id);
-
-    if (!productFind) {
-      const productsFiles = await this.#getProductsFile();
-      let productsDelete = productsFiles.filter((product) => product.id != id);
-
-      this.#products = productsDelete;
-      await this.#seveProductFile();
-
-      return console.log(
-        `Se elimino correctamente el producto con el id ${id}`
-      );
-    } else {
-      return console.log(productFind);
-    }
+    const productsFiles = await this.#getProductsFile();
+    let productsDelete = productsFiles.filter((product) => product.id != id);
+    this.#products = productsDelete;
+    return await this.#seveProductFile();
     // } catch (error) {
     //   return { message: `Error al elimiar elemento ${id}, ${error}` };
     // }
