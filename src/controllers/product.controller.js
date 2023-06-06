@@ -49,7 +49,7 @@ const saveProduct = async (req, res) => {
       title,
       description,
       price,
-      (thumbnail = req.file || []),
+      (thumbnail = req.files || []),
       code,
       stock
     );

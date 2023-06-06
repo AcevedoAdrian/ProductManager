@@ -10,10 +10,21 @@
 	},
 	{
 		"id": 2,
-		"title": "Nike Jordan",
+		"title": "Air Jordan",
 		"description": "zapatilla Roja",
 		"price": "3200",
-		"thumbnail": [],
+		"thumbnail": [
+			{
+				"fieldname": "file",
+				"originalname": "nike.jpeg",
+				"encoding": "7bit",
+				"mimetype": "image/jpeg",
+				"destination": "public/img",
+				"filename": "nike.jpeg",
+				"path": "public/img/nike.jpeg",
+				"size": 618275
+			}
+		],
 		"code": "2001",
 		"stock": "2"
 	}
