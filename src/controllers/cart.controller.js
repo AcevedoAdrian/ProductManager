@@ -37,7 +37,7 @@ const addProductsToCart = async (req, res) => {
     }
 
     if (cartId <= 0) {
-      return res.status(404).json({ error: "Producto no válido" });
+      return res.status(404).json({ error: "Carrito no válido" });
     }
 
     // Obtener el carrito por ID
@@ -50,9 +50,9 @@ const addProductsToCart = async (req, res) => {
     }
 
     // Agregamos el producto al carrito
-    await carts.addProductsToCart(cartId, productId);
+    await carts.addProductsToCart(cart, productId);
 
-    res.json(cart);
+    res.json("Product agregado");
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "error en el servidor" });
