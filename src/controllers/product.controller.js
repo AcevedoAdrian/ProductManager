@@ -6,6 +6,7 @@ const getAllProducts = async (req, res) => {
   try {
     let productByLimit = req.query.limit ?? false;
     let prodcutAll = await product.getAllProductos();
+
     if (productByLimit) {
       let limit = +productByLimit;
       res.send({ status: "succses", payload: prodcutAll.slice(0, limit) });

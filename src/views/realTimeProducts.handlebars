@@ -1,0 +1,53 @@
+<form action="realTimeProducts" method="post">
+  <div>
+    <label for="title">Titulo</label>
+    <input name="title" type="text" placeholder="Titulo"> 
+  </div>
+   <div>
+    <label for="description">Descripcion</label>
+    <input name="description" type="text" placeholder="Descripcion">
+  </div>
+   <div>
+    <label for="price">Precio</label>
+    <input name="price" type="text" placeholder="Precio">
+  </div>
+   <div>
+    <label for="code">Codigo</label>
+    <input name="code" type="text" placeholder="Codigo">
+  </div>
+   <div>
+    <label for="stock">Stock</label>
+    <input name="stock" type="text" placeholder="Stock">
+  </div>
+
+  <input type="submit" value="Crear Producto">
+</form>
+<h2>Lista Product</h2>
+<table id="productsTable">
+  <thead>
+    <tr>
+      <td><strong>Producto </strong></td>
+      <td><strong>Descripcion</strong></td>
+      <td><strong>Precio</strong></td>
+      <td><strong>Codigo</strong></td>
+      <td><strong>Stock</strong></td>
+      <td><strong>Categoria</strong></td>
+      <td><strong>thumbnail</strong></td>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each products}}
+    <tr>
+      <td>{{this.title}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.price}}</td>
+      <td>{{this.thumbnail}}</td>
+      <td>{{this.code}}</td>
+      <td>{{this.stock}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<script src="/sokect.io/socket.io.js"></script>
+<script src="/js/app.js"></script>
