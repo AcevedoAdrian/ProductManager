@@ -8,6 +8,8 @@ import viewProductsRouter from "./routes/viewProductsRouter.routes.js";
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 const PORT = 8000;
+// ARCHIVO STATICO
+app.use(express.static("./src/public"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,23 +28,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// ARCHIVO STATICO
-app.use(express.static("public/img"));
-
 // CONFIGURACION PLANTILLAS HANDLEBARS
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 
 // RUTAS
-app.get("/", (req, res) => res.render("home"));
+app.get("/", (req, res) => res.render("index"));
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/products", viewProductsRouter);
 
 io.on("connection", (socket) => {
   console.log("conexion");
-  socket.on("listProduct", (data) => {
-    io.emit("updateListProduct", data);
+  socket.on("productList", (data) => {
+    io.emit("updateProducts", data);
   });
 });

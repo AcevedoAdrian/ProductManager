@@ -1,31 +1,47 @@
 [
 	{
-		"id": 1,
-		"title": "Jordan",
-		"description": "Zapatilla Violeta",
-		"price": 4500,
+		"id": 2,
+		"title": "adrian",
+		"description": "sadas",
+		"price": "21",
 		"thumbnail": [],
-		"code": 2300,
-		"stock": 2
+		"code": "2321",
+		"stock": "2"
 	},
 	{
-		"id": 2,
-		"title": "Air Jordan",
-		"description": "zapatilla Roja",
-		"price": "3200",
-		"thumbnail": [
-			{
-				"fieldname": "file",
-				"originalname": "nike.jpeg",
-				"encoding": "7bit",
-				"mimetype": "image/jpeg",
-				"destination": "public/img",
-				"filename": "nike.jpeg",
-				"path": "public/img/nike.jpeg",
-				"size": 618275
-			}
-		],
-		"code": "2001",
+		"id": 3,
+		"title": "dsad",
+		"description": "sad",
+		"price": "sda",
+		"thumbnail": [],
+		"code": "sad",
+		"stock": "sa"
+	},
+	{
+		"id": 4,
+		"title": "dsa",
+		"description": "sad",
+		"price": "sad",
+		"thumbnail": [],
+		"code": "asd",
+		"stock": "sad"
+	},
+	{
+		"id": 5,
+		"title": "sad",
+		"description": "sad",
+		"price": "321",
+		"thumbnail": [],
+		"code": "12323",
 		"stock": "2"
+	},
+	{
+		"id": 6,
+		"title": "asd",
+		"description": "sad",
+		"price": "12",
+		"thumbnail": [],
+		"code": "31242",
+		"stock": "1"
 	}
 ]

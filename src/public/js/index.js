@@ -1,10 +1,10 @@
 const socket = io();
-const table = document.getElementById("productsTable");
+const table = document.getElementById("realProductsTable");
 
-document.getElementById("btnAddProductForm").addEventListener("click", () => {
+document.getElementById("createBtn").addEventListener("click", () => {
   const body = {
     title: document.getElementById("title").value,
-    description: document.getElementById("desciption").value,
+    description: document.getElementById("description").value,
     price: document.getElementById("price").value,
     code: document.getElementById("code").value,
     stock: document.getElementById("stock").value,
@@ -49,8 +49,8 @@ deleteProduct = (id) => {
 };
 
 socket.on("updateProducts", (data) => {
-  table.innerHTML = `
-  <tr>
+  console.log(data);
+  table.innerHTML = `<tr>
   <td></td>
   <td><strong>Products</strong></td>
   <td><strong>Descripcion</strong></td>

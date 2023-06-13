@@ -9,7 +9,6 @@ const renderAllProducts = async (req, res) => {
 
 const renderRealTimeAllProducts = async (req, res) => {
   const products = await productManager.getAllProductos();
-  console.log(req.body);
   res.render("realTimeProducts", { products });
 };
 
