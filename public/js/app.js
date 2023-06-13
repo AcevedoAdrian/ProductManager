@@ -1,2 +1,75 @@
 const socket = io();
 const table = document.getElementById("productsTable");
+
+document.getElementById("btnAddProductForm").addEventListener("click", () => {
+  const body = {
+    title: document.getElementById("title").value,
+    description: document.getElementById("desciption").value,
+    price: document.getElementById("price").value,
+    code: document.getElementById("code").value,
+    stock: document.getElementById("stock").value,
+  };
+  fetch("/api/products", {
+    method: "post",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-type": "application/json",
+    },
+  })
+    .then((result) => result.json())
+    .then((result) => {
+      if (result.status === "error") throw new Error(result.error);
+    })
+    .then(() => fetch("/api/products"))
+    .then((result) => result.json())
+    .then((result) => {
+      if (result.status === "error") throw new Error(result.error);
+      else socket.emit("productsTable", result.payload);
+      alert("Todo Ok");
+      document.getElementById("title").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("code").value = "";
+      document.getElementById("stock").value = "";
+    })
+    .catch((error) => alert(`Ocurrio un error${error}`));
+});
+
+deleteProduct = (id) => {
+  fetch(`/api/products/${id}`, {
+    method: "delete",
+  })
+    .then((result) => result.json())
+    .then((result) => {
+      if (result.status === "error") throw new Error(result.error);
+      else socket.emit("productList", result.payload);
+      alert("Ok. Todo salio bien");
+    })
+    .catch((error) => alert("Ocurrio un error"));
+};
+
+socket.on("updateProducts", (data) => {
+  table.innerHTML = `
+  <tr>
+  <td></td>
+  <td><strong>Products</strong></td>
+  <td><strong>Descripcion</strong></td>
+  <td><strong>Precio</strong></td>
+  <td><strong>Codigo</strong></td>
+  <td><strong>Stock</strong></td>
+  </tr>
+  `;
+  for (product of data) {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><button onclick="deleteProduct(${product.id})">Eliminar</button></td>
+      <td>${product.title}</td>
+      <td>${product.description}</td>
+      <td>${product.price}</td>
+      <td>${product.code}</td>
+      <td>${product.stock}</td>
+
+    `;
+    table.getElementsByTagName("tbody")[0].appendChild(tr);
+  }
+});

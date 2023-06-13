@@ -12,6 +12,20 @@ const PORT = 8000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ARRANCANDO SERVER EXPRES -- SOLO SERVER HTTP
+const httpserver = app.listen(PORT | 8000, () => {
+  console.log(`Servidor up en el puerto: ${PORT}`);
+});
+
+// CREACION SERVIDOR PARA SOCKET
+const io = new Server(httpserver);
+
+// midellware
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 // ARCHIVO STATICO
 app.use(express.static("public/img"));
 
@@ -21,14 +35,14 @@ app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 
 // RUTAS
+app.get("/", (req, res) => res.render("home"));
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/products", viewProductsRouter);
 
-// ARRANCANDO SERVER EXPRES -- SOLO SERVER HTTP
-const httpserver = app.listen(PORT | 8000, () => {
-  console.log(`Servidor up en el puerto: ${PORT}`);
+io.on("connection", (socket) => {
+  console.log("conexion");
+  socket.on("listProduct", (data) => {
+    io.emit("updateListProduct", data);
+  });
 });
-
-// CREACION SERVIDOR PARA SOCKET
-const socketServer = new Server(httpserver);
