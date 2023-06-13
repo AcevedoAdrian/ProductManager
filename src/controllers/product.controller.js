@@ -56,7 +56,9 @@ const saveProduct = async (req, res) => {
     );
 
     if (!resAddProduct) {
-      req.io.emit("updateProducts", product.getAllProductos());
+      let prodcutAll = await product.getAllProductos();
+      console.log(prodcutAll);
+      req.io.emit("updateProducts", prodcutAll);
       res.send({
         status: "succses",
         message: `Se agrego correctamente el producto ${title}`,
@@ -84,8 +86,10 @@ const updateProduct = async (req, res) => {
       });
     } else {
       let resUpdateProduct = await product.updateProduct(idProduct, content);
-      req.io.emit("updateProducts", product.getAllProductos());
       if (!resUpdateProduct) {
+        let prodcutAll = await product.getAllProductos();
+        console.log(prodcutAll);
+        req.io.emit("updateProducts", prodcutAll);
         res.send({
           status: "succses",
           message: `Se actualizo correctamente el producto ${idProduct}`,
@@ -114,8 +118,10 @@ const deleteProduct = async (req, res) => {
       });
     } else {
       let resDelete = await product.deleteProduct(idProduct);
-      req.io.emit("updateProducts", product.getAllProductos());
       if (!resDelete) {
+        let prodcutAll = await product.getAllProductos();
+        console.log(prodcutAll);
+        req.io.emit("updateProducts", prodcutAll);
         res.send({
           status: "succses",
           message: `Se ELIMINO correctamente el producto ${idProduct}`,

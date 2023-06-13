@@ -6,7 +6,7 @@
   <div>Precio: <input type="text" id="price"> </div>
   <div>Codigo: <input type="text" id="code"> </div>
   <div>Stock: <input type="text" id="stock"> </div>
-  <div>Descripcion: <input type="text" id="description"> </div>
+  <div>Thumbnail: <input type="file" id="thumbnail"> </div>
     {{!-- <div>
     <label for="title">Titulo</label>
     <input name="title" type="text" placeholder="Titulo"> 
@@ -53,7 +53,12 @@
       <td>{{this.price}}</td>
       <td>{{this.code}}</td>
       <td>{{this.stock}}</td>
-      <td>{{this.thumbnail}}</td>
+      {{#each this.thumbnail}}
+      <td>
+          <img src=" http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
+          {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}" > --}}
+      </td>
+      {{/each}}
     </tr>
     {{/each}}
   </tbody>

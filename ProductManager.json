@@ -1,47 +1,76 @@
 [
 	{
 		"id": 2,
-		"title": "adrian",
-		"description": "sadas",
-		"price": "21",
+		"title": "Nike",
+		"description": "Zapatilla Negra",
+		"price": "2300",
 		"thumbnail": [],
-		"code": "2321",
-		"stock": "2"
+		"code": "2002",
+		"stock": "3"
 	},
 	{
 		"id": 3,
-		"title": "dsad",
-		"description": "sad",
-		"price": "sda",
-		"thumbnail": [],
-		"code": "sad",
-		"stock": "sa"
+		"title": "Nike Jordan",
+		"description": "zapatilla Roja",
+		"price": "3200",
+		"thumbnail": [
+			{
+				"fieldname": "file",
+				"originalname": "nike.jpeg",
+				"encoding": "7bit",
+				"mimetype": "image/jpeg",
+				"destination": "./src/public/img",
+				"filename": "nike.jpeg",
+				"path": "src/public/img/nike.jpeg",
+				"size": 618275
+			}
+		],
+		"code": "2001",
+		"stock": "2"
 	},
 	{
 		"id": 4,
-		"title": "dsa",
-		"description": "sad",
-		"price": "sad",
+		"title": "All Start ",
+		"description": "Sirenita",
+		"price": "21",
 		"thumbnail": [],
-		"code": "asd",
-		"stock": "sad"
+		"code": "233",
+		"stock": "2"
 	},
 	{
 		"id": 5,
-		"title": "sad",
-		"description": "sad",
-		"price": "321",
+		"title": "Adidas",
+		"description": "Blanca",
+		"price": "300",
 		"thumbnail": [],
-		"code": "12323",
+		"code": "3001",
 		"stock": "2"
 	},
 	{
 		"id": 6,
-		"title": "asd",
-		"description": "sad",
-		"price": "12",
+		"title": "adidas",
+		"description": "rojas",
+		"price": "2121",
 		"thumbnail": [],
-		"code": "31242",
-		"stock": "1"
+		"code": "2312",
+		"stock": "2"
+	},
+	{
+		"id": 7,
+		"title": "Nike",
+		"description": "Verde",
+		"price": "230",
+		"thumbnail": [],
+		"code": "23",
+		"stock": "231"
+	},
+	{
+		"id": 8,
+		"title": "Vanz",
+		"description": "Negras",
+		"price": "32",
+		"thumbnail": [],
+		"code": "1232",
+		"stock": "23"
 	}
 ]
