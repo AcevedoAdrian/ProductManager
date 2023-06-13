@@ -56,7 +56,7 @@ const saveProduct = async (req, res) => {
     );
 
     if (!resAddProduct) {
-      req.io.emit("updateProducts", roduct.getAllProductos());
+      req.io.emit("updateProducts", product.getAllProductos());
       res.send({
         status: "succses",
         message: `Se agrego correctamente el producto ${title}`,

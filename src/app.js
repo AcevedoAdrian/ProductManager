@@ -8,8 +8,9 @@ import viewProductsRouter from "./routes/viewProductsRouter.routes.js";
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 const PORT = 8000;
+
 // ARCHIVO STATICO
-app.use(express.static("./src/public"));
+app.use(express.static("./public"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
