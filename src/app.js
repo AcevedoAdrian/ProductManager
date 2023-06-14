@@ -41,7 +41,7 @@ app.use("/api/carts", cartRouter);
 app.use("/products", viewProductsRouter);
 
 io.on("connection", (socket) => {
-  console.log("conexion");
+  console.log("Conexion Nueva");
   socket.on("productList", (data) => {
     io.emit("updateProducts", data);
   });
