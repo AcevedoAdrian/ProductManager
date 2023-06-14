@@ -1,14 +1,5 @@
 [
 	{
-		"id": 2,
-		"title": "Nike",
-		"description": "Zapatilla Negra",
-		"price": "2300",
-		"thumbnail": [],
-		"code": "2002",
-		"stock": "3"
-	},
-	{
 		"id": 3,
 		"title": "Nike Jordan",
 		"description": "zapatilla Roja",
@@ -27,50 +18,5 @@
 		],
 		"code": "2001",
 		"stock": "2"
-	},
-	{
-		"id": 4,
-		"title": "All Start ",
-		"description": "Sirenita",
-		"price": "21",
-		"thumbnail": [],
-		"code": "233",
-		"stock": "2"
-	},
-	{
-		"id": 5,
-		"title": "Adidas",
-		"description": "Blanca",
-		"price": "300",
-		"thumbnail": [],
-		"code": "3001",
-		"stock": "2"
-	},
-	{
-		"id": 6,
-		"title": "adidas",
-		"description": "rojas",
-		"price": "2121",
-		"thumbnail": [],
-		"code": "2312",
-		"stock": "2"
-	},
-	{
-		"id": 7,
-		"title": "Nike",
-		"description": "Verde",
-		"price": "230",
-		"thumbnail": [],
-		"code": "23",
-		"stock": "231"
-	},
-	{
-		"id": 8,
-		"title": "Vanz",
-		"description": "Negras",
-		"price": "32",
-		"thumbnail": [],
-		"code": "1232",
-		"stock": "23"
 	}
 ]

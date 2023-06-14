@@ -38,7 +38,7 @@ const getProductById = async (req, res) => {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: `Error al RETORNAR UN producto por id: ${error}`,
+      message: `Error al BUSCAR UN producto por id: ${error}`,
     });
   }
 };

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "css": "postcss src/public/css/tailwind.css -o src/public/css/app.css --watch"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,10 @@
     "socket.io": "4.6.2"
   },
   "devDependencies": {
-    "nodemon": "2.0.22"
+    "autoprefixer": "^10.4.14",
+    "nodemon": "2.0.22",
+    "postcss": "^8.4.24",
+    "postcss-cli": "^10.1.0",
+    "tailwindcss": "^3.3.2"
   }
 }

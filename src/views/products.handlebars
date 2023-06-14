@@ -1,31 +1,31 @@
-<h2>Lista Product</h2>
-<table>
+<h2 class="text-4xl my-10 font-extrabold text-center">Lista Productos</h2>
+<table class="shadow-lg bg-white mt-8 mx-auto max-w-md">
   <thead>
     <tr>
-      <td><strong>Producto </strong></td>
-      <td><strong>Descripcion</strong></td>
-      <td><strong>Precio</strong></td>
-      <td><strong>Codigo</strong></td>
-      <td><strong>Stock</strong></td>
-      <td><strong>Categoria</strong></td>
-      <td><strong>thumbnail</strong></td>
+      <td class="bg-blue-100 border text-left px-8 py-4"><strong>Producto </strong></td>
+      <td class="bg-blue-100 border text-left px-8 py-4"><strong>Descripcion</strong></td>
+      <td class="bg-blue-100 border text-left px-8 py-4"><strong>Precio</strong></td>
+      <td class="bg-blue-100 border text-left px-8 py-4"><strong>Codigo</strong></td>
+      <td class="bg-blue-100 border text-left px-8 py-4"><strong>Stock</strong></td>
+
+      <td class="bg-blue-100 border text-left px-8 py-4"><strong>thumbnail</strong></td>
     </tr>
   </thead>
   <tbody>
     {{#each products}}
     <tr>
-      <td>{{this.title}}</td>
-      <td>{{this.description}}</td>
-      <td>{{this.price}}</td>
-      <td>{{this.thumbnail}}</td>
-      <td>{{this.code}}</td>
-      <td>{{this.stock}}</td>
-      {{#each this.thumbnail}}
-      <td>
-          <img src=" http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
-          {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}" > --}}
+      <td class="border px-8 py-4">{{this.title}}</td>
+      <td class="border px-8 py-4">{{this.description}}</td>
+      <td class="border px-8 py-4">{{this.price}}</td>
+      <td class="border px-8 py-4">{{this.code}}</td>
+      <td class="border px-8 py-4">{{this.stock}}</td>
+      <td class="border px-8 py-4">
+
+        {{#each this.thumbnail}}
+        <img src=" http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
+        {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}"> --}}
+        {{/each}}
       </td>
-      {{/each}}
     </tr>
     {{/each}}
   </tbody>

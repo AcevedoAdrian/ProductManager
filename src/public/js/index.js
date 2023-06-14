@@ -64,33 +64,36 @@ deleteProduct = (id) => {
 socket.on("updateProducts", (data) => {
   // console.log(data);
   table.innerHTML = `<tr>
-  <td></td>
-  <td><strong>Products</strong></td>
-  <td><strong>Descripcion</strong></td>
-  <td><strong>Precio</strong></td>
-  <td><strong>Codigo</strong></td>
-  <td><strong>Stock</strong></td>
-  <td><strong>thumbnail
-  </strong></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"><strong>Products</strong></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"><strong>Descripcion</strong></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"><strong>Precio</strong></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"><strong>Codigo</strong></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"><strong>Stock</strong></td>
+  <td class="bg-blue-100 border text-left px-8 py-4"><strong>thumbnail</strong></td>
   </tr>
   `;
   for (product of data) {
     let tr = document.createElement("tr");
     tr.innerHTML = `
-      <td><button onclick="deleteProduct(${product.id})">Eliminar</button></td>
-      <td>${product.title}</td>
-      <td>${product.description}</td>
-      <td>${product.price}</td>
-      <td>${product.code}</td>
-      <td>${product.stock}</td>
+      <td class="border px-8 py-4">
+        <button class="hover:bg-red-700 w-full bg-red-600 text-white font-bold p-2 cursor-pointer rounded-md" onclick="deleteProduct(${
+          product.id
+        })">
+      Eliminar</button>
+      </td>
+      <td class="border px-8 py-4">${product.title}</td>
+      <td class="border px-8 py-4">${product.description}</td>
+      <td class="border px-8 py-4">${product.price}</td>
+      <td class="border px-8 py-4">${product.code}</td>
+      <td class="border px-8 py-4">${product.stock}</td>
+      <td class="border px-8 py-4">
       ${product.thumbnail.map((data) => {
-        return `<td>
-          <img src=" http://localhost:8000/img/${data.filename}" alt="{{this.filename}}" width="50" height="50">
-        </td>
+        return `<img src="http://localhost:8000/img/${data.filename}" alt="{{this.filename}}" width="50" height="50">
+       
       `;
       })}
-      
-
+      </td>
     `;
     table.getElementsByTagName("tbody")[0].appendChild(tr);
   }

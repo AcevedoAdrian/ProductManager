@@ -1,68 +1,86 @@
-<h1>Formulario de carga</h1>
-<hr/>
-<form id="createForm">
-  <div>Title: <input type="text" id="title"> </div>
-  <div>Descripcion: <input type="text" id="description"> </div>
-  <div>Precio: <input type="text" id="price"> </div>
-  <div>Codigo: <input type="text" id="code"> </div>
-  <div>Stock: <input type="text" id="stock"> </div>
-  <div>Thumbnail: <input type="file" id="thumbnail"> </div>
-    {{!-- <div>
-    <label for="title">Titulo</label>
-    <input name="title" type="text" placeholder="Titulo"> 
-  </div>
-   <div>
-    <label for="description">Descripcion</label>
-    <input name="description" type="text" placeholder="Descripcion">
-  </div>
-   <div>
-    <label for="price">Precio</label>
-    <input name="price" type="text" placeholder="Precio">
-  </div>
-   <div>
-    <label for="code">Codigo</label>
-    <input name="code" type="text" placeholder="Codigo">
-  </div>
-   <div>
-    <label for="stock">Stock</label>
-    <input name="stock" type="text" placeholder="Stock">
-  </div>
-  <input type="submit" value="Crear Producto"> --}}
-</form>
-<button id="createBtn">Argegar Producto</button>
+<div class="flex flex-row  flex-nowrap">
+  <div>
+    <h3 class="text-2xl my-10 font-extrabold text-center">Formulario de carga</h3>
+    <div class=" mt-8 mx-auto max-w-md">
+      <div class="bg-white py-8 px-4 shadow">
 
-<h2>Lista Product</h2>
-<table id="realProductsTable">
-  <thead>
-    <tr>
-      <td></td>
-      <td><strong>Producto </strong></td>
-      <td><strong>Descripcion</strong></td>
-      <td><strong>Precio</strong></td>
-      <td><strong>Codigo</strong></td>
-      <td><strong>Stock</strong></td>
-      <td><strong>thumbnail</strong></td>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each products}}
-    <tr>
-      <td><button onclick="deleteProduct({{this.id}})">Eliminar</button></td>
-      <td>{{this.title}}</td>
-      <td>{{this.description}}</td>
-      <td>{{this.price}}</td>
-      <td>{{this.code}}</td>
-      <td>{{this.stock}}</td>
-      {{#each this.thumbnail}}
-      <td>
-          <img src=" http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
-          {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}" > --}}
-      </td>
-      {{/each}}
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+        <form id="createForm" class="space-y-5">
+          <div>
+            <label class="block text-sm uppercase text-gray-500 mb-3 font-bold" for="title">Title</label>
+            <input class="w-full px-3 py-2 border border-gray-500 rounded-md placeholder-gray-400" type="text"
+              id="title" name="title" placeholder="Titulo">
+          </div>
+          <div>
+            <label class="block text-sm uppercase text-gray-500 mb-3 font-bold" for="description">Descripcion</label>
+            <input class="w-full px-3 py-2 border border-gray-500 rounded-md placeholder-gray-400" type="text"
+              id="description" name="description" placeholder="Descripcion">
+          </div>
+          <div>
+            <label class="block text-sm uppercase text-gray-500 mb-3 font-bold" for="price">Precio</label>
+            <input class="w-full px-3 py-2 border border-gray-500 rounded-md placeholder-gray-400" type="text"
+              id="price" name="price" placeholder="Precio">
+          </div>
+          <div>
+            <label class="block text-sm uppercase text-gray-500 mb-3 font-bold" for="code">Codigo</label>
+            <input class="w-full px-3 py-2 border border-gray-500 rounded-md placeholder-gray-400" type="text" id="code"
+              name="code" placeholder="Codigo">
+          </div>
+          <div>
+            <label class="block text-sm uppercase text-gray-500 mb-3 font-bold" for="stock">Stock</label>
+            <input class="w-full px-3 py-2 border border-gray-500 rounded-md placeholder-gray-400" type="text"
+              id="stock" name="stock" placeholder="Stock">
+          </div>
+          <div>
+            <label class="block text-sm uppercase text-gray-500 mb-3 font-bold" for="thumbnail">Thumbnail</label>
+            <input class="w-full px-3 py-2 border border-gray-500 rounded-md placeholder-gray-400" type="file"
+              id="thumbnail" name="thumbnail">
+          </div>
+        </form>
+        <div class="py-10 ">
+          <button class="hover:bg-teal-700 w-full bg-teal-600 text-white font-bold py-3 cursor-pointer"
+            id="createBtn">Argegar Producto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h3 class="text-2xl my-10 font-extrabold text-center">Lista Product</h3>
+    <table id="realProductsTable" class="shadow-lg bg-white mt-8 mx-auto max-w-md">
+      <thead>
+        <tr>
+          <td class="bg-blue-100 border text-left px-8 py-4"></td>
+          <td class="bg-blue-100 border text-left px-8 py-4"><strong>Producto </strong></td>
+          <td class="bg-blue-100 border text-left px-8 py-4"><strong>Descripcion</strong></td>
+          <td class="bg-blue-100 border text-left px-8 py-4"><strong>Precio</strong></td>
+          <td class="bg-blue-100 border text-left px-8 py-4"><strong>Codigo</strong></td>
+          <td class="bg-blue-100 border text-left px-8 py-4"><strong>Stock</strong></td>
+          <td class="bg-blue-100 border text-left px-8 py-4"><strong>thumbnail</strong></td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <td class="border px-8 py-4">
+            <button class="hover:bg-red-700 w-full bg-red-600 text-white font-bold p-2 cursor-pointer rounded-md "
+              onclick="deleteProduct({{this.id}})">Eliminar</button>
+          </td>
+          <td class="border px-8 py-4">{{this.title}}</td>
+          <td class="border px-8 py-4">{{this.description}}</td>
+          <td class="border px-8 py-4">{{this.price}}</td>
+          <td class="border px-8 py-4">{{this.code}}</td>
+          <td class="border px-8 py-4">{{this.stock}}</td>
+          <td class="border px-8 py-4">
+            {{#each this.thumbnail}}
+            <img src=" http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
+            {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}"> --}}
 
+            {{/each}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
