@@ -29,7 +29,7 @@ document.getElementById("createBtn").addEventListener("click", () => {
     .then((result) => {
       if (result.status === "error") throw new Error(result.error);
     })
-    .then(() => fetch("/api/products"))
+    .then(() => fetch("api/products"))
     .then((result) => result.json())
     .then((result) => {
       if (result.status === "error") throw new Error(result.error);
@@ -75,8 +75,7 @@ socket.on("updateProducts", (data) => {
   `;
   for (product of data) {
     let tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="border px-8 py-4">
+    tr.innerHTML = `<td class="border px-8 py-4">
         <button class="hover:bg-red-700 w-full bg-red-600 text-white font-bold p-2 cursor-pointer rounded-md" onclick="deleteProduct(${
           product.id
         })">
@@ -88,13 +87,13 @@ socket.on("updateProducts", (data) => {
       <td class="border px-8 py-4">${product.code}</td>
       <td class="border px-8 py-4">${product.stock}</td>
       <td class="border px-8 py-4">
-      ${product.thumbnail.map((data) => {
-        return `<img src="http://localhost:8000/img/${data.filename}" alt="{{this.filename}}" width="50" height="50">
-       
-      `;
-      })}
+      ${product.thumbnail.map(
+        (data) =>
+          `<img src="http://localhost:8000/img/${data.filename}" alt="${data.filename}" width="50" height="50">`
+      )}
       </td>
     `;
+
     table.getElementsByTagName("tbody")[0].appendChild(tr);
   }
 });

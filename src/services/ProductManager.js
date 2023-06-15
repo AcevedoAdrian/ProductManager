@@ -103,30 +103,21 @@ export default class ProductManager {
       this.#products.push(newProduct);
       return await this.#seveProductFile();
     } else {
-      // return { status: "error", message: `${responseValidat.message}` };
       return responseValidat;
     }
   }
 
   // Retorna un array de productos
   async getAllProductos() {
-    // try {
     const productsFiles = await fs.promises.readFile(this.#path, this.#format);
     return JSON.parse(productsFiles);
-    // } catch (error) {
-    //   return { error: `Error al devolver lista de productos: ${error}` };
-    // }
   }
 
   // Busca el id que se pasa por parametro en el array de producto, si lo encuentra lo retorna caso contrario devuelve un mensjae
   async getProductsByID(id) {
-    // try {
     let productsFiles = await this.getAllProductos();
     let resultadoBusqueda = productsFiles.find((product) => product.id === id);
     return resultadoBusqueda;
-    // } catch (error) {
-    //   return { message: `Error al obtener Porducto por id ${error}` };
-    // }
   }
 
   async updateProduct(id, dataProducts) {
@@ -140,19 +131,12 @@ export default class ProductManager {
     });
     this.#products = productsUpdate;
     return await this.#seveProductFile();
-    // return {
-    //   message: `Se actualizo correctamente el producto con el id ${id}`,
-    // };
   }
 
   async deleteProduct(id) {
-    // try {
     const productsFiles = await this.#getProductsFile();
     let productsDelete = productsFiles.filter((product) => product.id != id);
     this.#products = productsDelete;
     return await this.#seveProductFile();
-    // } catch (error) {
-    //   return { message: `Error al elimiar elemento ${id}, ${error}` };
-    // }
   }
 }
