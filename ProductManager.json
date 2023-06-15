@@ -18,5 +18,14 @@
 		],
 		"code": "2001",
 		"stock": "2"
+	},
+	{
+		"id": 4,
+		"title": "Adidas",
+		"description": "Zapa",
+		"price": "32",
+		"thumbnail": [],
+		"code": "12",
+		"stock": "3"
 	}
 ]

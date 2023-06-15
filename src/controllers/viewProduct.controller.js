@@ -12,4 +12,6 @@ const renderRealTimeAllProducts = async (req, res) => {
   res.render("realTimeProducts", { products });
 };
 
-export { renderAllProducts, renderRealTimeAllProducts };
+const addRealTimeAllProducts = async (req, res) => {};
+
+export { renderAllProducts, renderRealTimeAllProducts, addRealTimeAllProducts };
