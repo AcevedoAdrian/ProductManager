@@ -10,20 +10,31 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  price: Int,
+  price: { type: Number, required: true },
   thumbnail: {
-    type: String,
-    required: true,
+    type: [String],
+    default: [],
   },
   code: {
-    type: Int,
+    type: String,
+    unique: true,
     required: true,
+  },
+  status: {
+    type: Boolean,
+    default: true,
   },
   stock: {
-    type: Int,
+    type: Number,
     required: true,
   },
+  category: {
+    type: String,
+    required: false,
+  },
 });
+
+mongoose.set("strictQuery", false);
 
 const Products = mongoose.model(productCollection, productSchema);
 export default Products;
