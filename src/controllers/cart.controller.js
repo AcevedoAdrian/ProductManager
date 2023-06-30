@@ -1,4 +1,4 @@
-import CartManager from "../services/CartManager.js";
+import CartManager from "../dao/fileManager/CartManager.js";
 const carts = new CartManager("Carts.json");
 
 const newCart = async (req, res) => {
