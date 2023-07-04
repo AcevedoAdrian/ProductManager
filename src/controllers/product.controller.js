@@ -75,10 +75,7 @@ const saveProduct = async (req, res) => {
     const product = req.body;
     const resAddProduct = await productModel.create(product);
 
-    console.log("-------");
-    console.log(resAddProduct);
-
-    if (!resAddProduct) {
+    if (resAddProduct !== null) {
       //   let prodcutAll = await product.getAllProductos();
       //   console.log(prodcutAll);
       //   req.io.emit("updateProducts", prodcutAll);

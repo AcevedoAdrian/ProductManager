@@ -8,7 +8,7 @@ const renderAllProducts = async (req, res) => {
   // res.render("products", { products });
   try {
     const products = await prodctModel.find().lean().exec();
-    res.render("home", { products });
+    res.render("products", { products });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
   }
