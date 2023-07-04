@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 // PROPIOS
 import productsRouter from "./routes/product.routes.js";
 import cartRouter from "./routes/cart.routes.js";
-import chatRouter from "./routes/chat.route.js";
+import chatRouter from "./routes/chat.routes.js";
 import viewProductsRouter from "./routes/viewProductsRouter.routes.js";
 
 // CONFIGURACION INICIAL EXPRESS
@@ -51,11 +51,13 @@ app.use((req, res, next) => {
   next();
 });
 
+let messages = [];
 // CONEXION SOCKET.IO
 io.on("connection", (socket) => {
   // LITADODO CHAT
   socket.on("message", (data) => {
-    console.log(data);
+    messages.push(data);
+    io.emit("logs", messages);
   });
 
   // ACTUALIZACION LISTA PRODUCTOS
