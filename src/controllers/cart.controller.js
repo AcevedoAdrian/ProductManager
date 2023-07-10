@@ -1,11 +1,12 @@
-import CartManager from "../dao/fileManager/CartManager.js";
-const carts = new CartManager("Carts.json");
+// import CartManager from "../dao/fileManager/CartManager.js";
+// const carts = new CartManager("Carts.json");
+import cartsModel from "../dao/models/carts.model.js";
 
 const newCart = async (req, res) => {
   try {
-    let resNewProduct = await carts.newCart();
-
-    if (!resNewProduct) {
+    let resNewCart = await cartsModel.create();
+    console.log(resNewCart);
+    if (!resNewCart) {
       res.send({
         status: "succses",
         message: `Se CREO correctamente el carrito `,
@@ -20,10 +21,13 @@ const newCart = async (req, res) => {
     });
   }
 };
+
 const getCartByID = async (req, res) => {
   try {
     let idCard = +req.params.cid;
-    let cartByID = await carts.getCartByID(idCard);
+    // let cartByID = await carts.getCartByID(idCard);
+    const cartByID = await cartsModel.findOne({ _id: idCard });
+
     if (!cartByID) {
       res.status(404).send({
         status: "error",
@@ -56,7 +60,10 @@ const addProductsToCart = async (req, res) => {
     }
 
     // Agregamos el producto al carrito
-    let resAddProductToCart = await carts.addProductsToCart(cartId, productId);
+    // let resAddProductToCart = await carts.addProductsToCart(cartId, productId);
+    const cart = await cartModel.findOne(cartId);
+    cart.prodcuts.push({ product: productId });
+    const resAddProductToCart = await cart.updateOne({ _id: cartId }, cart);
     if (!resAddProductToCart) {
       res.send({
         status: "succses",
