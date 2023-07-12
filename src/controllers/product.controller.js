@@ -3,8 +3,14 @@
 import productModel from "../dao/models/products.model.js";
 
 const getAllProducts = async (req, res) => {
+  // NUEVA IMPLEMNTACION
   try {
-    let productByLimit = req.query.limit ?? false;
+    const productByLimit = req.query.limit ?? 10;
+    const productByPage = req.query.page ?? 1;
+    const productBySort = req.query.sort === "asc" ? 1 : -1;
+    const prodcutByQuery = req.query.query ?? {};
+
+    // TODO: Implementar los filtros
     //Pide todos los productos al ProductManager
     // let prodcutAll = await product.getAllProductos();
     // if (productByLimit) {
@@ -14,12 +20,51 @@ const getAllProducts = async (req, res) => {
     //   res.json({ status: "succses", payload: prodcutAll });
     // }
 
-    let prodcutAll = await productModel
-      .find()
-      .limit(productByLimit)
-      .lean()
-      .exec();
-    res.status(200).json({ status: "success", payload: prodcutAll });
+    // let prodcutAll = await productModel
+    //   .find()
+    //   .limit(productByLimit)
+    //   .lean()
+    //   .exec();
+    const productAll = await productModel.paginate(prodcutByQuery, {
+      productByLimit,
+      productByPage,
+      productBySort,
+      lean: true,
+    });
+
+    console.log(productAll);
+    /*     formato:
+            {
+              status:success/error
+            payload: Resultado de los productos solicitados
+            totalPages: Total de páginas
+            prevPage: Página anterior
+            nextPage: Página siguiente
+            page: Página actual
+            hasPrevPage: Indicador para saber si la página previa existe
+            hasNextPage: Indicador para saber si la página siguiente existe.
+            prevLink: Link directo a la página previa (null si hasPrevPage=false)
+            nextLink: Link directo a la página siguiente (null si hasNextPage=false)
+            }
+      */
+    const payload = productAll.docs;
+    const totalPages = productAll.totalPages;
+    const prevPage = productAll.prevPage;
+    const nextPage = productAll.nextPage;
+    const page = productAll.page;
+    const hasPrevPage = productAll.hasPrevPage;
+    const hasNextPage = productAll.hasNextPage;
+    const prevLink = productAll.hasPrevPage
+      ? `/product?page=${productAll.prevPage}&limit${productByLimit}`
+      : ``;
+    const nextLink = productAll.hasNextPage
+      ? `/product?page=${productAll.nextPage}&limit${productByLimit}`
+      : ``;
+
+    //  res.status(200).json({ status: "success", payload: productAll });
+    res
+      .status(200)
+      .render("products", { status: "success", payload: productAll });
   } catch (error) {
     res.status(500).send({
       status: "error",
@@ -29,7 +74,7 @@ const getAllProducts = async (req, res) => {
 };
 const getProductById = async (req, res) => {
   try {
-    let idProduct = +req.params.pid;
+    let idProduct = req.params.pid;
     // let productByID = await product.getProductsByID(idProduct);
     // if (!productByID) {
     //   res.status(404).send({
@@ -43,6 +88,7 @@ const getProductById = async (req, res) => {
     //   });
     // }
     let productByID = await productModel.findById(idProduct).lean().exec();
+    
     if (!productByID) {
       return res.status(404).json({
         status: "error",
@@ -84,10 +130,12 @@ const saveProduct = async (req, res) => {
       //     message: `Se agrego correctamente el producto ${title}`,
       //   });
       const prodcutAll = await productModel.find().lean().exec();
+
       req.io.emit("updateProducts", prodcutAll);
       res.status(201).json({
         status: "succses",
-        message: `Se agrego correctamente el producto ${title}`,
+        payload: prodcutAll,
+        message: `Se agrego correctamente el producto ${product.title}`,
       });
     } else {
       res.status(400).send({ status: "error", message: resAddProduct.message });

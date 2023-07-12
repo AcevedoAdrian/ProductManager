@@ -12,7 +12,8 @@
     </tr>
   </thead>
   <tbody>
-    {{#each products}}
+    {{!-- {{#each products}} --}}
+    {{#each payload.docs}}
     <tr>
       <td class="border px-8 py-4">{{this.title}}</td>
       <td class="border px-8 py-4">{{this.description}}</td>
@@ -25,8 +26,16 @@
         <img src=" http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
         {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}"> --}}
         {{/each}}
-      </td>
+      </td>      
     </tr>
     {{/each}}
+    <tr>
+      {{#if hasPrevPage}}
+        <a href="{{prevLink}}" type="button">Anterior</a>
+      {{/if}}
+      {{#if hasNextPage}}
+      <a href={{prevLink}}>Siguiente</a>
+      {{/if}}
+    </tr>
   </tbody>
 </table>
