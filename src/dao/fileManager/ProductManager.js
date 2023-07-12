@@ -93,7 +93,9 @@ export default class ProductManager {
   }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
-  async addProduct({title, description, price, thumbnail, code, stock}) {
+  async addProduct({title, description, price, thumbnail, code, stock, category}) {
+
+
     const responseValidat = this.#validateKeys(
       title,
       description,
@@ -101,19 +103,22 @@ export default class ProductManager {
       code,
       stock
     );
+
+    
     if (!responseValidat.error) {
       let newProduct = {
-        id: this.#generateID(),
         title,
         description,
         price,
         thumbnail,
         code,
         stock,
+        category,
       };
+      const resAddProduct = await productModel.create(newProduct);
 
-      this.#products.push(newProduct);
-      return await this.#seveProductFile();
+      // this.#products.push(newProduct);
+      return resAddProduct;
     } else {
       return responseValidat;
     }
