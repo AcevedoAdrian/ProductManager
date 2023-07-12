@@ -1,70 +1,12 @@
-// import ProductManager from "../services/ProductManager.js";
-// const product = new ProductManager("ProductManager.json");
-import productModel from "../dao/models/products.model.js";
+ import ProductManager from "../dao/fileManager/ProductManager.js";
+const product = new ProductManager();
+
 
 const getAllProducts = async (req, res) => {
   // NUEVA IMPLEMNTACION
   try {
-    const productByLimit = req.query.limit ?? 10;
-    const productByPage = req.query.page ?? 1;
-    const productBySort = req.query.sort === "asc" ? 1 : -1;
-    const prodcutByQuery = req.query.query ?? {};
-
-    // TODO: Implementar los filtros
-    //Pide todos los productos al ProductManager
-    // let prodcutAll = await product.getAllProductos();
-    // if (productByLimit) {
-    //   let limit = +productByLimit;
-    //   res.send({ status: "succses", payload: prodcutAll.slice(0, limit) });
-    // } else {
-    //   res.json({ status: "succses", payload: prodcutAll });
-    // }
-
-    // let prodcutAll = await productModel
-    //   .find()
-    //   .limit(productByLimit)
-    //   .lean()
-    //   .exec();
-    const productAll = await productModel.paginate(prodcutByQuery, {
-      productByLimit,
-      productByPage,
-      productBySort,
-      lean: true,
-    });
-
-    console.log(productAll);
-    /*     formato:
-            {
-              status:success/error
-            payload: Resultado de los productos solicitados
-            totalPages: Total de páginas
-            prevPage: Página anterior
-            nextPage: Página siguiente
-            page: Página actual
-            hasPrevPage: Indicador para saber si la página previa existe
-            hasNextPage: Indicador para saber si la página siguiente existe.
-            prevLink: Link directo a la página previa (null si hasPrevPage=false)
-            nextLink: Link directo a la página siguiente (null si hasNextPage=false)
-            }
-      */
-    const payload = productAll.docs;
-    const totalPages = productAll.totalPages;
-    const prevPage = productAll.prevPage;
-    const nextPage = productAll.nextPage;
-    const page = productAll.page;
-    const hasPrevPage = productAll.hasPrevPage;
-    const hasNextPage = productAll.hasNextPage;
-    const prevLink = productAll.hasPrevPage
-      ? `/product?page=${productAll.prevPage}&limit${productByLimit}`
-      : ``;
-    const nextLink = productAll.hasNextPage
-      ? `/product?page=${productAll.nextPage}&limit${productByLimit}`
-      : ``;
-
-    //  res.status(200).json({ status: "success", payload: productAll });
-    res
-      .status(200)
-      .render("products", { status: "success", payload: productAll });
+    const { productAll} = product.getProductsByID(req);
+    res.status(200).json({ status: "success", payload: productAll });
   } catch (error) {
     res.status(500).send({
       status: "error",
@@ -72,33 +14,22 @@ const getAllProducts = async (req, res) => {
     });
   }
 };
+
 const getProductById = async (req, res) => {
   try {
-    let idProduct = req.params.pid;
-    // let productByID = await product.getProductsByID(idProduct);
-    // if (!productByID) {
-    //   res.status(404).send({
-    //     status: "error",
-    //     message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-    //   });
-    // } else {
-    //   res.send({
-    //     status: "succses",
-    //     payload: productByID,
-    //   });
-    // }
-    let productByID = await productModel.findById(idProduct).lean().exec();
-    
-    if (!productByID) {
+    const response = productModel.getProductsByID(req.params);
+
+    if (!response) {
       return res.status(404).json({
         status: "error",
-        message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
+        message: `Not Found: No se encontro producto `,
       });
     }
     res.status(200).json({
       status: "succses",
-      payload: productByID,
+      payload: response,
     });
+
   } catch (error) {
     res.status(500).send({
       status: "error",
@@ -107,19 +38,8 @@ const getProductById = async (req, res) => {
   }
 };
 const saveProduct = async (req, res) => {
-  // console.log(req.body.file);
   try {
-    // let { title, description, price, thumbnail, code, stock } = req.body;
-    // let resAddProduct = await product.addProduct(
-    //   title,
-    //   description,
-    //   price,
-    //   (thumbnail = req.files || []),
-    //   code,
-    //   stock
-    // );
-    const product = req.body;
-    const resAddProduct = await productModel.create(product);
+    const response = productModel.saveProduct(req.body);
 
     if (resAddProduct !== null) {
       //   let prodcutAll = await product.getAllProductos();

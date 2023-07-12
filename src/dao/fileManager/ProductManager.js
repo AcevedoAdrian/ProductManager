@@ -1,32 +1,15 @@
-import fs from "fs";
+import productModel from "../dao/models/products.model.js";
 
 export default class ProductManager {
   #products;
   #format;
   #path;
 
-  constructor(path = "../../ProductManager.json") {
-    this.#path = path;
-    this.#format = "utf-8";
+  constructor() {
     this.#products = [];
-    this.#initialFileProduct();
   }
 
-  #initialFileProduct() {
-    if (fs.existsSync(this.#path)) {
-      let fileProducts = fs.readFileSync(this.#path, this.#format);
-
-      if (fileProducts.toString() === "") {
-        return fs.writeFileSync(this.#path, "[]");
-      } else {
-        return (this.#products = JSON.parse(
-          fs.readFileSync(this.#path, this.#format)
-        ));
-      }
-    } else {
-      return fs.writeFileSync(this.#path, "[]");
-    }
-  }
+  #initialFileProduct() {}
 
   // Genera el id para los productos de marena incremental
   #generateID() {
@@ -55,17 +38,46 @@ export default class ProductManager {
     }
   }
 
-  async #getProductsFile() {
+  async #getAllProductos({ query }) {
     try {
-      const productsFiles = await fs.promises.readFile(
-        this.#path,
-        this.#format
-      );
-      return JSON.parse(productsFiles);
+      const productByLimit = query.limit ?? 10;
+      const productByPage = query.page ?? 1;
+      const productBySort = query.sort === "asc" ? 1 : -1;
+      const prodcutByQuery = query.query ?? {};
+      const productAll = await productModel.paginate(prodcutByQuery, {
+        productByLimit,
+        productByPage,
+        productBySort,
+        lean: true,
+      });
+      const payload = productAll.docs;
+      const totalPages = productAll.totalPages;
+      const prevPage = productAll.prevPage;
+      const nextPage = productAll.nextPage;
+      const page = productAll.page;
+      const hasPrevPage = productAll.hasPrevPage;
+      const hasNextPage = productAll.hasNextPage;
+      const prevLink = productAll.hasPrevPage
+        ? `/product?page=${productAll.prevPage}&limit${productByLimit}`
+        : ``;
+      const nextLink = productAll.hasNextPage
+        ? `/product?page=${productAll.nextPage}&limit${productByLimit}`
+        : ``;
+
+      return {
+        payload,
+        totalPages,
+        prevPage,
+        nextPage,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevLink,
+        nextLink,
+      };
     } catch (error) {
       return { message: `Error al devolver lista de productos: ${error}` };
     }
-    // return JSON.parse(await fs.promises.readFile(this.#path, this.#format));
   }
 
   async #seveProductFile() {
@@ -81,7 +93,7 @@ export default class ProductManager {
   }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
-  async addProduct(title, description, price, thumbnail, code, stock) {
+  async addProduct({title, description, price, thumbnail, code, stock}) {
     const responseValidat = this.#validateKeys(
       title,
       description,
@@ -107,17 +119,15 @@ export default class ProductManager {
     }
   }
 
-  // Retorna un array de productos
-  async getAllProductos() {
-    const productsFiles = await fs.promises.readFile(this.#path, this.#format);
-    return JSON.parse(productsFiles);
-  }
-
   // Busca el id que se pasa por parametro en el array de producto, si lo encuentra lo retorna caso contrario devuelve un mensjae
-  async getProductsByID(id) {
-    let productsFiles = await this.getAllProductos();
-    let resultadoBusqueda = productsFiles.find((product) => product.id === id);
-    return resultadoBusqueda;
+  async getProductsByID({pid}) {
+    try{
+      let idProduct = pid;
+      let productByID = await productModel.findById(idProduct).lean().exec();
+      return productByID;
+    }catch(error){
+      return error
+    }
   }
 
   async updateProduct(id, dataProducts) {
