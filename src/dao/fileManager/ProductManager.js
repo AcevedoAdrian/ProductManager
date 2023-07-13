@@ -20,8 +20,7 @@ export default class ProductManager {
 
   // Verifica si el el contenido de code no se encuetra repetido
   #validateCode(code) {
-    const resultSearch = this.#products.find(
-      (product) => product.code === code
+    const resultSearch = 
     );
 
     return resultSearch
@@ -32,7 +31,7 @@ export default class ProductManager {
   //Valida que los campos no esten vacios y si no lo estan invocan el metodo validateCode
   #validateKeys(title, description, price, code, stock) {
     if (!title || !description || !price || !code || !stock) {
-      return { error: true, message: "No se aceptan campos vacios" };
+      return { status: 'error', message: "No se aceptan campos vacios" };
     } else {
       return this.#validateCode(code);
     }
@@ -79,18 +78,6 @@ export default class ProductManager {
       throw new Error(err.message);
     }
   }
-
-  // async #seveProductFile() {
-  //   try {
-  //     const repuesta = await fs.promises.writeFile(
-  //       this.#path,
-  //       JSON.stringify(this.#products, null, "\t")
-  //     );
-  //     return repuesta;
-  //   } catch (error) {
-  //     return { message: `Error al grabar producto en el archivo ${error} ` };
-  //   }
-  // }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
   async addProduct({

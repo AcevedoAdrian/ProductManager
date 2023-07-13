@@ -41,16 +41,8 @@ const saveProduct = async (req, res) => {
   try {
     const response = product.addProduct(req.body);
 
-    if (response !== null) {
-      //   let prodcutAll = await product.getAllProductos();
-      //   console.log(prodcutAll);
-      //   req.io.emit("updateProducts", prodcutAll);
-      //   res.send({
-      //     status: "succses",
-      //     message: `Se agrego correctamente el producto ${title}`,
-      //   });
+    if (response !== null) {   
       const prodcutAll = await productModel.find().lean().exec();
-
       req.io.emit("updateProducts", prodcutAll);
       res.status(201).json({
         status: "succses",
