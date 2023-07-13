@@ -1,4 +1,4 @@
-import productModel from "../dao/models/products.model.js";
+import productModel from "../models/products.model.js";
 
 export default class ProductManager {
   #products;
@@ -76,67 +76,80 @@ export default class ProductManager {
         nextLink,
       };
     } catch (error) {
-      return { message: `Error al devolver lista de productos: ${error}` };
+      throw new Error(err.message);
     }
   }
 
-  async #seveProductFile() {
-    try {
-      const repuesta = await fs.promises.writeFile(
-        this.#path,
-        JSON.stringify(this.#products, null, "\t")
-      );
-      return repuesta;
-    } catch (error) {
-      return { message: `Error al grabar producto en el archivo ${error} ` };
-    }
-  }
+  // async #seveProductFile() {
+  //   try {
+  //     const repuesta = await fs.promises.writeFile(
+  //       this.#path,
+  //       JSON.stringify(this.#products, null, "\t")
+  //     );
+  //     return repuesta;
+  //   } catch (error) {
+  //     return { message: `Error al grabar producto en el archivo ${error} ` };
+  //   }
+  // }
 
   // Agrega los campos que recibe al un arreglo en forma de objeto con un nuevo campo llamado id
-  async addProduct({title, description, price, thumbnail, code, stock, category}) {
-
-
-    const responseValidat = this.#validateKeys(
-      title,
-      description,
-      price,
-      code,
-      stock
-    );
-
-    
-    if (!responseValidat.error) {
-      let newProduct = {
+  async addProduct({
+    title,
+    description,
+    price,
+    thumbnail,
+    code,
+    stock,
+    category,
+  }) {
+    try {
+      const responseValidat = this.#validateKeys(
         title,
         description,
         price,
-        thumbnail,
         code,
-        stock,
-        category,
-      };
-      const resAddProduct = await productModel.create(newProduct);
+        stock
+      );
 
-      // this.#products.push(newProduct);
-      return resAddProduct;
-    } else {
-      return responseValidat;
+      if (!responseValidat.error) {
+        let newProduct = {
+          title,
+          description,
+          price,
+          thumbnail,
+          code,
+          stock,
+          category,
+        };
+        const resAddProduct = await productModel.create(newProduct);
+        return { status: "success", peyload: resAddProduct };
+      } else {
+        return responseValidat;
+      }
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 
   // Busca el id que se pasa por parametro en el array de producto, si lo encuentra lo retorna caso contrario devuelve un mensjae
-  async getProductsByID({pid}) {
-    try{
+  async getProductsByID({ pid }) {
+    try {
       let idProduct = pid;
       let productByID = await productModel.findById(idProduct).lean().exec();
-      return productByID;
-    }catch(error){
-      return error
+      if (productByID) {
+        return { status: "success", peyload: productByID };
+      }else{
+        throw new Error("Not Found");
+      }
+      
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 
   async updateProduct(id, dataProducts) {
-    const productsFiles = await this.#getProductsFile();
+    // const productsFiles = await this.#getProductsFile();
+    const productsFiles = [];
     const productsUpdate = productsFiles.map((product) => {
       if (product.id === id) {
         let productUpdate = { ...product, ...dataProducts };
@@ -145,13 +158,14 @@ export default class ProductManager {
       return product;
     });
     this.#products = productsUpdate;
-    return await this.#seveProductFile();
+    // return await this.#seveProductFile();
   }
 
   async deleteProduct(id) {
-    const productsFiles = await this.#getProductsFile();
+    // const productsFiles = await this.#getProductsFile();
+    const productsFiles = [];
     let productsDelete = productsFiles.filter((product) => product.id != id);
     this.#products = productsDelete;
-    return await this.#seveProductFile();
+    // return await this.#seveProductFile();
   }
 }

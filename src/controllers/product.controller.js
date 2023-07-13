@@ -17,7 +17,7 @@ const getAllProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const response = productModel.getProductsByID(req.params);
+    const response = product.getProductsByID(req.params);
 
     if (!response) {
       return res.status(404).json({
@@ -39,9 +39,9 @@ const getProductById = async (req, res) => {
 };
 const saveProduct = async (req, res) => {
   try {
-    const response = productModel.saveProduct(req.body);
+    const response = product.addProduct(req.body);
 
-    if (resAddProduct !== null) {
+    if (response !== null) {
       //   let prodcutAll = await product.getAllProductos();
       //   console.log(prodcutAll);
       //   req.io.emit("updateProducts", prodcutAll);
@@ -58,7 +58,7 @@ const saveProduct = async (req, res) => {
         message: `Se agrego correctamente el producto ${product.title}`,
       });
     } else {
-      res.status(400).send({ status: "error", message: resAddProduct.message });
+      res.status(400).send({ status: "error", message: response.message });
     }
   } catch (error) {
     res.status(500).send({
@@ -95,25 +95,26 @@ const updateProduct = async (req, res) => {
     //         .send({ status: "error", message: resUpdateProduct.message });
     //     }
     //   }
-    let idProduct = +req.params.pid;
-    const result = await productModel.findByIdAndDelete(idProduct);
-    if (result === null) {
-      res.status(404).json({
-        status: "error",
-        message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-      });
-    }
-    const prodcutAll = await productModel.find().lean().exec();
-    req.io.emit("updateProducts", prodcutAll);
-    res.status(200).json({
-      status: "succses",
-      payload: prodcutAll,
-      message: `Se actualizo correctamente el producto ${idProduct}`,
-    });
+    // * Decomentar
+  //   let idProduct = +req.params.pid;
+  //   const result = await productModel.findByIdAndDelete(idProduct);
+  //   if (result === null) {
+  //     res.status(404).json({
+  //       status: "error",
+  //       message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
+  //     });
+  //   }
+  //   const prodcutAll = await productModel.find().lean().exec();
+  //   req.io.emit("updateProducts", prodcutAll);
+  //   res.status(200).json({
+  //     status: "succses",
+  //     payload: prodcutAll,
+  //     message: `Se actualizo correctamente el producto ${idProduct}`,
+  //   });
   } catch (error) {
     return res.status(500).json({
       status: "error",
-      message: `Error al ACTUALIZAR elemento ${idProduct}, ${error}`,
+      message: `Error al ACTUALIZAR elemento, ${error}`,
     });
   }
 };
@@ -143,26 +144,28 @@ const deleteProduct = async (req, res) => {
     //       });
     //     }
     //   }
-    let idProduct = req.params.pid;
-    const dataProduct = req.body;
-    const result = await productModel.findByIdAndUpdate(
-      idProduct,
-      dataProduct,
-      { returnDocument: "after" }
-    );
-    if (result === null) {
-      return res.status(404).json({ status: "error", message: "Not Found" });
-    }
-    const prodcutAll = await productModel.find().lean().exec();
-    req.io.emit("updateProducts", prodcutAll);
-    res.status(200).json({
-      status: "succses",
-      message: `Se ELIMINO correctamente el producto ${idProduct}`,
-    });
+    // * Descomentar
+
+    // let idProduct = req.params.pid;
+    // const dataProduct = req.body;
+    // const result = await productModel.findByIdAndUpdate(
+    //   idProduct,
+    //   dataProduct,
+    //   { returnDocument: "after" }
+    // );
+    // if (result === null) {
+    //   return res.status(404).json({ status: "error", message: "Not Found" });
+    // }
+    // const prodcutAll = await productModel.find().lean().exec();
+    // req.io.emit("updateProducts", prodcutAll);
+    // res.status(200).json({
+    //   status: "succses",
+    //   message: `Se ELIMINO correctamente el producto ${idProduct}`,
+    // });
   } catch (error) {
     return res.status(500).send({
       status: "error",
-      message: `Error al ELIMINAR prudcto id: ${idProduct}, ${error}`,
+      message: `Error al ELIMINAR prudcto id: , ${error}`,
     });
   }
 };
