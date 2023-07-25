@@ -6,6 +6,6 @@ const messageShema = new mongoose.Schema({
 });
 
 mongoose.set("strictQuery", false);
-const messageModel = mongoose.model("messages");
+const messageModel = mongoose.model("messages", messageShema);
 
 export default messageModel;

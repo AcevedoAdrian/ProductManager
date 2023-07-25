@@ -1,10 +1,10 @@
 // TERCEROS
 import express from "express";
-import { engine } from "express-handlebars";
+import handlebars from "express-handlebars";
 import { Server } from "socket.io";
-import { connectDBMongo } from "./config/db.js";
 import dotenv from "dotenv";
 // PROPIOS
+import { connectDBMongo } from "./config/db.js";
 import productsRouter from "./routes/product.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import chatRouter from "./routes/chat.routes.js";
@@ -34,22 +34,21 @@ connectDBMongo();
 const io = new Server(httpserver);
 
 // CONFIGURACION PLANTILLAS HANDLEBARS
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
+app.engine("handlebars", handlebars.engine());
 app.set("views", "./src/views");
-
-// RUTAS
-app.get("/", (req, res) => res.render("index"));
-app.use("/products", viewProductsRouter);
-app.use("/chat", chatRouter);
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartRouter);
+app.set("view engine", "handlebars");
 
 // MIDDELWARE SOCKET.IO
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
+// RUTAS
+app.get("/", (req, res) => res.render("index"));
+app.use("/", viewProductsRouter);
+app.use("/chat", chatRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartRouter);
 
 let messages = [];
 // CONEXION SOCKET.IO

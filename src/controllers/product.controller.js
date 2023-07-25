@@ -5,48 +5,38 @@ import productModel from "../dao/models/products.model.js";
 const getAllProducts = async (req, res) => {
   // NUEVA IMPLEMNTACION
   try {
-    const productByLimit = req.query.limit ?? 10;
-    const productByPage = req.query.page ?? 1;
-    const productBySort = req.query.sort === "asc" ? 1 : -1;
-    const prodcutByQuery = req.query.query ?? {};
+    // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
+    const productByLimit = +req.query.limit || 10;
+    const productByPage = +req.query.page || 1;
+    const productAvailability = +req.query.stock || "";
+    const productBySort = req.query.sort ?? "asc";
+    const productByCategory = req.query.category || "";
 
-    // TODO: Implementar los filtros
-    //Pide todos los productos al ProductManager
-    // let prodcutAll = await product.getAllProductos();
-    // if (productByLimit) {
-    //   let limit = +productByLimit;
-    //   res.send({ status: "succses", payload: prodcutAll.slice(0, limit) });
-    // } else {
-    //   res.json({ status: "succses", payload: prodcutAll });
-    // }
+    let productFilter = {};
+    if (req.query.category) {
+      productFilter = { category: productByCategory };
+    }
+    if (req.query.stock) {
+      productFilter = { ...filter, stock: productAvailability };
+    }
+    // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC
+    let optionsPrice = {};
+    if (productBySort === "desc") {
+      optionsPrice = { price: -1 };
+    } else {
+      optionsPrice = { price: 1 };
+    }
 
-    // let prodcutAll = await productModel
-    //   .find()
-    //   .limit(productByLimit)
-    //   .lean()
-    //   .exec();
-    const productAll = await productModel.paginate(prodcutByQuery, {
-      productByLimit,
-      productByPage,
-      productBySort,
-      lean: true,
-    });
-
+    const optionsLimit = {
+      limit: productByLimit,
+      page: productByPage,
+      sort: optionsPrice,
+    };
+    console.log(optionsLimit);
+    console.log(productFilter);
+    const productAll = await productModel.paginate(productFilter, optionsLimit);
     console.log(productAll);
-    /*     formato:
-            {
-              status:success/error
-            payload: Resultado de los productos solicitados
-            totalPages: Total de páginas
-            prevPage: Página anterior
-            nextPage: Página siguiente
-            page: Página actual
-            hasPrevPage: Indicador para saber si la página previa existe
-            hasNextPage: Indicador para saber si la página siguiente existe.
-            prevLink: Link directo a la página previa (null si hasPrevPage=false)
-            nextLink: Link directo a la página siguiente (null si hasNextPage=false)
-            }
-      */
+
     const payload = productAll.docs;
     const totalPages = productAll.totalPages;
     const prevPage = productAll.prevPage;
@@ -54,17 +44,24 @@ const getAllProducts = async (req, res) => {
     const page = productAll.page;
     const hasPrevPage = productAll.hasPrevPage;
     const hasNextPage = productAll.hasNextPage;
-    const prevLink = productAll.hasPrevPage
-      ? `/product?page=${productAll.prevPage}&limit${productByLimit}`
+    const prevLink = hasPrevPage
+      ? `/api/product?page=${prevPage}&limit${productByLimit}`
       : ``;
-    const nextLink = productAll.hasNextPage
-      ? `/product?page=${productAll.nextPage}&limit${productByLimit}`
+    const nextLink = hasNextPage
+      ? `/api/product?page=${nextPage}&limit${productByLimit}`
       : ``;
-
-    //  res.status(200).json({ status: "success", payload: productAll });
-    res
-      .status(200)
-      .render("products", { status: "success", payload: productAll });
+    res.status(200).json({
+      status: "success",
+      payload,
+      totalPages,
+      prevPage,
+      nextPage,
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevLink,
+      nextLink,
+    });
   } catch (error) {
     res.status(500).send({
       status: "error",
@@ -73,64 +70,31 @@ const getAllProducts = async (req, res) => {
   }
 };
 const getProductById = async (req, res) => {
+  let idProduct = req.params.pid;
   try {
-    let idProduct = req.params.pid;
-    // let productByID = await product.getProductsByID(idProduct);
-    // if (!productByID) {
-    //   res.status(404).send({
-    //     status: "error",
-    //     message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-    //   });
-    // } else {
-    //   res.send({
-    //     status: "succses",
-    //     payload: productByID,
-    //   });
-    // }
     let productByID = await productModel.findById(idProduct).lean().exec();
-    
-    if (!productByID) {
-      return res.status(404).json({
-        status: "error",
-        message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-      });
-    }
-    res.status(200).json({
+
+    if (!productByID) throw new Error();
+
+    return res.status(200).json({
       status: "succses",
       payload: productByID,
     });
   } catch (error) {
-    res.status(500).send({
+    return res.status(404).json({
       status: "error",
-      message: `Error al BUSCAR UN producto por id: ${error}`,
+      message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
     });
   }
 };
+
+// POST: GUARDA LOS DATOS DE REQ.BODY EN LA BASE DE DATOS
 const saveProduct = async (req, res) => {
-  // console.log(req.body.file);
   try {
-    // let { title, description, price, thumbnail, code, stock } = req.body;
-    // let resAddProduct = await product.addProduct(
-    //   title,
-    //   description,
-    //   price,
-    //   (thumbnail = req.files || []),
-    //   code,
-    //   stock
-    // );
     const product = req.body;
     const resAddProduct = await productModel.create(product);
-
     if (resAddProduct !== null) {
-      //   let prodcutAll = await product.getAllProductos();
-      //   console.log(prodcutAll);
-      //   req.io.emit("updateProducts", prodcutAll);
-      //   res.send({
-      //     status: "succses",
-      //     message: `Se agrego correctamente el producto ${title}`,
-      //   });
       const prodcutAll = await productModel.find().lean().exec();
-
       req.io.emit("updateProducts", prodcutAll);
       res.status(201).json({
         status: "succses",
@@ -143,49 +107,46 @@ const saveProduct = async (req, res) => {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: `Error al AGREGAR un producto: ${error}`,
+      message: `Error al AGREGAR un producto: ${error.message}`,
     });
   }
 };
 
 const updateProduct = async (req, res) => {
-  // let idProduct = +req.params.pid;
+  const idProduct = req.params.pid;
+  // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
   try {
-    //   let content = req.body;
-    //   let idProduct = +req.params.pid;
-    //   let productByID = await product.getProductsByID(idProduct);
-    //   if (!productByID) {
-    //     res.status(404).send({
-    //       status: "error",
-    //       message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-    //     });
-    //   } else {
-    //     let resUpdateProduct = await product.updateProduct(idProduct, content);
-    //     if (!resUpdateProduct) {
-    //       let prodcutAll = await product.getAllProductos();
-    //       console.log(prodcutAll);
-    //       req.io.emit("updateProducts", prodcutAll);
-    //       res.send({
-    //         status: "succses",
-    //         message: `Se actualizo correctamente el producto ${idProduct}`,
-    //       });
-    //     } else {
-    //       res
-    //         .status(400)
-    //         .send({ status: "error", message: resUpdateProduct.message });
-    //     }
-    //   }
-    let idProduct = +req.params.pid;
-    const result = await productModel.findByIdAndDelete(idProduct);
-    if (result === null) {
-      res.status(404).json({
-        status: "error",
-        message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-      });
-    }
+    await productModel.findById(idProduct).exec();
+  } catch (error) {
+    return res.status(404).json({
+      status: "error",
+      message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
+    });
+  }
+  // UPDATEONE: ACTUALIZO EL PRODUCTO CON EL ID DE PARAMS
+  try {
+    const dataProductUpdate = req.body;
+    const responseUpdate = await productModel.updateOne(
+      { _id: idProduct },
+      dataProductUpdate
+    );
+    // const responseUpdate = await productModel.findByIdAndUpdate(
+    //   idProduct,
+    //   dataProduct,
+    //   { returnDocument: "after" }
+    // );
+    //acknowledged: SI ES TRUE SE REALIZO LA ACTULIZACION CON EXITO
+    if (responseUpdate.acknowledged === false) throw new Error();
+    //? tambien pude se asi
+    //acknowledged: SI ES FALSE REPONDE CON ERROR
+    // return res.status(404).json({
+    //   status: "error",
+    //   message: `Error algunos campos no son validos`,
+    // });
+    // SI NO HUBO ERROR
     const prodcutAll = await productModel.find().lean().exec();
     req.io.emit("updateProducts", prodcutAll);
-    res.status(200).json({
+    return res.status(200).json({
       status: "succses",
       payload: prodcutAll,
       message: `Se actualizo correctamente el producto ${idProduct}`,
@@ -193,46 +154,24 @@ const updateProduct = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       status: "error",
-      message: `Error al ACTUALIZAR elemento ${idProduct}, ${error}`,
+      message: `Error al ACTUALIZAR elemento ${idProduct}, ${error.message}`,
     });
   }
 };
 const deleteProduct = async (req, res) => {
-  // let idProduct = +req.params.pid;
+  const idProduct = req.params.pid;
+  // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
   try {
-    //   let productByID = await product.getProductsByID(idProduct);
-    //   if (!productByID) {
-    //     res.status(404).send({
-    //       status: "error",
-    //       message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-    //     });
-    //   } else {
-    //     let resDelete = await product.deleteProduct(idProduct);
-    //     if (!resDelete) {
-    //       let prodcutAll = await product.getAllProductos();
-    //       console.log(prodcutAll);
-    //       req.io.emit("updateProducts", prodcutAll);
-    //       res.send({
-    //         status: "succses",
-    //         message: `Se ELIMINO correctamente el producto ${idProduct}`,
-    //       });
-    //     } else {
-    //       res.send({
-    //         status: "Error",
-    //         message: `No se pudo ELIMINAR correctamente el producto ${idProduct}`,
-    //       });
-    //     }
-    //   }
-    let idProduct = req.params.pid;
-    const dataProduct = req.body;
-    const result = await productModel.findByIdAndUpdate(
-      idProduct,
-      dataProduct,
-      { returnDocument: "after" }
-    );
-    if (result === null) {
-      return res.status(404).json({ status: "error", message: "Not Found" });
-    }
+    await productModel.findById(idProduct).exec();
+  } catch (error) {
+    return res.status(404).json({
+      status: "error",
+      message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
+    });
+  }
+
+  try {
+    await productModel.deleteOne({ _id: idProduct });
     const prodcutAll = await productModel.find().lean().exec();
     req.io.emit("updateProducts", prodcutAll);
     res.status(200).json({
@@ -242,7 +181,7 @@ const deleteProduct = async (req, res) => {
   } catch (error) {
     return res.status(500).send({
       status: "error",
-      message: `Error al ELIMINAR prudcto id: ${idProduct}, ${error}`,
+      message: `Error al ELIMINAR prudcto id: ${idProduct}, ${error.message}`,
     });
   }
 };

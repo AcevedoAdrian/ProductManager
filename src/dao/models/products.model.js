@@ -35,9 +35,10 @@ const productSchema = new mongoose.Schema({
     required: false,
   },
 });
-
-
-mongoose.set("strictQuery", false);
+mongoosePaginate.paginate.options = {
+  lean: true,
+};
 productSchema.plugin(mongoosePaginate);
+mongoose.set("strictQuery", false);
 const Products = mongoose.model(productCollection, productSchema);
 export default Products;

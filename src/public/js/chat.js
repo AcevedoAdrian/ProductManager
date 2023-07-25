@@ -19,6 +19,16 @@ Swal.fire({
 chatbox.addEventListener("keyup", (event) => {
   if (event.key === "Enter") {
     if (chatbox.value.trim().length > 0) {
+      const data = { user, message: chatbox.value };
+
+      fetch("/chat", {
+        method: "post",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+
       socket.emit("message", {
         user,
         message: chatbox.value,
@@ -31,6 +41,7 @@ chatbox.addEventListener("keyup", (event) => {
 socket.on("logs", (data) => {
   const divLog = document.getElementById("messageLogs");
   let messages = "";
+  console.log("data");
   data.reverse().forEach((element) => {
     messages += `<p><i>${element.user}</i>: ${element.message}</p>`;
   });

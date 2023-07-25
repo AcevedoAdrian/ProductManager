@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import Products from './products.model.js'
+
+const cartsCollection = "Carts";
 const cartSchema = mongoose.Schema({
   products: {
     type: [
@@ -7,9 +8,9 @@ const cartSchema = mongoose.Schema({
       {
         _id: false,
         product: {
-          product: mongoose.ObjectId,
-          // ref: Products,
-          // required: [true, "Producto Requerido"],
+          // product: mongoose.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Products",
         },
         quantity: Number,
       },
@@ -19,12 +20,12 @@ const cartSchema = mongoose.Schema({
 });
 
 // Middelware que permite hacer el populate cuando hacemos un findOne
-// cartSchema.pre("findOne", function () {
-//   this.populate("products.product");
-// });
+cartSchema.pre("findOne", function () {
+  this.populate("products.product");
+});
 
 mongoose.set("strictQuery", false);
 
-const cartModel = mongoose.model("Carts", cartSchema);
+const cartModel = mongoose.model(cartsCollection, cartSchema);
 
 export default cartModel;

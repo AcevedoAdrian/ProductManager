@@ -1,0 +1,64 @@
+{{#if emptyCart}}
+  <div class="text-center">
+    <h2 class="p-5">{{emptyCart}}</h2>
+  </div>
+{{else}}
+  <div class="" id="">
+        {{#each cart}}
+          <div class="max-w-sm rounded overflow-hidden shadow-lg">
+            
+                <div class="relative mx-4 -mt-6 h-56 overflow-hidden rounded-xl bg-blue-gray-500 bg-clip-border text-white shadow-lg shadow-blue-gray-500/40">
+                  <img src="/img/{{this.product.thumbnails.[0]}}"
+                    alt="{{this.product.title}}" class="img-fluid"
+                  />
+                </div>
+                
+                <div class="p-6">
+                  <h5 class="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                   {{this.product.title}}
+                  </h5>
+                  <p class="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
+                    {{{this.product.description}}}
+                  </p>
+                </div>
+                
+                <div class="">
+
+                  <label class="">Quantity</label>
+                  <input
+                    type="number"
+                    value="{{this.quantity}}"
+                    class=""
+                    readonly
+                  />
+                </div>
+                <div class="">
+                  <h5 class="">${{this.product.price}}</h5>
+                </div>
+                <div class="">
+                  <a href="#!" class=""><i
+                      class=""
+                    ></i></a>
+                </div>
+              
+            
+          </div>
+        {{/each}}
+        <div class="p-6 pt-0">
+            <button
+              class="select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              type="button"
+              data-ripple-light="true"
+              onclick="emptyCart()"
+            >
+            Comprar
+            </button>
+      </div>
+        
+
+    </div>
+  </div>
+{{/if}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/products.js"></script>
