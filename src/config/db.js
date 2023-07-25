@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 
 export const connectDBMongo = async () => {
   try {
-    const db = await mongoose.connect(process.env.DATABASE);
+    const db = await mongoose.connect(
+      `${process.env.DATABASE}${process.env.NAME_DATABASE}`
+    );
     console.log("Base de datos conectada!!");
 
     const url = `${db.connection.host}:${db.connection.port}`;

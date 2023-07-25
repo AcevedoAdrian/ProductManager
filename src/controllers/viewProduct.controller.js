@@ -77,19 +77,17 @@ const viewCartByID = async (req, res) => {
   const idCart = req.params.cid;
   try {
     const cartByID = await cartModel.findById(idCart).lean().exec();
-
-    if (cartByID === null || cartByID.products.length === 0) {
-      const emptyCart = "Cart Empty";
-      // req.app.get("socketio").emit("updatedCarts", cart.products);
-      return res.render("carts", { emptyCart });
+    if (!cartByID) {
+      res.render("cart", { errror: "No hay productos en este carrito" });
     }
-    const cart = cartByID.products;
-    // req.app.get("socketio").emit("updatedCarts", carts);
 
+    const cart = cartByID.products;
     res.render("cart", { cart });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: error });
+    res
+      .status(500)
+      .json({ status: "error", message: "Error no se encotro el producto" });
   }
 };
 
