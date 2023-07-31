@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
   ) {
     return next();
   }
-  return res.status(401).json({ status: 'error', message: 'Usuario no autorizado' });
+  return res.status(403).json({ status: 'error', message: 'Usuario no autorizado' });
 };
 
 export {

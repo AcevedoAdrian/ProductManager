@@ -13,21 +13,27 @@ const renderRegister = (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log({password});
   if (!email || !password) {
     return res
-      .status(400)
-      .json({ status: 'error', error: 'Cambos no validos' });
+      .status(401)
+      .json({ status: "error", error: "Cambos no validos" });
   }
 
   const user = await userModel.findOne({ email });
-  if (isValidPassword(user, password)) {
-    req.session.user = user;
-    console.log(`login: ${req.session.user}`);
-    res.redirect('/products');
-  } else {
-    res.render('auth/login', { error: 'Usuario o Password incorrecto' });
-  }
+  if (!user) {
+    // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
+    res
+      .status(403)
+      .render("auth/login", { error: "Usuario o Password incorrecto" });
+  } 
+  
+  if(!isValidPassword(user, password)) {
+    // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
+    res.status(403).render("auth/login", { error: "Usuario o Password incorrecto" });
+  } 
+  req.session.user = user;
+  res.redirect("/products");
 };
 const register = async (req, res) => {
   try {
@@ -35,13 +41,13 @@ const register = async (req, res) => {
     const { first_name, last_name, age, email, password } = req.body;
     if (!first_name, !last_name, !age, !email, !password) {
       return res
-        .status(400)
+        .status(401)
         .json({ status: 'error', message: 'No se aceptan campos vacios' });
     }
     if (password.length < 4) {
       return res
-        .status(400)
-        .json({ status: 'error', message: 'No se aceptan campos vacios' });
+        .status(401)
+        .json({ status: 'error', message: 'Password muy corto' });
     }
     email === 'admin@coderhouse.com' && password === 'Cod3r123' ? role = 'admin' : role = 'usuario';
     const user = {
@@ -56,7 +62,9 @@ const register = async (req, res) => {
 };
 const logout = (req, res) => {
   req.session.destroy((err) => {
-    if (err) return res.json({ status: 'error', message: 'Ocurrio un error' });
+    if (err){ 
+      return res.status(400).json({ status: 'error', message: 'Ocurrio un error' });
+    }
     return res.json({ status: 'success', message: 'Cookie deleteada!' });
   });
 };

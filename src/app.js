@@ -23,9 +23,11 @@ dotenv.config({ path: '.env' });
 
 // ARCHIVO STATICO
 // app.use(express.static('./src/public'));
-app.use(express.static(__dirname + '/public'));
+// Para manejar json las peticiones
 app.use(express.json());
+// Cuando envias los datos por un formulario de una vista
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'));
 
 // CONEXION A BASE DE DATOS MONGO
 connectDBMongo();
@@ -45,7 +47,7 @@ app.use((req, res, next) => {
 
 // CONFIGURACION PLANTILLAS HANDLEBARS
 app.engine('handlebars', handlebars.engine());
-app.set('views', './src/views');
+app.set("views", __dirname + "/views");
 app.set('view engine', 'handlebars');
 
 // MIDDELWARE SESSION
@@ -55,7 +57,7 @@ app.use(
       mongoUrl: process.env.DATABASE,
       dbName: process.env.NAME_DATABASE,
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      ttl: 15
+      // ttl: 15
     }),
     secret: 'esunsecreto',
     resave: true,
