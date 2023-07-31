@@ -13,11 +13,11 @@ const renderRegister = (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log({password});
+  console.log({ password });
   if (!email || !password) {
     return res
       .status(401)
-      .json({ status: "error", error: "Cambos no validos" });
+      .json({ status: 'error', error: 'Cambos no validos' });
   }
 
   const user = await userModel.findOne({ email });
@@ -25,48 +25,66 @@ const login = async (req, res) => {
     // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
     res
       .status(403)
-      .render("auth/login", { error: "Usuario o Password incorrecto" });
-  } 
-  
-  if(!isValidPassword(user, password)) {
+      .render('auth/login', { error: 'Usuario o Password incorrecto' });
+  }
+
+  if (!isValidPassword(user, password)) {
     // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
-    res.status(403).render("auth/login", { error: "Usuario o Password incorrecto" });
-  } 
+    res.status(403).render('auth/login', { error: 'Usuario o Password incorrecto' });
+  }
   req.session.user = user;
-  res.redirect("/products");
+  res.redirect('/products');
 };
 const register = async (req, res) => {
-  try {
-    let role = '';
-    const { first_name, last_name, age, email, password } = req.body;
-    if (!first_name, !last_name, !age, !email, !password) {
-      return res
-        .status(401)
-        .json({ status: 'error', message: 'No se aceptan campos vacios' });
-    }
-    if (password.length < 4) {
-      return res
-        .status(401)
-        .json({ status: 'error', message: 'Password muy corto' });
-    }
-    email === 'admin@coderhouse.com' && password === 'Cod3r123' ? role = 'admin' : role = 'usuario';
-    const user = {
-      first_name, last_name, age, email, role, password: createHash(password)
-    };
-
-    await userModel.create(user);
-    res.redirect('/auth/login');
-  } catch (error) {
-    return res.status(500).json({ status: 'error', message: `Error al REGISTRAR usuario: ${error.message}` });
-  }
+  res.redirect('/auth/login');
 };
+const renderFeilRegister = (req, res) => {
+  res.send({ error: 'failedd' });
+};
+// const register = async (req, res) => {
+//   try {
+//     let role = "";
+//     const { first_name, last_name, age, email, password } = req.body;
+//     if ((!first_name, !last_name, !age, !email, !password)) {
+//       return res
+//         .status(401)
+//         .json({ status: "error", message: "No se aceptan campos vacios" });
+//     }
+//     if (password.length < 4) {
+//       return res
+//         .status(401)
+//         .json({ status: "error", message: "Password muy corto" });
+//     }
+//     email === "admin@coderhouse.com" && password === "Cod3r123"
+//       ? (role = "admin")
+//       : (role = "usuario");
+//     const user = {
+//       first_name,
+//       last_name,
+//       age,
+//       email,
+//       role,
+//       password: createHash(password),
+//     };
+
+//     await userModel.create(user);
+//     res.redirect("/auth/login");
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({
+//         status: "error",
+//         message: `Error al REGISTRAR usuario: ${error.message}`,
+//       });
+//   }
+// };
 const logout = (req, res) => {
   req.session.destroy((err) => {
-    if (err){ 
+    if (err) {
       return res.status(400).json({ status: 'error', message: 'Ocurrio un error' });
     }
     return res.json({ status: 'success', message: 'Cookie deleteada!' });
   });
 };
 
-export { renderLogin, renderError, renderRegister, login, register, logout };
+export { renderLogin, renderError, renderRegister, login, register, logout, renderFeilRegister };

@@ -38,7 +38,6 @@ const renderAllProducts = async (req, res) => {
       optionsLimit
     );
     const user = req.session.user;
-    console.log(user);
     res.render('products', { productsAll, user });
   } catch (error) {
     res.status(500).send({

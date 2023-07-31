@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import { createServer } from 'node:http';
+import passport from 'passport';
 // PROPIOS
 import { connectDBMongo } from './config/db.js';
 import productsRouter from './routes/product.routes.js';
@@ -14,9 +15,9 @@ import chatRouter from './routes/chat.routes.js';
 import viewProductsRouter from './routes/viewProductsRouter.routes.js';
 import users from './routes/users.routes.js';
 import __dirname from './utils.js';
+import initializePassport from './config/passport.config.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
-const PORT = 8000;
 
 // VARIABLE DE ENTORNOS
 dotenv.config({ path: '.env' });
@@ -47,7 +48,7 @@ app.use((req, res, next) => {
 
 // CONFIGURACION PLANTILLAS HANDLEBARS
 app.engine('handlebars', handlebars.engine());
-app.set("views", __dirname + "/views");
+app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
 // MIDDELWARE SESSION
@@ -56,7 +57,7 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.DATABASE,
       dbName: process.env.NAME_DATABASE,
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true }
       // ttl: 15
     }),
     secret: 'esunsecreto',
@@ -64,6 +65,9 @@ app.use(
     saveUninitialized: true
   })
 );
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // RUTAS
 app.get('/', (req, res) => res.render('index'));
@@ -73,7 +77,6 @@ app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
 app.use('/', viewProductsRouter);
-
 app.use((req, res) => {
   if (req.headers === 'application-json') {
     res.status(404).json({ status: 'error', messages: '4004' });
@@ -81,8 +84,8 @@ app.use((req, res) => {
   res.status(404).render('errors/erros', { error: '404' });
 });
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER CON SOCKET IO
-httpServer.listen(PORT | 8000, () => {
-  console.log(`Servidor up en el puerto: ${PORT}`);
+httpServer.listen(process.env.PORT || 8000, () => {
+  console.log(`Servidor up en el puerto: ${process.env.PORT}`);
 });
 
 const messages = [];
