@@ -4,7 +4,7 @@
   <div >
     <div >
       <form
-        action="/users/register"
+        action="/auth/register"
         method="post"
       
       >
@@ -25,6 +25,16 @@
             class="form-control"
             name="last_name"
             id="last_name"
+            required
+          />
+        </div>
+        <div >
+          <label for="age" >Edad:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="age"
+            id="age"
             required
           />
         </div>
@@ -52,7 +62,6 @@
         <div >
           <button
             type="submit"
-           
           >Crear Cuenta</button>
         </div>
       </form>

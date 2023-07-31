@@ -2,9 +2,11 @@ import mongoose from "mongoose";
 
 export const connectDBMongo = async () => {
   try {
-    const db = await mongoose.connect(
-      `${process.env.DATABASE}${process.env.NAME_DATABASE}`
-    );
+    mongoose.set("strictQuery", false);
+    const db = await mongoose.connect(process.env.DATABASE, {
+      dbName: process.env.NAME_DATABASE,
+      useUnifiedTopology: true,
+    });
     console.log("Base de datos conectada!!");
 
     const url = `${db.connection.host}:${db.connection.port}`;

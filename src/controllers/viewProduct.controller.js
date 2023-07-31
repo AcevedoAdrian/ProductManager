@@ -1,6 +1,6 @@
 // import ProductManager from "../dao/fileManager/ProductManager.js";
-import productModel from "../dao/models/products.model.js";
-import cartModel from "../dao/models/carts.model.js";
+import productModel from '../dao/models/products.model.js';
+import cartModel from '../dao/models/carts.model.js';
 
 // const productManager = new ProductManager("./ProductManager.json");
 
@@ -9,20 +9,20 @@ const renderAllProducts = async (req, res) => {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
     const productByLimit = +req.query.limit || 10;
     const productByPage = +req.query.page || 1;
-    const productAvailability = +req.query.stock || "";
-    const productBySort = req.query.sort ?? "asc";
-    const productByCategory = req.query.category || "";
+    const productAvailability = +req.query.stock || '';
+    const productBySort = req.query.sort ?? 'asc';
+    const productByCategory = req.query.category || '';
 
     let productFilter = {};
     if (req.query.category) {
       productFilter = { category: productByCategory };
     }
     if (req.query.stock) {
-      productFilter = { ...filter, stock: productAvailability };
+      productFilter = { ...productFilter, stock: productAvailability };
     }
     // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC
     let optionsPrice = {};
-    if (productBySort === "desc") {
+    if (productBySort === 'desc') {
       optionsPrice = { price: -1 };
     } else {
       optionsPrice = { price: 1 };
@@ -31,18 +31,18 @@ const renderAllProducts = async (req, res) => {
     const optionsLimit = {
       limit: productByLimit,
       page: productByPage,
-      sort: optionsPrice,
+      sort: optionsPrice
     };
     const productsAll = await productModel.paginate(
       productFilter,
       optionsLimit
     );
 
-    res.render("products", { productsAll });
+    res.render('products', { productsAll });
   } catch (error) {
     res.status(500).send({
-      status: "error",
-      message: `Error al RETORNAR LISTA de productos: ${error.message}`,
+      status: 'error',
+      message: `Error al RETORNAR LISTA de productos: ${error.message}`
     });
   }
 };
@@ -50,9 +50,9 @@ const renderAllProducts = async (req, res) => {
 const renderRealTimeAllProducts = async (req, res) => {
   try {
     const products = await productModel.find().lean().exec();
-    res.render("realTimeProducts", { products });
+    res.render('realTimeProducts', { products });
   } catch (error) {
-    res.status(500).json({ status: "error", error: error.message });
+    res.status(500).json({ status: 'error', error: error.message });
   }
 };
 
@@ -64,12 +64,12 @@ const viewProductById = async (req, res) => {
     if (productByID === null) {
       return res
         .status(404)
-        .json({ status: "error", message: `El producto no existe` });
+        .json({ status: 'error', message: 'El producto no existe' });
     }
-    res.render("product", { productByID });
+    res.render('product', { productByID });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: "error", error: error.message });
+    res.status(500).json({ status: 'error', error: error.message });
   }
 };
 
@@ -77,17 +77,18 @@ const viewCartByID = async (req, res) => {
   const idCart = req.params.cid;
   try {
     const cartByID = await cartModel.findById(idCart).lean().exec();
+    console.log(!cartByID);
     if (!cartByID) {
-      res.render("cart", { errror: "No hay productos en este carrito" });
+      return res.render('cart', { errror: 'No hay productos en este carrito' });
     }
 
     const cart = cartByID.products;
-    res.render("cart", { cart });
+    res.render('cart', { cart });
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ status: "error", message: "Error no se encotro el producto" });
+      .json({ status: 'error', message: 'Error no se encotro el producto' });
   }
 };
 
@@ -95,5 +96,5 @@ export {
   renderAllProducts,
   renderRealTimeAllProducts,
   viewProductById,
-  viewCartByID,
+  viewCartByID
 };

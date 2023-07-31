@@ -1,6 +1,6 @@
 // import ProductManager from "../services/ProductManager.js";
 // const product = new ProductManager("ProductManager.json");
-import productModel from "../dao/models/products.model.js";
+import productModel from '../dao/models/products.model.js';
 
 const getAllProducts = async (req, res) => {
   // NUEVA IMPLEMNTACION
@@ -8,20 +8,20 @@ const getAllProducts = async (req, res) => {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
     const productByLimit = +req.query.limit || 10;
     const productByPage = +req.query.page || 1;
-    const productAvailability = +req.query.stock || "";
-    const productBySort = req.query.sort ?? "asc";
-    const productByCategory = req.query.category || "";
+    const productAvailability = +req.query.stock || '';
+    const productBySort = req.query.sort ?? 'asc';
+    const productByCategory = req.query.category || '';
 
     let productFilter = {};
     if (req.query.category) {
       productFilter = { category: productByCategory };
     }
     if (req.query.stock) {
-      productFilter = { ...filter, stock: productAvailability };
+      productFilter = { ...productFilter, stock: productAvailability };
     }
     // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC
     let optionsPrice = {};
-    if (productBySort === "desc") {
+    if (productBySort === 'desc') {
       optionsPrice = { price: -1 };
     } else {
       optionsPrice = { price: 1 };
@@ -30,12 +30,9 @@ const getAllProducts = async (req, res) => {
     const optionsLimit = {
       limit: productByLimit,
       page: productByPage,
-      sort: optionsPrice,
+      sort: optionsPrice
     };
-    console.log(optionsLimit);
-    console.log(productFilter);
     const productAll = await productModel.paginate(productFilter, optionsLimit);
-    console.log(productAll);
 
     const payload = productAll.docs;
     const totalPages = productAll.totalPages;
@@ -46,12 +43,12 @@ const getAllProducts = async (req, res) => {
     const hasNextPage = productAll.hasNextPage;
     const prevLink = hasPrevPage
       ? `/api/product?page=${prevPage}&limit${productByLimit}`
-      : ``;
+      : '';
     const nextLink = hasNextPage
       ? `/api/product?page=${nextPage}&limit${productByLimit}`
-      : ``;
+      : '';
     res.status(200).json({
-      status: "success",
+      status: 'success',
       payload,
       totalPages,
       prevPage,
@@ -60,30 +57,36 @@ const getAllProducts = async (req, res) => {
       hasPrevPage,
       hasNextPage,
       prevLink,
-      nextLink,
+      nextLink
     });
   } catch (error) {
     res.status(500).send({
-      status: "error",
-      message: `Error al RETORNAR LISTA de productos: ${error.message}`,
+      status: 'error',
+      message: `Error al RETORNAR LISTA de productos: ${error.reason} ${error.message}`
     });
   }
 };
 const getProductById = async (req, res) => {
-  let idProduct = req.params.pid;
   try {
-    let productByID = await productModel.findById(idProduct).lean().exec();
+    const idProduct = req.params.pid;
+    const productByID = await productModel.findById(idProduct).lean().exec();
+    console.log(productByID);
 
-    if (!productByID) throw new Error();
+    if (!productByID) {
+      return res.status(404).json({
+        status: 'error',
+        message: `Not Found: No se encontro prudcto con el id ${idProduct}`
+      });
+    }
 
     return res.status(200).json({
-      status: "succses",
-      payload: productByID,
+      status: 'succses',
+      payload: productByID
     });
   } catch (error) {
-    return res.status(404).json({
-      status: "error",
-      message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
+    return res.status(500).json({
+      status: 'error',
+      message: `Error al procesar getProductById: ${error.reason}  ${error.message}`
     });
   }
 };
@@ -91,97 +94,117 @@ const getProductById = async (req, res) => {
 // POST: GUARDA LOS DATOS DE REQ.BODY EN LA BASE DE DATOS
 const saveProduct = async (req, res) => {
   try {
-    const product = req.body;
+    const {
+      title,
+      description,
+      price,
+      code,
+      stock,
+      category
+    } = req.body;
+
+    if (!title || !description || !price || !code || !stock || !category) {
+      return res.status(400).send({ status: 'error', message: 'Error al AGREGAR un producto: No se aceptan campos vacios' });
+    }
+    const product = { title, description, price, code, stock, category };
+
     const resAddProduct = await productModel.create(product);
     if (resAddProduct !== null) {
       const prodcutAll = await productModel.find().lean().exec();
-      req.io.emit("updateProducts", prodcutAll);
-      res.status(201).json({
-        status: "succses",
+      req.io.emit('updateProducts', prodcutAll);
+      res.status(200).json({
+        status: 'succses',
         payload: prodcutAll,
-        message: `Se agrego correctamente el producto ${product.title}`,
+        message: `Se agrego correctamente el producto ${product.title}`
       });
     } else {
-      res.status(400).send({ status: "error", message: resAddProduct.message });
+      res.status(400).send({ status: 'error', message: `Error al AGREGAR un producto: ${{ resAddProduct }} ` });
     }
   } catch (error) {
     res.status(500).send({
-      status: "error",
-      message: `Error al AGREGAR un producto: ${error.message}`,
+      status: 'error',
+      message: `Error al AGREGAR un producto: ${error.reason} ${error.message}`
     });
   }
 };
 
 const updateProduct = async (req, res) => {
-  const idProduct = req.params.pid;
-  // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
   try {
-    await productModel.findById(idProduct).exec();
-  } catch (error) {
-    return res.status(404).json({
-      status: "error",
-      message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-    });
-  }
-  // UPDATEONE: ACTUALIZO EL PRODUCTO CON EL ID DE PARAMS
-  try {
+    // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
+    const idProduct = req.params.pid;
+    const productByID = await productModel.findById(idProduct).exec();
+    if (!productByID) {
+      return res.status(404).json({
+        status: 'error',
+        message: `Not Found: No se encontro prudcto con el id ${idProduct}`
+      });
+    }
+
+    // UPDATEONE: ACTUALIZO EL PRODUCTO CON EL ID DE PARAMS
     const dataProductUpdate = req.body;
-    const responseUpdate = await productModel.updateOne(
-      { _id: idProduct },
-      dataProductUpdate
-    );
-    // const responseUpdate = await productModel.findByIdAndUpdate(
-    //   idProduct,
-    //   dataProduct,
-    //   { returnDocument: "after" }
+    // const responseUpdate = await productModel.updateOne(
+    //   { _id: idProduct },
+    //   dataProductUpdate
     // );
-    //acknowledged: SI ES TRUE SE REALIZO LA ACTULIZACION CON EXITO
-    if (responseUpdate.acknowledged === false) throw new Error();
-    //? tambien pude se asi
-    //acknowledged: SI ES FALSE REPONDE CON ERROR
-    // return res.status(404).json({
-    //   status: "error",
-    //   message: `Error algunos campos no son validos`,
-    // });
+    const responseUpdate = await productModel.findByIdAndUpdate(
+      idProduct,
+      dataProductUpdate,
+      { returnDocument: 'after' }
+    );
+    console.log(responseUpdate);
+    if (!responseUpdate) {
+      return res.status(404).json({
+        status: 'error',
+        message: `Error al ACTUALIZAR el producto ${idProduct} algunos campos no son validos`
+      });
+    }
     // SI NO HUBO ERROR
     const prodcutAll = await productModel.find().lean().exec();
-    req.io.emit("updateProducts", prodcutAll);
+    req.io.emit('updateProducts', prodcutAll);
     return res.status(200).json({
-      status: "succses",
-      payload: prodcutAll,
-      message: `Se actualizo correctamente el producto ${idProduct}`,
+      status: 'succses',
+      payload: responseUpdate,
+      message: `Se actualizo correctamente el producto ${idProduct}`
     });
   } catch (error) {
     return res.status(500).json({
-      status: "error",
-      message: `Error al ACTUALIZAR elemento ${idProduct}, ${error.message}`,
+      status: 'error',
+      message: `Error al ACTUALIZAR un producto:${error.reason}  ${error.message}`
     });
   }
 };
 const deleteProduct = async (req, res) => {
-  const idProduct = req.params.pid;
-  // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
   try {
-    await productModel.findById(idProduct).exec();
-  } catch (error) {
-    return res.status(404).json({
-      status: "error",
-      message: `Not Found: No se encontro prudcto con el id ${idProduct}`,
-    });
-  }
+    // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
+    const idProduct = req.params.pid;
+    const productByID = await productModel.findById(idProduct).exec();
+    console.log(productByID);
+    if (!productByID) {
+      return res.status(404).json({
+        status: 'error',
+        message: `Not Found: No se encontro prudcto con el id ${idProduct}`
+      });
+    }
 
-  try {
-    await productModel.deleteOne({ _id: idProduct });
+    const productDelete = await productModel.deleteOne({ _id: idProduct });
+    console.log(productDelete);
+    if (!productDelete) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Error: No se puedo ELIMINAR el producto con el id ${idProduct}`
+      });
+    }
     const prodcutAll = await productModel.find().lean().exec();
-    req.io.emit("updateProducts", prodcutAll);
+    req.io.emit('updateProducts', prodcutAll);
     res.status(200).json({
-      status: "succses",
-      message: `Se ELIMINO correctamente el producto ${idProduct}`,
+      status: 'succses',
+      message: `Se ELIMINO correctamente el producto ${idProduct}`
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).send({
-      status: "error",
-      message: `Error al ELIMINAR prudcto id: ${idProduct}, ${error.message}`,
+      status: 'error',
+      message: `Error al ELIMINAR prudcto ${error.reason} ${error.message}`
     });
   }
 };
@@ -191,5 +214,5 @@ export {
   getProductById,
   saveProduct,
   updateProduct,
-  deleteProduct,
+  deleteProduct
 };
