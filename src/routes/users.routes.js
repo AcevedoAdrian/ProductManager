@@ -8,7 +8,9 @@ import {
   renderError,
   renderRegister,
   renderFeilRegister,
-  renderFeilLogin
+  renderFeilLogin,
+  github,
+  githubcallback
 } from '../controllers/user.controller.js';
 
 const router = Router();
@@ -21,10 +23,12 @@ router.get('/failLogin', renderFeilLogin);
 
 router.get('/logout', logout);
 router.post('/login', passport.authenticate('login', {
-  failureRedirect: 'auth/failLogin'
+  failureRedirect: '/auth/failLogin'
 }), login);
 router.post('/register', passport.authenticate('register', {
-  failureRedirect: 'auth/failRegister'
+  failureRedirect: '/auth/feilRegister'
 }), register);
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), github);
+router.get('githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), githubcallback);
 
 export default router;

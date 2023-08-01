@@ -1,5 +1,3 @@
-import { userModel } from '../dao/models/users.model.js';
-import { createHash, isValidPassword } from '../utils.js';
 
 const renderLogin = (req, res) => {
   res.render('auth/login');
@@ -15,15 +13,24 @@ const login = async (req, res) => {
   res.redirect('/products');
 };
 const register = async (req, res) => {
+  console.log(req);
+  console.log(req.message);
   res.redirect('/auth/login');
 };
 const renderFeilRegister = (req, res) => {
   res.send({ error: 'failedd' });
 };
 const renderFeilLogin = (req, res) => {
-  res.send({ error: 'failedd' });
+  console.log(req.error);
+  res.json({ error: 'failedd' });
 };
-
+const github = (req, res) => {
+  console.log('Hola');
+};
+const githubcallback = (req, res) => {
+  req.sesion.user = req.user;
+  res.redirect('/products');
+};
 // const login = async (req, res) => {
 //   const { email, password } = req.body;
 //   console.log({ password });
@@ -51,7 +58,6 @@ const renderFeilLogin = (req, res) => {
 
 // const register = async (req, res) => {
 //   try {
-//     let role = "";
 //     const { first_name, last_name, age, email, password } = req.body;
 //     if ((!first_name, !last_name, !age, !email, !password)) {
 //       return res
@@ -103,5 +109,7 @@ export {
   register,
   logout,
   renderFeilRegister,
-  renderFeilLogin
+  renderFeilLogin,
+  github,
+  githubcallback
 };

@@ -60,7 +60,7 @@ app.use(
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true }
       // ttl: 15
     }),
-    secret: 'esunsecreto',
+    secret: process.env.SECRET_SESSION,
     resave: true,
     saveUninitialized: true
   })
