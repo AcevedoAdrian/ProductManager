@@ -12,27 +12,6 @@ const renderRegister = (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
-  console.log({ password });
-  if (!email || !password) {
-    return res
-      .status(401)
-      .json({ status: 'error', error: 'Cambos no validos' });
-  }
-
-  const user = await userModel.findOne({ email });
-  if (!user) {
-    // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
-    res
-      .status(403)
-      .render('auth/login', { error: 'Usuario o Password incorrecto' });
-  }
-
-  if (!isValidPassword(user, password)) {
-    // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
-    res.status(403).render('auth/login', { error: 'Usuario o Password incorrecto' });
-  }
-  req.session.user = user;
   res.redirect('/products');
 };
 const register = async (req, res) => {
@@ -41,6 +20,35 @@ const register = async (req, res) => {
 const renderFeilRegister = (req, res) => {
   res.send({ error: 'failedd' });
 };
+const renderFeilLogin = (req, res) => {
+  res.send({ error: 'failedd' });
+};
+
+// const login = async (req, res) => {
+//   const { email, password } = req.body;
+//   console.log({ password });
+//   if (!email || !password) {
+//     return res
+//       .status(401)
+//       .json({ status: 'error', error: 'Cambos no validos' });
+//   }
+
+//   const user = await userModel.findOne({ email });
+//   if (!user) {
+//     // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
+//     res
+//       .status(403)
+//       .render('auth/login', { error: 'Usuario o Password incorrecto' });
+//   }
+
+//   if (!isValidPassword(user, password)) {
+//     // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
+//     res.status(403).render('auth/login', { error: 'Usuario o Password incorrecto' });
+//   }
+//   req.session.user = user;
+//   res.redirect('/products');
+// };
+
 // const register = async (req, res) => {
 //   try {
 //     let role = "";
@@ -87,4 +95,13 @@ const logout = (req, res) => {
   });
 };
 
-export { renderLogin, renderError, renderRegister, login, register, logout, renderFeilRegister };
+export {
+  renderLogin,
+  renderError,
+  renderRegister,
+  login,
+  register,
+  logout,
+  renderFeilRegister,
+  renderFeilLogin
+};
