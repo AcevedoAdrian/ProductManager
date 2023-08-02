@@ -13,13 +13,16 @@ const initializePassport = () => {
     const { first_name, last_name, age, email } = req.body;
     try {
       if ((!first_name, !last_name, !age, !email, !password)) {
+        console.log('Campos vacios');
         done(null, false);
       }
       if (password.length < 4) {
+        console.log('Password corto');
         done(null, false);
       }
       const user = await userModel.findOne({ email: username });
       if (user) {
+        console.log('User ya existe');
         done(null, false);
       }
       const role = email === 'admin@coderhouse.com' && password === 'Cod3r123'
@@ -37,7 +40,7 @@ const initializePassport = () => {
       const result = await userModel.create(newUser);
       return done(null, result);
     } catch (error) {
-      return done('error al obtner el user');
+      return done('Error al loguear un usuario');
     }
   }));
 
@@ -48,14 +51,17 @@ const initializePassport = () => {
     try {
       const user = await userModel.findOne({ email: username });
       if (!user) {
+        console.log('usuario no existe');
         return done(null, false);
       }
       if (!isValidPassword(user, password)) {
-        return done(null, false, { error: 'usuario o password incorrecto' });
+        console.log('password icorrecto');
+        return done(null, false);
       }
+
       return done(null, user);
     } catch (error) {
-      return done('error al obtner el user');
+      return done('Error al obtner al loguear');
     }
   }));
 
@@ -65,18 +71,20 @@ const initializePassport = () => {
     callbackURL: process.env.GITHUB_CALLBACK_URL
   }, async (accessToken, refreshToken, profile, done) => {
     try {
+      console.log(profile._json.email);
       const user = await userModel.findOne({ email: profile._json.email });
       if (user) return done(null, user);
       const newUser = await userModel.create({
         first_name: profile._json.name,
         last_name: ' ',
-        email: profile._json.mail,
+        email: profile._json.email,
+        age: 0,
         password: ' ',
-        role: 'usuario'
+        role: 'user'
       });
       return done(null, newUser);
-    } catch (error) {
-      return done('Error al loguear usuario');
+    } catch (err) {
+      return done(`Error to login with GitHub => ${err.message}`);
     }
   }));
 

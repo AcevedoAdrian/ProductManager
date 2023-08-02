@@ -77,12 +77,12 @@ app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
 app.use('/', viewProductsRouter);
-app.use((req, res) => {
-  if (req.headers === 'application-json') {
-    res.status(404).json({ status: 'error', messages: '4004' });
-  }
-  res.status(404).render('errors/erros', { error: '404' });
-});
+// app.use((req, res) => {
+//   if (req.headers === 'application-json') {
+//     res.status(404).json({ status: 'error', messages: '4004' });
+//   }
+//   res.status(404).render('errors/erros', { error: '404' });
+// });
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER CON SOCKET IO
 httpServer.listen(process.env.PORT || 8000, () => {
   console.log(`Servidor up en el puerto: ${process.env.PORT}`);

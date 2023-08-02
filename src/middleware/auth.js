@@ -1,8 +1,6 @@
 const auth = (req, res, next) => {
-  console.log(`middlewares: ${req.session.user}`);
   if (
-    req.session?.user &&
-    req.session.user.email === 'admin@coderhouse.com'
+    req.session?.passport?.user
   ) {
     return next();
   }

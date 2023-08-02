@@ -2,34 +2,44 @@
 const renderLogin = (req, res) => {
   res.render('auth/login');
 };
-const renderError = (req, res) => {
-  res.render('errors/errorPage');
-};
+
 const renderRegister = (req, res) => {
   res.render('auth/register');
 };
 
-const login = async (req, res) => {
-  res.redirect('/products');
+const renderFeilRegister = (req, res) => {
+  res.status(401).json({ status: 'error', message: 'Error al registrar usuario' });
 };
+const renderFeilLogin = (req, res) => {
+  res.status(401).json({ status: 'error', message: 'Error al loguear' });
+};
+
 const register = async (req, res) => {
   console.log(req);
   console.log(req.message);
   res.redirect('/auth/login');
 };
-const renderFeilRegister = (req, res) => {
-  res.send({ error: 'failedd' });
+const login = async (req, res) => {
+  res.redirect('/products');
 };
-const renderFeilLogin = (req, res) => {
-  console.log(req.error);
-  res.json({ error: 'failedd' });
-};
+
 const github = (req, res) => {
   console.log('Hola');
 };
 const githubcallback = (req, res) => {
   req.sesion.user = req.user;
   res.redirect('/products');
+};
+const logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ status: 'error', message: 'Ocurrio un error' });
+    }
+    res.redirect('/auth/login');
+  });
+};
+const renderError = (req, res) => {
+  res.render('errors/errorPage');
 };
 // const login = async (req, res) => {
 //   const { email, password } = req.body;
@@ -92,14 +102,6 @@ const githubcallback = (req, res) => {
 //       });
 //   }
 // };
-const logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(400).json({ status: 'error', message: 'Ocurrio un error' });
-    }
-    return res.json({ status: 'success', message: 'Cookie deleteada!' });
-  });
-};
 
 export {
   renderLogin,
