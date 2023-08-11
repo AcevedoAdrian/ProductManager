@@ -52,22 +52,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
 // MIDDELWARE SESSION
-app.use(
-  session({
-    store: MongoStore.create({
-      mongoUrl: process.env.DATABASE,
-      dbName: process.env.NAME_DATABASE,
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true }
-      // ttl: 15
-    }),
-    secret: process.env.SECRET_SESSION,
-    resave: true,
-    saveUninitialized: true
-  })
-);
+
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 // RUTAS
 app.get('/', (req, res) => res.render('index'));

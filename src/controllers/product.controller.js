@@ -94,6 +94,7 @@ const getProductById = async (req, res) => {
 // POST: GUARDA LOS DATOS DE REQ.BODY EN LA BASE DE DATOS
 const saveProduct = async (req, res) => {
   try {
+    let thumbnail = [];
     const {
       title,
       description,
@@ -106,7 +107,10 @@ const saveProduct = async (req, res) => {
     if (!title || !description || !price || !code || !stock || !category) {
       return res.status(400).send({ status: 'error', message: 'Error al AGREGAR un producto: No se aceptan campos vacios' });
     }
-    const product = { title, description, price, code, stock, category };
+    if (req.files) {
+      thumbnail = req.files.map(file => file.filename);
+    }
+    const product = { title, description, price, code, stock, category, thumbnail };
 
     const resAddProduct = await productModel.create(product);
     if (resAddProduct !== null) {

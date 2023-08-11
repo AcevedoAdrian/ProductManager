@@ -5,11 +5,12 @@ import {
   viewProductById,
   viewCartByID
 } from '../controllers/viewProduct.controller.js';
-import { auth } from '../middleware/auth.js';
+import { passportCallCurrent } from '../middleware/passportCallCurrent.js';
+import { authorization } from '../middleware/authorization.js';
 const router = Router();
 
-router.get('/products', auth, renderAllProducts);
-router.get('/realTimeProducts', renderRealTimeAllProducts);
+router.get('/products', renderAllProducts);
+router.get('/realTimeProducts', passportCallCurrent('current'), authorization('admin'), renderRealTimeAllProducts);
 router.get('/product/:pid', viewProductById);
 router.get('/carts/:cid', viewCartByID);
 

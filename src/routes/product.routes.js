@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { uploader } from '../utils.js';
+import uploadMiddleware from '../middleware/multer.js';
 import {
   getAllProducts,
   getProductById,
@@ -11,7 +11,7 @@ import {
 const router = Router();
 router.get('/', getAllProducts);
 router.get('/:pid', getProductById);
-router.post('/', uploader.array('file'), saveProduct);
+router.post('/', uploadMiddleware, saveProduct);
 router.put('/:pid', updateProduct);
 router.delete('/:pid', deleteProduct);
 export default router;
