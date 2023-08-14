@@ -3,19 +3,19 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import { Server as WebSocketServer } from 'socket.io';
 import dotenv from 'dotenv';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
+import cookieParser from 'cookie-parser';
 import { createServer } from 'node:http';
 import passport from 'passport';
 // PROPIOS
 import { connectDBMongo } from './config/db.js';
-import productsRouter from './routes/product.routes.js';
-import cartRouter from './routes/cart.routes.js';
+import __dirname from './utils.js';
+import initializePassport from './config/passport.config.js';
+// RUTAS
+import productsRouter from './routes/products.routes.js';
+import cartRouter from './routes/carts.routes.js';
 import chatRouter from './routes/chat.routes.js';
 import viewProductsRouter from './routes/viewProductsRouter.routes.js';
 import users from './routes/users.routes.js';
-import __dirname from './utils.js';
-import initializePassport from './config/passport.config.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 
@@ -52,15 +52,14 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
 // MIDDELWARE SESSION
-
+app.use(cookieParser(process.env.COOKIE_PRIVATE_KEY));
 initializePassport();
 app.use(passport.initialize());
 // app.use(passport.session());
 
 // RUTAS
 app.get('/', (req, res) => res.render('index'));
-
-app.use('/auth', users);
+app.use('/sessions', users);
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);

@@ -1,23 +1,16 @@
-import { Router } from 'express';
 import passport from 'passport';
+import { Router } from 'express';
 import { renderRegister, renderLogin } from '../controllers/user.controller.js';
-// import { passportCall } from '../middelware/passportCall.js'
 import { authorization } from '../middleware/authorization.js';
 import { passportCallCurrent } from '../middleware/passportCallCurrent.js';
+
 const router = Router();
 
 router.get('/register', renderRegister);
 router.post('/register',
-  // passport.authenticate(
-  //   'register',
-  //   {
-  //     session: false,
-  //     failureRedirect: '/failregister'
-  //   }
-  // ),
   passportCallCurrent('register'),
   async (req, res, next) => (
-    res.redirect('/login')
+    res.redirect('/sessions/login')
   ));
 router.get('/failregister', async (req, res) => {
   console.log('Failed Register Strategi');
@@ -26,13 +19,6 @@ router.get('/failregister', async (req, res) => {
 
 router.get('/login', renderLogin);
 router.post('/login',
-  // passport.authenticate(
-  //   'login',
-  //   {
-  //     session: false,
-  //     failureRedirect: 'faillogin'
-  //   }
-  // ),
   passportCallCurrent('login'),
   async (req, res, next) => {
     if (!req.user) {
@@ -47,15 +33,16 @@ router.post('/login',
         // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
       }
     )
-      .redirect('/api/sessions/current');
+      .redirect('/sessions/current');
     // res.send({ status: 'success', payload: req.user });
   });
 
-router.get('/faillogin', async (req, res) => {
-  console.log(req._passport);
-  console.log('Failed Register Strategi');
-  res.json({ satatus: 'error', message: '/failed' });
-});
+router.get('/faillogin',
+  async (req, res) => {
+    console.log(req._passport);
+    console.log('Failed Register Strategi');
+    res.json({ satatus: 'error', message: '/failed' });
+  });
 
 // Cerrar Session
 router.get('/logout', (req, res) => {
@@ -92,7 +79,7 @@ router.get('/githubcallback',
         // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
       }
     )
-      .redirect('/api/sessions/current');
+      .redirect('/sessions/current');
     // req.session.user = req.user;
     // console.log('User session: ', req.session.user);
     // res.redirect('/');

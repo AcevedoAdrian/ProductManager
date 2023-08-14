@@ -8,7 +8,7 @@
   {{/if}}
     <div class=" mt-8 mx-auto max-w-md" >
       <div class="bg-white py-8 px-4 shadow">
-      <form class="space-y-5" action="/auth/login" method="post" >
+      <form class="space-y-5" action="/sessions/login" method="post" >
         <div >
           <label for="email" >Email:</label>
           <input type="email"  name="email" id="email" placeholder="Tu Email" required>
@@ -19,7 +19,7 @@
           
         </div>
         <div class="flex item-center justify-between "> 
-           <a class="text-gray-500 text-xs" href="/auth/github">Logeate con github</a>
+           <a class="text-gray-500 text-xs" href="/sessions/github">Logeate con github</a>
           </div>
         <div >
           <input class=" w-full bg-teal-600 text-white font-bold py-3 cursor-pointer hover:bg-teal-700" type="submit" value="Iniciar Sesión") >

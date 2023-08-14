@@ -39,6 +39,10 @@ const initializePassport = () => {
             console.log('User already exits');
             return done(null, false, { message: 'Usuario ya existe' });
           }
+          let role;
+          email === 'admin@coderhouse.com' && password === 'Cod3r123'
+            ? (role = 'admin')
+            : (role = 'user');
 
           const newUser = {
             first_name,
@@ -46,7 +50,7 @@ const initializePassport = () => {
             email,
             age,
             password,
-            role: email === 'admin@gmail.com' ? 'admin' : 'user'
+            role
           };
           const userCreater = await userModel.create(newUser);
           // console.log(`log ${userCreater}`);

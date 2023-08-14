@@ -1,10 +1,10 @@
 
 const renderLogin = (req, res) => {
-  res.render('auth/login');
+  res.render('sessions/login');
 };
 
 const renderRegister = (req, res) => {
-  res.render('auth/register');
+  res.render('sessions/register');
 };
 
 const renderFeilRegister = (req, res) => {
@@ -17,7 +17,7 @@ const renderFeilLogin = (req, res) => {
 const register = async (req, res) => {
   console.log(req);
   console.log(req.message);
-  res.redirect('/auth/login');
+  res.redirect('/sessions/login');
 };
 const login = async (req, res) => {
   res.redirect('/products');
@@ -35,7 +35,7 @@ const logout = (req, res) => {
     if (err) {
       return res.status(500).json({ status: 'error', message: 'Ocurrio un error' });
     }
-    res.redirect('/auth/login');
+    res.redirect('/sessions/login');
   });
 };
 const renderError = (req, res) => {
@@ -52,15 +52,15 @@ const renderError = (req, res) => {
 
 //   const user = await userModel.findOne({ email });
 //   if (!user) {
-//     // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
+//     // res.render('sessions/login', { error: 'Usuario o Password incorrecto' });
 //     res
 //       .status(403)
-//       .render('auth/login', { error: 'Usuario o Password incorrecto' });
+//       .render('sessions/login', { error: 'Usuario o Password incorrecto' });
 //   }
 
 //   if (!isValidPassword(user, password)) {
-//     // res.render('auth/login', { error: 'Usuario o Password incorrecto' });
-//     res.status(403).render('auth/login', { error: 'Usuario o Password incorrecto' });
+//     // res.render('sessions/login', { error: 'Usuario o Password incorrecto' });
+//     res.status(403).render('sessions/login', { error: 'Usuario o Password incorrecto' });
 //   }
 //   req.session.user = user;
 //   res.redirect('/products');
@@ -92,7 +92,7 @@ const renderError = (req, res) => {
 //     };
 
 //     await userModel.create(user);
-//     res.redirect("/auth/login");
+//     res.redirect("/sessions/login");
 //   } catch (error) {
 //     return res
 //       .status(500)

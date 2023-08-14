@@ -29,9 +29,10 @@ const uploadMiddleware = (req, res, next) => {
     }
 
     // Retrieve uploaded files
-    const files = req.files;
+    console.log('files');
+    const files = req.body.files;
     const errors = [];
-
+    console.log(files);
     // Validate file types and sizes
     files.forEach((file) => {
       const allowedTypes = ['image/jpeg', 'image/png'];
