@@ -4,7 +4,7 @@ import cartModel from '../dao/models/carts.model.js';
 
 // const productManager = new ProductManager("./ProductManager.json");
 
-const renderAllProducts = async (req, res) => {
+const viewAllProductsController = async (req, res) => {
   try {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
     const productByLimit = +req.query.limit || 10;
@@ -39,7 +39,7 @@ const renderAllProducts = async (req, res) => {
     );
     console.log(req.user);
     const user = req.user;
-    res.render('products', { productsAll, user });
+    res.render('products/products', { productsAll, user });
   } catch (error) {
     res.status(500).send({
       status: 'error',
@@ -48,16 +48,16 @@ const renderAllProducts = async (req, res) => {
   }
 };
 
-const renderRealTimeAllProducts = async (req, res) => {
+const viewRealTimeAllProductsController = async (req, res) => {
   try {
     const products = await productModel.find().lean().exec();
-    res.render('realTimeProducts', { products });
+    res.render('products/realTimeProducts', { products });
   } catch (error) {
     res.status(500).json({ status: 'error', error: error.message });
   }
 };
 
-const viewProductById = async (req, res) => {
+const viewProductByIdController = async (req, res) => {
   const idProduct = req.params.pid;
   try {
     const productByID = await productModel.findById(idProduct).lean().exec();
@@ -74,7 +74,7 @@ const viewProductById = async (req, res) => {
   }
 };
 
-const viewCartByID = async (req, res) => {
+const viewCartByIDController = async (req, res) => {
   const idCart = req.params.cid;
   try {
     const cartByID = await cartModel.findById(idCart).lean().exec();
@@ -94,8 +94,8 @@ const viewCartByID = async (req, res) => {
 };
 
 export {
-  renderAllProducts,
-  renderRealTimeAllProducts,
-  viewProductById,
-  viewCartByID
+  viewAllProductsController,
+  viewRealTimeAllProductsController,
+  viewProductByIdController,
+  viewCartByIDController
 };

@@ -3,7 +3,7 @@
 import cartsModel from '../dao/models/carts.model.js';
 import productsModel from '../dao/models/products.model.js';
 
-const newCart = async (req, res) => {
+const createCartController = async (req, res) => {
   try {
     const cart = req.body;
     const resNewCart = await cartsModel.create(cart);
@@ -20,7 +20,7 @@ const newCart = async (req, res) => {
   }
 };
 
-const getCartByID = async (req, res) => {
+const getCartByIDController = async (req, res) => {
   const idCard = req.params.cid;
   try {
     const cartByID = await cartsModel.findOne({ _id: idCard });
@@ -43,7 +43,7 @@ const getCartByID = async (req, res) => {
   }
 };
 
-const addProductsToCart = async (req, res) => {
+const addProductsToCartController = async (req, res) => {
   const idCard = req.params.cid;
   const idProduct = req.params.pid;
   let cartByID = {};
@@ -92,7 +92,7 @@ const addProductsToCart = async (req, res) => {
   }
 };
 
-const updateQuantityCartAndProduct = async (req, res) => {
+const updateQuantityCartAndProductController = async (req, res) => {
   const idCart = req.params.cid;
   const idProduct = req.params.pid;
   let cartByID = {};
@@ -137,7 +137,7 @@ const updateQuantityCartAndProduct = async (req, res) => {
     });
   }
 };
-const deleteProductForCart = async (req, res) => {
+const deleteProductForCartController = async (req, res) => {
   const idCart = req.params.cid;
   try {
     const cartDelete = await cartsModel
@@ -161,7 +161,7 @@ const deleteProductForCart = async (req, res) => {
     });
   }
 };
-const updateDataProductCart = async (req, res) => {
+const updateDataProductCartController = async (req, res) => {
   const idCart = req.params.cid;
   let cartByID = {};
   try {
@@ -213,7 +213,7 @@ const updateDataProductCart = async (req, res) => {
   }
 };
 
-const deleteProductSelectCart = async (req, res) => {
+const deleteProductSelectCartController = async (req, res) => {
   const idCard = req.params.cid;
   const idProduct = req.params.pid;
   let cartByID = {};
@@ -250,11 +250,11 @@ const deleteProductSelectCart = async (req, res) => {
 };
 
 export {
-  newCart,
-  getCartByID,
-  addProductsToCart,
-  updateQuantityCartAndProduct,
-  updateDataProductCart,
-  deleteProductForCart,
-  deleteProductSelectCart
+  createCartController,
+  getCartByIDController,
+  addProductsToCartController,
+  updateQuantityCartAndProductController,
+  updateDataProductCartController,
+  deleteProductForCartController,
+  deleteProductSelectCartController
 };

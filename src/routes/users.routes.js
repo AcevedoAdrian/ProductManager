@@ -1,53 +1,34 @@
 import passport from 'passport';
 import { Router } from 'express';
-import { renderRegister, renderLogin } from '../controllers/user.controller.js';
+import {
+  loginController,
+  registerController,
+  viewRegisterController,
+  viewLoginController,
+  logoutController,
+  githubcallback,
+  viewFeilLoginController,
+  viewFeilRegisterController
+} from '../controllers/users.controller.js';
 import { authorization } from '../middleware/authorization.js';
 import { passportCallCurrent } from '../middleware/passportCallCurrent.js';
 
 const router = Router();
 
-router.get('/register', renderRegister);
-router.post('/register',
-  passportCallCurrent('register'),
-  async (req, res, next) => (
-    res.redirect('/sessions/login')
-  ));
-router.get('/failregister', async (req, res) => {
-  console.log('Failed Register Strategi');
-  res.json({ error: 'failed' });
-});
+router.get('/register', viewRegisterController);
 
-router.get('/login', renderLogin);
-router.post('/login',
-  passportCallCurrent('login'),
-  async (req, res, next) => {
-    if (!req.user) {
-      return res.status(400).send({ status: 'error', error: 'Credencial invalida' });
-    }
-    // guardo el toque que tengo almacenado en el user que me mando desde passport en la cookie de forma firmada
-    res.cookie(
-      process.env.JWT_NAME_COOKIE,
-      req.user.token,
-      {
-        signed: true
-        // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
-      }
-    )
-      .redirect('/sessions/current');
-    // res.send({ status: 'success', payload: req.user });
-  });
+router.post('/register', passportCallCurrent('register'), registerController);
 
-router.get('/faillogin',
-  async (req, res) => {
-    console.log(req._passport);
-    console.log('Failed Register Strategi');
-    res.json({ satatus: 'error', message: '/failed' });
-  });
+router.get('/failregister', viewFeilRegisterController);
+
+router.get('/login', viewLoginController);
+
+router.post('/login', passportCallCurrent('login'), loginController);
+
+router.get('/faillogin', viewFeilLoginController);
 
 // Cerrar Session
-router.get('/logout', (req, res) => {
-  res.clearCookie(process.env.JWT_NAME_COOKIE).redirect('/');
-});
+router.get('/logout', logoutController);
 
 // Current
 router.get('/current', passportCallCurrent('current'), authorization('admin'), (req, res) => {
@@ -67,23 +48,10 @@ router.get(
   async (req, res) => { }
 );
 
-router.get('/githubcallback',
+router.get(
+  '/githubcallback',
   passport.authenticate('github', { session: false, failureRedirect: '/login' }),
-  async (req, res) => {
-    console.log('Callback: ', req.authInfo);
-    res.cookie(
-      process.env.JWT_NAME_COOKIE,
-      req.user.token,
-      {
-        signed: true
-        // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
-      }
-    )
-      .redirect('/sessions/current');
-    // req.session.user = req.user;
-    // console.log('User session: ', req.session.user);
-    // res.redirect('/');
-  }
+  githubcallback
 );
 
 export default router;

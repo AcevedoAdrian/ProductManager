@@ -2,7 +2,7 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import { Server as WebSocketServer } from 'socket.io';
-import dotenv from 'dotenv';
+import config from './config/config.js';
 import cookieParser from 'cookie-parser';
 import { createServer } from 'node:http';
 import passport from 'passport';
@@ -18,9 +18,6 @@ import viewProductsRouter from './routes/viewProductsRouter.routes.js';
 import users from './routes/users.routes.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
-
-// VARIABLE DE ENTORNOS
-dotenv.config({ path: '.env' });
 
 // ARCHIVO STATICO
 // app.use(express.static('./src/public'));
@@ -52,7 +49,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
 // MIDDELWARE SESSION
-app.use(cookieParser(process.env.COOKIE_PRIVATE_KEY));
+app.use(cookieParser(config.cookiePrivateKey));
 initializePassport();
 app.use(passport.initialize());
 // app.use(passport.session());
@@ -71,8 +68,8 @@ app.use('/', viewProductsRouter);
 //   res.status(404).render('errors/erros', { error: '404' });
 // });
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER CON SOCKET IO
-httpServer.listen(process.env.PORT || 8000, () => {
-  console.log(`Servidor up en el puerto: ${process.env.PORT}`);
+httpServer.listen(config.port || 8000, () => {
+  console.log(`Servidor up en el puerto: ${config.port}`);
 });
 
 const messages = [];

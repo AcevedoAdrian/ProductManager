@@ -1,44 +1,62 @@
 
-const renderLogin = (req, res) => {
+import config from '../config/config.js';
+const viewLoginController = (req, res) => {
   res.render('sessions/login');
 };
 
-const renderRegister = (req, res) => {
+const viewRegisterController = (req, res) => {
   res.render('sessions/register');
 };
 
-const renderFeilRegister = (req, res) => {
-  res.status(401).json({ status: 'error', message: 'Error al registrar usuario' });
+const viewFeilRegisterController = (req, res) => {
+  // res.status(401).json({ status: 'error', message: 'Error al registrar usuario' });
+  console.log('Failed Register Strategi');
+  res.json({ error: 'failed' });
 };
-const renderFeilLogin = (req, res) => {
-  res.status(401).json({ status: 'error', message: 'Error al loguear' });
+const viewFeilLoginController = (req, res) => {
+  console.log(req._passport);
+  console.log('Failed Register Strategi');
+  res.json({ satatus: 'error', message: '/failed' });
 };
 
-const register = async (req, res) => {
-  console.log(req);
-  console.log(req.message);
+const registerController = async (req, res) => {
   res.redirect('/sessions/login');
 };
-const login = async (req, res) => {
-  res.redirect('/products');
+const loginController = async (req, res) => {
+  if (!req.user) {
+    return res.status(400).send({ status: 'error', error: 'Credencial invalida' });
+  }
+  // guardo el toque que tengo almacenado en el user que me mando desde passport en la cookie de forma firmada
+  res.cookie(
+    config.jwtNameCookie,
+    req.user.token,
+    {
+      signed: true
+      // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
+    }
+  )
+    .redirect('/sessions/current');
+  // res.send({ status: 'success', payload: req.user });
 };
 
-const github = (req, res) => {
-  console.log('Hola');
-};
 const githubcallback = (req, res) => {
-  req.sesion.user = req.user;
-  res.redirect('/products');
-};
-const logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ status: 'error', message: 'Ocurrio un error' });
+  // console.log('Callback: ', req.authInfo);
+  res.cookie(
+    config.jwtNameCookie,
+    req.user.token,
+    {
+      signed: true
+      // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
     }
-    res.redirect('/sessions/login');
-  });
+  )
+    .redirect('/sessions/current');
 };
-const renderError = (req, res) => {
+
+const logoutController = (req, res) => {
+  res.clearCookie(config.jwtNameCookie).redirect('/');
+};
+
+const viewErrorController = (req, res) => {
   res.render('errors/errorPage');
 };
 // const login = async (req, res) => {
@@ -104,14 +122,13 @@ const renderError = (req, res) => {
 // };
 
 export {
-  renderLogin,
-  renderError,
-  renderRegister,
-  login,
-  register,
-  logout,
-  renderFeilRegister,
-  renderFeilLogin,
-  github,
+  viewLoginController,
+  viewErrorController,
+  viewRegisterController,
+  loginController,
+  registerController,
+  logoutController,
+  viewFeilRegisterController,
+  viewFeilLoginController,
   githubcallback
 };

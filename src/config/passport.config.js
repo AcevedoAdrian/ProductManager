@@ -2,6 +2,7 @@ import passport from 'passport';
 import local from 'passport-local';
 import jwt from 'passport-jwt';
 import GitHubStrategy from 'passport-github2';
+import config from './config.js';
 
 import { userModel } from '../dao/models/users.model.js';
 import { cookieExtractor, generateToken } from '../utils.js';
@@ -98,7 +99,7 @@ const initializePassport = () => {
         // jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         // ACA VA EL SECRET QUE USAMOS PARA GENERAR EL TOKEN EN GENERATE TOKEN
-        secretOrKey: process.env.JWT_PRIVATE_KEY
+        secretOrKey: config.jwtPrivateKey
       },
       async (jwt_payload, done) => {
         console.log('JWTStrategy');
@@ -112,9 +113,9 @@ const initializePassport = () => {
   );
   // GITHUB
   passport.use('github', new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL
+    clientID: config.githubClientID,
+    clientSecret: config.clientSecret,
+    callbackURL: config.callbackURL
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       // console.log(profile._json.email);
@@ -152,7 +153,7 @@ const initializePassport = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: process.env.JWT_PRIVATE_KEY
+        secretOrKey: config.jwtPrivateKey
       },
       async (jwt_payload, done) => {
         try {

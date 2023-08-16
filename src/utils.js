@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import config from './config/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,7 +25,7 @@ export const uploader = multer({ storage });
 // GENRA EL TOKEN CON JWT
 export const generateToken = user => {
   const { _id, last_name, first_name, email, role } = user;
-  const SECRET = process.env.JWT_PRIVATE_KEY;
+  const SECRET = config.jwtPrivateKey;
   // jwt.sing('objeto informacion', 'clave para hacer cifrado', 'tiempo de vida')
   // const token = jwt.sign({ user }, SECRET, { expiresIn: '24h' }); funcionando
   const token = jwt.sign({ _id, last_name, first_name, email, role }, SECRET, { expiresIn: '24h' });
@@ -32,7 +33,7 @@ export const generateToken = user => {
 };
 // ECTRAE EL TOKEN DE UNA COOKIE
 export const cookieExtractor = req => {
-  const COOKIENAME = process.env.JWT_NAME_COOKIE;
+  const COOKIENAME = config.jwtNameCookie;
   const token =
     req && req.signedCookies[COOKIENAME] ? req.signedCookies[COOKIENAME] : null;
   return token;

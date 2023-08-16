@@ -2,7 +2,7 @@
 // const product = new ProductManager("ProductManager.json");
 import productModel from '../dao/models/products.model.js';
 
-const getAllProducts = async (req, res) => {
+const getAllProductsController = async (req, res) => {
   // NUEVA IMPLEMNTACION
   try {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
@@ -66,7 +66,7 @@ const getAllProducts = async (req, res) => {
     });
   }
 };
-const getProductById = async (req, res) => {
+const getProductByIdController = async (req, res) => {
   try {
     const idProduct = req.params.pid;
     const productByID = await productModel.findById(idProduct).lean().exec();
@@ -92,7 +92,7 @@ const getProductById = async (req, res) => {
 };
 
 // POST: GUARDA LOS DATOS DE REQ.BODY EN LA BASE DE DATOS
-const saveProduct = async (req, res) => {
+const createProductController = async (req, res) => {
   try {
     let thumbnail = [];
     const {
@@ -132,7 +132,7 @@ const saveProduct = async (req, res) => {
   }
 };
 
-const updateProduct = async (req, res) => {
+const updateProductController = async (req, res) => {
   try {
     // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
     const idProduct = req.params.pid;
@@ -177,7 +177,7 @@ const updateProduct = async (req, res) => {
     });
   }
 };
-const deleteProduct = async (req, res) => {
+const deleteProductController = async (req, res) => {
   try {
     // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
     const idProduct = req.params.pid;
@@ -214,9 +214,9 @@ const deleteProduct = async (req, res) => {
 };
 
 export {
-  getAllProducts,
-  getProductById,
-  saveProduct,
-  updateProduct,
-  deleteProduct
+  getAllProductsController,
+  getProductByIdController,
+  createProductController,
+  updateProductController,
+  deleteProductController
 };
