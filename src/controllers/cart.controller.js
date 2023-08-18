@@ -1,7 +1,7 @@
 // import CartManager from "../dao/fileManager/CartManager.js";
 // const carts = new CartManager("Carts.json");
-import cartsModel from '../dao/models/carts.model.js';
-import productsModel from '../dao/models/products.model.js';
+import cartsModel from '../models/carts.model.js';
+import productsModel from '../models/products.model.js';
 
 const createCartController = async (req, res) => {
   try {

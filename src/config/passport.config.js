@@ -4,7 +4,7 @@ import jwt from 'passport-jwt';
 import GitHubStrategy from 'passport-github2';
 import config from './config.js';
 
-import { userModel } from '../dao/models/users.model.js';
+import { userModel } from '../models/users.model.js';
 import { cookieExtractor, generateToken } from '../utils.js';
 
 // core de la estrategia de local
@@ -189,7 +189,7 @@ export default initializePassport;
 // import passport from 'passport';
 // import local from 'passport-local';
 // import GitHubStrategy from 'passport-github2';
-// import { userModel } from '../dao/models/users.model.js';
+// import { userModel } from '../models/users.model.js';
 // import { createHash, isValidPassword } from '../utils.js';
 
 // const LocalStrategy = local.Strategy;

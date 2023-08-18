@@ -1,6 +1,6 @@
 // import ProductManager from "../services/ProductManager.js";
 // const product = new ProductManager("ProductManager.json");
-import productModel from '../dao/models/products.model.js';
+import productModel from '../models/products.model.js';
 
 const getAllProductsController = async (req, res) => {
   // NUEVA IMPLEMNTACION
