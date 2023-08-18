@@ -51,6 +51,7 @@ const viewAllProductsController = async (req, res) => {
 const viewRealTimeAllProductsController = async (req, res) => {
   try {
     const products = await productModel.find().lean().exec();
+    console.log(products);
     res.render('products/realTimeProducts', { products });
   } catch (error) {
     res.status(500).json({ status: 'error', error: error.message });

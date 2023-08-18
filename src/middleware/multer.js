@@ -30,9 +30,8 @@ const uploadMiddleware = (req, res, next) => {
 
     // Retrieve uploaded files
     console.log('files');
-    const files = req.body.files;
+    const files = req.files;
     const errors = [];
-    console.log(files);
     // Validate file types and sizes
     files.forEach((file) => {
       const allowedTypes = ['image/jpeg', 'image/png'];
@@ -46,6 +45,11 @@ const uploadMiddleware = (req, res, next) => {
         errors.push(`File too large: ${file.originalname}`);
       }
     });
+
+    // Handle validation errors
+    if (errors.length > 0) {
+      return res.status(400).json({ status: 'error', message: errors });
+    }
 
     // Attach files to the request object
     req.files = files;

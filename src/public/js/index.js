@@ -12,7 +12,6 @@ document.getElementById('createBtn').addEventListener('click', () => {
     files: document.getElementById('files').value
   };
 
-  console.log('error ' + body.files);
   fetch('/api/products', {
     method: 'post',
     body: JSON.stringify(body),

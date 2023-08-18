@@ -94,6 +94,10 @@ const getProductByIdController = async (req, res) => {
 // POST: GUARDA LOS DATOS DE REQ.BODY EN LA BASE DE DATOS
 const createProductController = async (req, res) => {
   try {
+    console.log('---file----');
+    console.log(req.files);
+    console.log('---body----');
+    console.log(req.body);
     let thumbnail = [];
     const {
       title,
