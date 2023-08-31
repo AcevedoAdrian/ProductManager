@@ -12,5 +12,7 @@ export default {
   cookiePrivateKey: process.env.COOKIE_PRIVATE_KEY,
   githubClientID: process.env.GITHUB_CLIENT_ID,
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-  githubCallBackURL: process.env.GITHUB_CALLBACK_URL
+  githubCallBackURL: process.env.GITHUB_CALLBACK_URL,
+  persistence: process.env.PERSISTENCE
+
 };
