@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
 export default {
-  port: process.env.PORT,
+  port: process.env.PORT || 8000,
   mongoURL: process.env.DATABASE,
   database: process.env.NAME_DATABASE,
   jwtNameCookie: process.env.JWT_NAME_COOKIE,
@@ -14,5 +14,4 @@ export default {
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
   githubCallBackURL: process.env.GITHUB_CALLBACK_URL,
   persistence: process.env.PERSISTENCE
-
 };
