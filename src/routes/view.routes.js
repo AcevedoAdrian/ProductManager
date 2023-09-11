@@ -7,7 +7,7 @@ import {
   viewRealTimeAllProductsController,
   viewProductByIdController,
   viewCartByIDController
-} from '../controllers/viewProduct.controller.js';
+} from '../controllers/view.controller.js';
 
 const router = Router();
 

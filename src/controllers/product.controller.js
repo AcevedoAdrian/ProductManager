@@ -1,63 +1,13 @@
-// import ProductManager from "../services/ProductManager.js";
-// const product = new ProductManager("ProductManager.json");
-import productModel from '../models/products.model.js';
+
+import { ProductService } from '../services/products.service..js';
 
 const getAllProductsController = async (req, res) => {
   // NUEVA IMPLEMNTACION
   try {
-    // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
-    const productByLimit = +req.query.limit || 10;
-    const productByPage = +req.query.page || 1;
-    const productAvailability = +req.query.stock || '';
-    const productBySort = req.query.sort ?? 'asc';
-    const productByCategory = req.query.category || '';
-
-    let productFilter = {};
-    if (req.query.category) {
-      productFilter = { category: productByCategory };
-    }
-    if (req.query.stock) {
-      productFilter = { ...productFilter, stock: productAvailability };
-    }
-    // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC
-    let optionsPrice = {};
-    if (productBySort === 'desc') {
-      optionsPrice = { price: -1 };
-    } else {
-      optionsPrice = { price: 1 };
-    }
-
-    const optionsLimit = {
-      limit: productByLimit,
-      page: productByPage,
-      sort: optionsPrice
-    };
-    const productAll = await productModel.paginate(productFilter, optionsLimit);
-
-    const payload = productAll.docs;
-    const totalPages = productAll.totalPages;
-    const prevPage = productAll.prevPage;
-    const nextPage = productAll.nextPage;
-    const page = productAll.page;
-    const hasPrevPage = productAll.hasPrevPage;
-    const hasNextPage = productAll.hasNextPage;
-    const prevLink = hasPrevPage
-      ? `/api/product?page=${prevPage}&limit${productByLimit}`
-      : '';
-    const nextLink = hasNextPage
-      ? `/api/product?page=${nextPage}&limit${productByLimit}`
-      : '';
-    res.status(200).json({
+    const result = await ProductService.getAllPaginate(req);
+    res.status(200).send({
       status: 'success',
-      payload,
-      totalPages,
-      prevPage,
-      nextPage,
-      page,
-      hasPrevPage,
-      hasNextPage,
-      prevLink,
-      nextLink
+      result
     });
   } catch (error) {
     res.status(500).send({
@@ -69,7 +19,7 @@ const getAllProductsController = async (req, res) => {
 const getProductByIdController = async (req, res) => {
   try {
     const idProduct = req.params.pid;
-    const productByID = await productModel.findById(idProduct).lean().exec();
+    const productByID = await ProductService.getById(idProduct);
     console.log(productByID);
 
     if (!productByID) {
@@ -94,10 +44,6 @@ const getProductByIdController = async (req, res) => {
 // POST: GUARDA LOS DATOS DE REQ.BODY EN LA BASE DE DATOS
 const createProductController = async (req, res) => {
   try {
-    console.log('---file----');
-    console.log(req.files);
-    console.log('---body----');
-    console.log(req.body);
     let thumbnail = [];
     const {
       title,
@@ -116,9 +62,10 @@ const createProductController = async (req, res) => {
     }
     const product = { title, description, price, code, stock, category, thumbnail };
 
-    const resAddProduct = await productModel.create(product);
+    const resAddProduct = await ProductService.create(product);
+
     if (resAddProduct !== null) {
-      const prodcutAll = await productModel.find().lean().exec();
+      const prodcutAll = await ProductService.getAll();
       req.io.emit('updateProducts', prodcutAll);
       res.status(200).json({
         status: 'succses',
@@ -140,7 +87,7 @@ const updateProductController = async (req, res) => {
   try {
     // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
     const idProduct = req.params.pid;
-    const productByID = await productModel.findById(idProduct).exec();
+    const productByID = await ProductService.getById(idProduct);
     if (!productByID) {
       return res.status(404).json({
         status: 'error',
@@ -150,16 +97,9 @@ const updateProductController = async (req, res) => {
 
     // UPDATEONE: ACTUALIZO EL PRODUCTO CON EL ID DE PARAMS
     const dataProductUpdate = req.body;
-    // const responseUpdate = await productModel.updateOne(
-    //   { _id: idProduct },
-    //   dataProductUpdate
-    // );
-    const responseUpdate = await productModel.findByIdAndUpdate(
-      idProduct,
-      dataProductUpdate,
-      { returnDocument: 'after' }
-    );
-    console.log(responseUpdate);
+
+    const responseUpdate = await ProductService.update(idProduct, dataProductUpdate);
+
     if (!responseUpdate) {
       return res.status(404).json({
         status: 'error',
@@ -167,7 +107,7 @@ const updateProductController = async (req, res) => {
       });
     }
     // SI NO HUBO ERROR
-    const prodcutAll = await productModel.find().lean().exec();
+    const prodcutAll = await ProductService.getAll();
     req.io.emit('updateProducts', prodcutAll);
     return res.status(200).json({
       status: 'succses',
@@ -185,8 +125,7 @@ const deleteProductController = async (req, res) => {
   try {
     // FINDBYID: PARA SABER SI EXISTE EL PRODUCTO
     const idProduct = req.params.pid;
-    const productByID = await productModel.findById(idProduct).exec();
-    console.log(productByID);
+    const productByID = await ProductService.getById(idProduct);
     if (!productByID) {
       return res.status(404).json({
         status: 'error',
@@ -194,15 +133,14 @@ const deleteProductController = async (req, res) => {
       });
     }
 
-    const productDelete = await productModel.deleteOne({ _id: idProduct });
-    console.log(productDelete);
+    const productDelete = await ProductService.delete(idProduct);
     if (!productDelete) {
       return res.status(400).json({
         status: 'error',
         message: `Error: No se puedo ELIMINAR el producto con el id ${idProduct}`
       });
     }
-    const prodcutAll = await productModel.find().lean().exec();
+    const prodcutAll = await ProductService.getAll();
     req.io.emit('updateProducts', prodcutAll);
     res.status(200).json({
       status: 'succses',

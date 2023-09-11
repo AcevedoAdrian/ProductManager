@@ -1,8 +1,8 @@
-import { PERSISTENCE } from '../../config/config.js';
+import config from '../../config/config.js';
 
-export let Cart;
+let Cart;
 
-switch (PERSISTENCE) {
+switch (config.persistence) {
   case 'MONGO':
     const { default: CartDAO } = await import('../carts.mongo.dao.js');
     Cart = CartDAO;
@@ -10,3 +10,5 @@ switch (PERSISTENCE) {
   default:
     break;
 }
+
+export { Cart };

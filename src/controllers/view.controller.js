@@ -1,43 +1,14 @@
-// import ProductManager from "../dao/fileManager/ProductManager.js";
+
 import productModel from '../models/products.model.js';
-import cartModel from '../models/carts.model.js';
+import { ProductService } from '../services/products.service..js';
+import { CartService } from '../services/carts.services.js';
 
 // const productManager = new ProductManager("./ProductManager.json");
 
 const viewAllProductsController = async (req, res) => {
   try {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
-    const productByLimit = +req.query.limit || 10;
-    const productByPage = +req.query.page || 1;
-    const productAvailability = +req.query.stock || '';
-    const productBySort = req.query.sort ?? 'asc';
-    const productByCategory = req.query.category || '';
-
-    let productFilter = {};
-    if (req.query.category) {
-      productFilter = { category: productByCategory };
-    }
-    if (req.query.stock) {
-      productFilter = { ...productFilter, stock: productAvailability };
-    }
-    // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC
-    let optionsPrice = {};
-    if (productBySort === 'desc') {
-      optionsPrice = { price: -1 };
-    } else {
-      optionsPrice = { price: 1 };
-    }
-
-    const optionsLimit = {
-      limit: productByLimit,
-      page: productByPage,
-      sort: optionsPrice
-    };
-    const productsAll = await productModel.paginate(
-      productFilter,
-      optionsLimit
-    );
-    console.log(req.user);
+    const productsAll = await ProductService.getAllPaginate();
     const user = req.user;
     res.render('products/products', { productsAll, user });
   } catch (error) {
@@ -50,7 +21,7 @@ const viewAllProductsController = async (req, res) => {
 
 const viewRealTimeAllProductsController = async (req, res) => {
   try {
-    const products = await productModel.find().lean().exec();
+    const products = await ProductService.getAll();
     console.log(products);
     res.render('products/realTimeProducts', { products });
   } catch (error) {
@@ -76,9 +47,10 @@ const viewProductByIdController = async (req, res) => {
 };
 
 const viewCartByIDController = async (req, res) => {
-  const idCart = req.params.cid;
   try {
-    const cartByID = await cartModel.findById(idCart).lean().exec();
+    const idCart = req.params.cid;
+
+    const cartByID = await CartService.getCart(cid);
     console.log(!cartByID);
     if (!cartByID) {
       return res.render('cart', { errror: 'No hay productos en este carrito' });

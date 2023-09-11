@@ -4,7 +4,7 @@ export default class ProductRepository {
   }
 
   getAll = async () => await this.dao.getAll();
-  getAllPaginate = async (filter, options) => await this.dao.getAllPaginate(filter, options);
+  getAllPaginate = async (req) => await this.dao.getAllPaginate(req);
   getById = async (id) => await this.dao.getById(id);
   create = async (data) => await this.dao.create(data);
   update = async (id, data) => await this.dao.update(id, data, { new: true });

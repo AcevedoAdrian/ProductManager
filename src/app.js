@@ -14,7 +14,7 @@ import initializePassport from './config/passport.config.js';
 import productsRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import chatRouter from './routes/chat.routes.js';
-import viewProductsRouter from './routes/viewProductsRouter.routes.js';
+import viewRouter from './routes/view.routes.js';
 import users from './routes/users.routes.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
@@ -60,7 +60,7 @@ app.use('/sessions', users);
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
-app.use('/', viewProductsRouter);
+app.use('/', viewRouter);
 // app.use((req, res) => {
 //   if (req.headers === 'application-json') {
 //     res.status(404).json({ status: 'error', messages: '4004' });

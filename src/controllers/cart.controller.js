@@ -2,11 +2,14 @@
 // const carts = new CartManager("Carts.json");
 import cartsModel from '../models/carts.model.js';
 import productsModel from '../models/products.model.js';
+import { CartService } from '../services/carts.services.js';
+import { ProductService } from '../services/products.service..js';
 
 const createCartController = async (req, res) => {
   try {
     const cart = req.body;
-    const resNewCart = await cartsModel.create(cart);
+    // const resNewCart = await cartsModel.create(cart);
+    const resNewCart = await CartService.create(cart);
     console.log(resNewCart);
     res.status(400).json({
       status: 'succses',
@@ -23,7 +26,8 @@ const createCartController = async (req, res) => {
 const getCartByIDController = async (req, res) => {
   const idCard = req.params.cid;
   try {
-    const cartByID = await cartsModel.findOne({ _id: idCard });
+    // const cartByID = await cartsModel.findOne({ _id: idCard });
+    const cartByID = await CartService.getCart(idCard);
     console.log(cartByID);
     if (!cartByID) {
       return res.status(404).json({
@@ -50,7 +54,8 @@ const addProductsToCartController = async (req, res) => {
   const productByID = {};
 
   try {
-    cartByID = await cartsModel.findOne({ _id: idCard });
+    // cartByID = await cartsModel.findOne({ _id: idCard });
+    cartByID = await CartService.getCart(idCard);
   } catch (error) {
     res.status(404).json({
       status: 'error',
@@ -59,7 +64,8 @@ const addProductsToCartController = async (req, res) => {
   }
 
   try {
-    await productsModel.findOne({ _id: idProduct });
+    // await productsModel.findOne({ _id: idProduct });
+    await ProductService.getById(idProduct);
   } catch (error) {
     res.status(404).json({
       status: 'error',
@@ -79,7 +85,8 @@ const addProductsToCartController = async (req, res) => {
       };
       cartByID.products.push(newProduct);
     }
-    const cartProductUpdate = await cartByID.save();
+    // const cartProductUpdate = await cartByID.save();
+    const cartProductUpdate = await CartService.addCart();
     res.status(200).json({
       status: 'succses',
       payload: cartProductUpdate

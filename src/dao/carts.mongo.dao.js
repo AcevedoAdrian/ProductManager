@@ -1,4 +1,4 @@
-import { cartModel } from '../models/carts.model.js';
+import cartModel from '../models/carts.model.js';
 import { ticketModel } from '../models/tickets.model.js';
 
 export default class CartDAO {

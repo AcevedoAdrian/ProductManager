@@ -1,12 +1,12 @@
-import { PERSISTENCE } from '../../config/config.js';
+import config from '../../config/config.js';
 
-export let Product;
-
-switch (PERSISTENCE) {
+let Product;
+switch (config.persistence) {
   case 'MONGO':
-    const { default: ProductDAO } = await import('../products.mongo.dao.js');
+    const { default: ProductDAO } = await import('../product.mongo.dao.js');
     Product = ProductDAO;
     break;
   default:
     break;
 }
+export { Product };
