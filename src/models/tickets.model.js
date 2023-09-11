@@ -27,4 +27,5 @@ ticketSchema.pre('findOne', function () {
 });
 
 mongoose.set('strictQuery', false);
-export const ticketModel = mongoose.model(ticketsCollection, ticketSchema);
+const ticketModel = mongoose.model(ticketsCollection, ticketSchema);
+export default ticketModel;
