@@ -10,8 +10,7 @@ export default class CartDAO {
   update = async (filter, update) => await cartModel.findOneAndUpdate(filter, update, { returnOriginal: false, new: true });
   delete = async (id) =>
     await cartModel
-      .findByIdAndUpdate(id, { products: [] }, { new: true }).lean()
-      .exec();
+      .findByIdAndUpdate(id, { products: [] }, { new: true })
       .lean()
       .exec();
 }
