@@ -232,6 +232,9 @@ const deleteProductSelectCartController = async (req, res) => {
     });
   }
 };
+const finishBuyCartController = async (req, res) => {
+
+};
 
 export {
   createCartController,
@@ -240,5 +243,6 @@ export {
   updateQuantityCartAndProductController,
   updateDataProductCartController,
   deleteProductForCartController,
-  deleteProductSelectCartController
+  deleteProductSelectCartController,
+  finishBuyCartController
 };

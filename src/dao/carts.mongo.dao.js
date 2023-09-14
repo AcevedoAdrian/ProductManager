@@ -1,5 +1,5 @@
 import cartModel from '../models/carts.model.js';
-import { ticketModel } from '../models/tickets.model.js';
+import ticketModel from '../models/tickets.model.js';
 
 export default class CartDAO {
   getById = async (id) => await cartModel.findById(id).lean().exec();

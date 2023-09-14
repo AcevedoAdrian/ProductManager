@@ -10,12 +10,14 @@ import passport from 'passport';
 import { connectDBMongo } from './config/db.js';
 import __dirname from './utils.js';
 import initializePassport from './config/passport.config.js';
+import errorHandler from './middleware/error.middleware.js';
 // RUTAS
 import productsRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import chatRouter from './routes/chat.routes.js';
 import viewRouter from './routes/view.routes.js';
 import users from './routes/users.routes.js';
+import mockingRouter from './routes/mocking.routes.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 
@@ -55,12 +57,14 @@ app.use(passport.initialize());
 // app.use(passport.session());
 
 // RUTAS
-app.get('/', (req, res) => res.render('index'));
-app.use('/sessions', users);
-app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
+app.use('/api/mockingproducts', mockingRouter);
+app.use('/sessions', users);
+app.use('/chat', chatRouter);
 app.use('/', viewRouter);
+// Para los errores
+app.use(errorHandler);
 // app.use((req, res) => {
 //   if (req.headers === 'application-json') {
 //     res.status(404).json({ status: 'error', messages: '4004' });

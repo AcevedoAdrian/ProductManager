@@ -1,11 +1,6 @@
 
 export const generateProductErrorInfo = (product) => {
-  return `
-    One or more parameters are incomplete or invalid.
-    List of required properties:
-        - title: Must be a string. (${product.title})
-        - price: Must be a number. (${product.price})
-    `;
+  return `One or more parameters are incomplete or invalid. List of required properties: - title: Must be a string. (${product.title}) - code: Must be a string (${product.code}}) - price: Must be a number. (${product.price})`;
 };
 
 export const generateProductAddCartErrorInfo = (product) => {

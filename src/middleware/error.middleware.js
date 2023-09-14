@@ -4,7 +4,7 @@ export default (error, req, res, next) => {
   console.log(error.cause);
   switch (error.code) {
     case EErrors.INVALID_TYPES_ERROR:
-      res.status(400).json({ status: 'error', error: error.name });
+      res.status(400).json({ status: 'error', error: error.name, message: error.cause });
       break;
     case EErrors.INVALID_PRODUCT:
     case EErrors.INVALID_CART:
