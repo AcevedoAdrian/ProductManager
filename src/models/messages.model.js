@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const messageShema = new mongoose.Schema({
-  user: { type: String, requided: true },
-  message: { type: String, requided: true }
+  user: { type: String, requided: true }, // correo
+  message: { type: String, requided: true } // mensaje
 });
 
 mongoose.set('strictQuery', false);

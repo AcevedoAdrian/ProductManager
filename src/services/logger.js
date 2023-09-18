@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { ENVIRONMENT } from '../config/config.js';
+import config from '../config/config.js';
 import moment from 'moment';
 
 const customLevelsOptions = {
@@ -14,15 +14,16 @@ const customLevelsOptions = {
   colors: {
     debug: 'white',
     http: 'green',
-    info: 'blue',
-    warning: 'yellow',
-    error: 'magenta',
+    info: 'cyan',
+    warning: 'blue',
+    error: 'yellow',
     fatal: 'red'
   }
 };
 
 const createLogger = (env) => {
-  if (env === 'PROD') {
+  console.log(env.environment);
+  if (env.environment === 'PROD') {
     return winston.createLogger({
       levels: customLevelsOptions.levels,
       transports: [
@@ -37,8 +38,8 @@ const createLogger = (env) => {
           )
         }),
         new winston.transports.File({
-          filename: './logs/errors.log',
           level: 'error',
+          filename: 'src/logs/errors.log',
           format: winston.format.combine(
             winston.format.timestamp({
               format: moment().format('DD/MM/YYYY HH:mm:ss')
@@ -53,7 +54,7 @@ const createLogger = (env) => {
       levels: customLevelsOptions.levels,
       transports: [
         new winston.transports.Console({
-          level: 'debug',
+          level: 'fatal',
           format: winston.format.combine(
             winston.format.timestamp({
               format: moment().format('DD/MM/YYYY HH:mm:ss')
@@ -67,21 +68,5 @@ const createLogger = (env) => {
   }
 };
 
-export const devLogger = winston.createLogger({
-  levels: customLevelsOptions.levels,
-  transports: [
-    new winston.transports.Console({
-      level: 'fatal',
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: moment().format('DD/MM/YYYY HH:mm:ss')
-        }),
-        winston.format.colorize({ colors: customLevelsOptions.colors }),
-        winston.format.simple()
-      )
-    })
-  ]
-});
-
-const logger = createLogger(ENVIRONMENT);
+const logger = createLogger(config);
 export default logger;

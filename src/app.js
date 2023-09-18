@@ -16,7 +16,8 @@ import productsRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import chatRouter from './routes/chat.routes.js';
 import viewRouter from './routes/view.routes.js';
-import users from './routes/users.routes.js';
+import sessionsRouter from './routes/sessions.routes.js';
+import loggerRouter from './routes/logger.routes.js';
 import mockingRouter from './routes/mocking.routes.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
@@ -60,7 +61,8 @@ app.use(passport.initialize());
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/mockingproducts', mockingRouter);
-app.use('/sessions', users);
+app.use('/loggerTest', loggerRouter);
+app.use('/sessions', sessionsRouter);
 app.use('/chat', chatRouter);
 app.use('/', viewRouter);
 // Para los errores

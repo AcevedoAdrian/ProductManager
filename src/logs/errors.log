@@ -1,0 +1,5 @@
+debug: Debug {"timestamp":"18/09/2023 09:02:22"}
+http: Http {"timestamp":"18/09/2023 09:02:22"}
+info: Info {"timestamp":"18/09/2023 09:02:22"}
+warning: Warning {"timestamp":"18/09/2023 09:02:22"}
+error: Error {"timestamp":"18/09/2023 09:02:22"}
