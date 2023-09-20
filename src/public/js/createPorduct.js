@@ -1,5 +1,8 @@
 
-document.querySelector('#createProductForm').addEventListener('submit', (e) => {
+const socket = io();
+
+const formCreateProduct = document.querySelector('#createProductForm');
+formCreateProduct.addEventListener('submit', async (e) => {
   e.preventDefault();
   const files = document.getElementById('files');
   const title = document.getElementById('title').value;
@@ -20,21 +23,26 @@ document.querySelector('#createProductForm').addEventListener('submit', (e) => {
   }
 
   console.log(formData);
-  fetch('/api/products', {
-    method: 'POST',
-    body: formData,
-    headers: {
-      // 'Content-type': 'application/json'
-      // 'Content-Type': 'multipart/form-data'
-      enctype: 'multipart/form-data'
-    }
-  })
-    .then((result) => result.json())
-    .then((result) => {
-      if (result.status === 'error') throw new Error(result);
-    })
-    .catch((error) => {
-      console.log(error);
-      console.log(`Ocurrio un error${error}`);
+  try {
+    const result = await fetch('/api/products', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        // 'Content-type': 'application/json'
+        // 'Content-Type': 'multipart/form-data'
+        enctype: 'multipart/form-data'
+      }
     });
+    const resultJSON = result.json();
+    if (resultJSON.status === 'error') {
+      throw new Error(resultJSON.message);
+    } else {
+      socket.emit('productsTable', result.payload);
+      console.log('Todo Ok');
+      formCreateProduct.reset();
+    }
+  } catch (error) {
+    console.log(error);
+    console.log(`Ocurrio un error${error}`);
+  }
 });

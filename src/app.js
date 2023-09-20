@@ -19,6 +19,7 @@ import viewRouter from './routes/view.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import loggerRouter from './routes/logger.routes.js';
 import mockingRouter from './routes/mocking.routes.js';
+import { serverSocketio } from './utils/serverSocketio.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 
@@ -41,10 +42,11 @@ const httpServer = createServer(app);
 // CREACION SERVIDOR PARA SOCKET
 const io = new WebSocketServer(httpServer);
 // MIDDELWARE SOCKET.IO
-app.use((req, res, next) => {
-  req.io = io;
-  next();
-});
+app.set('socketio', io);
+// app.use((req, res, next) => {
+//   req.io = io;
+//   next();
+// });
 
 // CONFIGURACION PLANTILLAS HANDLEBARS
 app.engine('handlebars', handlebars.engine());
@@ -74,22 +76,7 @@ app.use(errorHandler);
 //   res.status(404).render('errors/erros', { error: '404' });
 // });
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER CON SOCKET IO
+
 httpServer.listen(config.port || 8000, () => {
   console.log(`Servidor up en el puerto: ${config.port}`);
-});
-
-const messages = [];
-// CONEXION SOCKET.IO
-io.on('connection', (socket) => {
-  // LITADODO CHAT
-  socket.on('message', (data) => {
-    console.log({ data });
-    messages.push(data);
-    io.emit('logs', messages);
-  });
-
-  // ACTUALIZACION LISTA PRODUCTOS
-  socket.on('productList', (data) => {
-    io.emit('updateProducts', data);
-  });
 });

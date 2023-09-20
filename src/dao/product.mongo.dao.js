@@ -6,17 +6,17 @@ export default class ProductDAO {
   getAllPaginate = async (req) => {
     try {
       // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
-      const productByLimit = +req.query.limit || 10;
-      const productByPage = +req.query.page || 1;
-      const productAvailability = +req.query.stock || '';
-      const productBySort = req.query.sort ?? 'asc';
-      const productByCategory = req.query.category || '';
+      const productByLimit = +req?.query.limit || 10;
+      const productByPage = +req?.query.page || 1;
+      const productAvailability = +req?.query.stock || '';
+      const productBySort = req?.query.sort ?? 'asc';
+      const productByCategory = req?.query.category || '';
 
       let productFilter = {};
-      if (req.query.category) {
+      if (productByCategory) {
         productFilter = { category: productByCategory };
       }
-      if (req.query.stock) {
+      if (productAvailability) {
         productFilter = { ...productFilter, stock: productAvailability };
       }
       // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC

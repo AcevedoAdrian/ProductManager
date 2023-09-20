@@ -5,12 +5,12 @@ const getAllProductsController = async (req, res) => {
   // NUEVA IMPLEMNTACION
   try {
     const result = await ProductService.getAllPaginate(req);
-    res.status(200).send({
+    res.status(200).json({
       status: 'success',
       result
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       status: 'error',
       message: `Error al RETORNAR LISTA de productos: ${error.reason} ${error.message}`
     });
@@ -55,7 +55,7 @@ const createProductController = async (req, res) => {
     } = req.body;
 
     if (!title || !description || !price || !code || !stock || !category) {
-      return res.status(400).send({ status: 'error', message: 'Error al AGREGAR un producto: No se aceptan campos vacios' });
+      return res.status(400).json({ status: 'error', message: 'Error al AGREGAR un producto: No se aceptan campos vacios' });
     }
     if (req.files) {
       thumbnail = req.files.map(file => file.filename);
@@ -73,10 +73,10 @@ const createProductController = async (req, res) => {
         message: `Se agrego correctamente el producto ${product.title}`
       });
     } else {
-      res.status(400).send({ status: 'error', message: `Error al AGREGAR un producto: ${{ resAddProduct }} ` });
+      res.status(400).json({ status: 'error', message: `Error al AGREGAR un producto: ${{ resAddProduct }} ` });
     }
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       status: 'error',
       message: `Error al AGREGAR un producto: ${error.reason} ${error.message}`
     });

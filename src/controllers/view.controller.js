@@ -2,7 +2,7 @@
 import productModel from '../models/products.model.js';
 import { ProductService } from '../services/products.service..js';
 import { CartService } from '../services/carts.services.js';
-
+import { serverSocketio } from '../utils/serverSocketio.js';
 // const productManager = new ProductManager("./ProductManager.json");
 
 const viewAllProductsController = async (req, res) => {
@@ -21,8 +21,9 @@ const viewAllProductsController = async (req, res) => {
 
 const viewRealTimeAllProductsController = async (req, res) => {
   try {
-    const products = await ProductService.getAll();
-    console.log(products);
+    const io = req.app.get('socketio');
+    serverSocketio(io);
+    const products = await ProductService.getAllPaginate();
     res.render('products/realTimeProducts', { products });
   } catch (error) {
     res.status(500).json({ status: 'error', error: error.message });

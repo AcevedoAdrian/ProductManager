@@ -3,16 +3,6 @@ const socket = io();
 let user = '';
 const chatbox = document.getElementById('chatbox');
 
-socket.on('logs', (data) => {
-  console.log([data]);
-  const divLog = document.getElementById('messageLogs');
-  let messages = '';
-  data.reverse().forEach((element) => {
-    messages += `<p><i>${element.user}</i>: ${element.message}</p>`;
-  });
-  divLog.innerHTML = messages;
-});
-
 Swal.fire({
   title: 'Ingrese su nick',
   input: 'text',
@@ -23,26 +13,27 @@ Swal.fire({
 }).then((result) => {
   user = result.value;
   document.getElementById('username').innerHTML = user;
+  socket.emit('controller', user);
 });
 
 chatbox.addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
     if (chatbox.value.trim().length > 0) {
       const data = { user, message: chatbox.value };
-
-      fetch('/chat', {
-        method: 'post',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-type': 'application/json'
-        }
-      });
-
-      socket.emit('message', {
-        user,
-        message: chatbox.value
-      });
+      socket.emit('crearMessage', data);
       chatbox.value = '';
     }
   }
 });
+
+socket.on('cargarMensaje', (messages) => {
+  render(messages);
+});
+const render = (messeges) => {
+  const divLog = document.getElementById('messageLogs');
+  let listMessage = '';
+  messeges.reverse().forEach((message) => {
+    listMessage += `<p><i>${message.user}</i>: ${message.message}</p>`;
+  });
+  divLog.innerHTML = listMessage;
+};
