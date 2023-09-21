@@ -66,10 +66,11 @@ const createProductController = async (req, res) => {
 
     if (resAddProduct !== null) {
       const prodcutAll = await ProductService.getAll();
-      req.io.emit('updateProducts', prodcutAll);
+      const io = req.app.get('socketio');
+      io.emit('updateProducts', prodcutAll);
       res.status(200).json({
         status: 'succses',
-        payload: prodcutAll,
+        payload: resAddProduct,
         message: `Se agrego correctamente el producto ${product.title}`
       });
     } else {
@@ -108,7 +109,8 @@ const updateProductController = async (req, res) => {
     }
     // SI NO HUBO ERROR
     const prodcutAll = await ProductService.getAll();
-    req.io.emit('updateProducts', prodcutAll);
+    const io = req.app.get('socketio');
+    io.emit('updateProducts', prodcutAll);
     return res.status(200).json({
       status: 'succses',
       payload: responseUpdate,
@@ -141,7 +143,8 @@ const deleteProductController = async (req, res) => {
       });
     }
     const prodcutAll = await ProductService.getAll();
-    req.io.emit('updateProducts', prodcutAll);
+    const io = req.app.get('socketio');
+    io.emit('updateProducts', prodcutAll);
     res.status(200).json({
       status: 'succses',
       message: `Se ELIMINO correctamente el producto ${idProduct}`

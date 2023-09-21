@@ -9,7 +9,7 @@ import {
   githubcallback,
   viewFeilLoginController,
   viewFeilRegisterController
-} from '../controllers/users.controller.js';
+} from '../controllers/sessions.controller.js';
 import { authorization } from '../middleware/authorization.js';
 import { passportCallCurrent } from '../middleware/passportCallCurrent.js';
 

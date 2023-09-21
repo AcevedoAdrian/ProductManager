@@ -3,12 +3,14 @@ import productModel from '../models/products.model.js';
 import { ProductService } from '../services/products.service..js';
 import { CartService } from '../services/carts.services.js';
 import { serverSocketio } from '../utils/serverSocketio.js';
+import logger from '../services/logger.js';
 // const productManager = new ProductManager("./ProductManager.json");
 
 const viewAllProductsController = async (req, res) => {
   try {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
     const productsAll = await ProductService.getAllPaginate();
+    console.log(productsAll);
     const user = req.user;
     res.render('products/products', { productsAll, user });
   } catch (error) {

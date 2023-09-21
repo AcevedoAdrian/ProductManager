@@ -6,6 +6,7 @@ import config from './config.js';
 
 import { userModel } from '../models/users.model.js';
 import { cookieExtractor, generateToken } from '../utils.js';
+import logger from '../services/logger.js';
 
 // core de la estrategia de local
 const LocalStrategy = local.Strategy;
@@ -25,19 +26,20 @@ const initializePassport = () => {
       },
       async (req, username, password, done) => {
         try {
+          logger.info('REGISTER');
           const { first_name, last_name, age, email } = req.body;
           if ((!first_name, !last_name, !age, !email, !password)) {
-            console.log('Campos vacios');
+            logger.error('Campos vacios');
             return done(null, false, { message: 'No se aceptan campos vacios' });
           }
           if (password.length < 4) {
-            console.log('Password corto');
+            logger.error('Password corto');
             return done(null, false, { message: 'Password muy corto' });
           }
 
           const user = await userModel.findOne({ email: username });
           if (user) {
-            console.log('User already exits');
+            logger.error('User already exits');
             return done(null, false, { message: 'Usuario ya existe' });
           }
           let role;
@@ -54,7 +56,7 @@ const initializePassport = () => {
             role
           };
           const userCreater = await userModel.create(newUser);
-          // console.log(`log ${userCreater}`);
+          // logger.error(`log ${userCreater}`);
           return done(null, userCreater);
         } catch (error) {
           return done(error);
@@ -70,12 +72,12 @@ const initializePassport = () => {
       try {
         const user = await userModel.findOne({ email: username });
         if (!user) {
-          console.log('usuario no existe');
+          logger.error('usuario no existe');
           return done(null, false, { message: 'Usuario o Password incorrecto ' });
         }
         const validete = await user.isValidPassword(password);
         if (!validete) {
-          console.log('password icorrecto');
+          logger.error('password icorrecto');
           return done(null, false, { message: 'Usuario o Password incorrecto ' });
         }
         const token = generateToken(user);
@@ -102,7 +104,7 @@ const initializePassport = () => {
         secretOrKey: config.jwtPrivateKey
       },
       async (jwt_payload, done) => {
-        console.log('JWTStrategy');
+        logger.info('JWTStrategy');
         try {
           return done(null, jwt_payload);
         } catch (error) {
@@ -118,7 +120,7 @@ const initializePassport = () => {
     callbackURL: config.callbackURL
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      // console.log(profile._json.email);
+      // logger.error(profile._json.email);
 
       const user = await userModel.findOne({ email: profile._json.email });
       if (user) {
@@ -157,7 +159,7 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
-          console.log(jwt_payload);
+          logger.info(`passaport current${jwt_payload}`);
           const user = jwt_payload;
           if (!user) {
             return done(null, false, { message: 'No se proporcionó token' });
@@ -201,16 +203,16 @@ export default initializePassport;
 //     const { first_name, last_name, age, email } = req.body;
 //     try {
 //       if ((!first_name, !last_name, !age, !email, !password)) {
-//         console.log('Campos vacios');
+//         logger.error('Campos vacios');
 //         done(null, false);
 //       }
 //       if (password.length < 4) {
-//         console.log('Password corto');
+//         logger.error('Password corto');
 //         done(null, false);
 //       }
 //       const user = await userModel.findOne({ email: username });
 //       if (user) {
-//         console.log('User ya existe');
+//         logger.error('User ya existe');
 //         done(null, false);
 //       }
 //       const role = email === 'admin@coderhouse.com' && password === 'Cod3r123'
@@ -239,11 +241,11 @@ export default initializePassport;
 //     try {
 //       const user = await userModel.findOne({ email: username });
 //       if (!user) {
-//         console.log('usuario no existe');
+//         logger.error('usuario no existe');
 //         return done(null, false);
 //       }
 //       if (!isValidPassword(user, password)) {
-//         console.log('password icorrecto');
+//         logger.error('password icorrecto');
 //         return done(null, false);
 //       }
 
@@ -259,7 +261,7 @@ export default initializePassport;
 //     callbackURL: process.env.GITHUB_CALLBACK_URL
 //   }, async (accessToken, refreshToken, profile, done) => {
 //     try {
-//       console.log(profile._json.email);
+//       logger.error(profile._json.email);
 //       const user = await userModel.findOne({ email: profile._json.email });
 //       if (user) return done(null, user);
 //       const newUser = await userModel.create({

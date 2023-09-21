@@ -70,7 +70,9 @@
         <tr>
           <td class="border px-8 py-4">
             <button class="hover:bg-red-700 w-full bg-red-600 text-white font-bold p-2 cursor-pointer rounded-md "
-              onclick="deleteProduct({{this._id}})">Eliminar</button>
+              onclick="deleteProduct('{{this._id}}')"
+              id="btnDelete"
+            >Eliminar</button>
           </td>
           <td class="border px-8 py-4">{{this.title}}</td>
           <td class="border px-8 py-4">{{this.description}}</td>
@@ -79,7 +81,7 @@
           <td class="border px-8 py-4">{{this.stock}}</td>
           <td class="border px-8 py-4">
             {{#each this.thumbnail}}
-            <img src="http://localhost:8000/img/{{this.filename}}" alt="{{this.filename}}" width="50" height="50">
+            <img src="http://localhost:8000/src/public/img/{{this}}" alt="{{this}}" width="50" height="50">
             {{!-- <img src="../../src/public/img/nike.jpeg" alt="{{this.filename}}"> --}}
 
             {{/each}}
@@ -91,5 +93,6 @@
   </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
-{{!-- <script src="/js/createPorduct.js"></script> --}}
+{{!-- <script src="/js/index.js"></script> --}}
+<script src="/js/createPorduct.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

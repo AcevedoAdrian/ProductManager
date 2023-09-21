@@ -1,5 +1,6 @@
 
 import config from '../config/config.js';
+
 const viewLoginController = (req, res) => {
   res.render('sessions/login');
 };
@@ -35,7 +36,7 @@ const loginController = async (req, res) => {
       // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
     }
   )
-    .redirect('/sessions/current');
+    .redirect('/product');
   // res.send({ status: 'success', payload: req.user });
 };
 

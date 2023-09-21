@@ -13,7 +13,7 @@ const router = Router();
 
 router.get('/products', invitado('jwt'), viewAllProductsController);
 router.get('/products/:pid', viewProductByIdController);
-router.get('/realtimeproducts', passportCallCurrent('current'), authorization('user'), viewRealTimeAllProductsController);
+router.get('/realtimeproducts', passportCallCurrent('current'), authorization('admin'), viewRealTimeAllProductsController);
 router.get('/carts/:cid', viewCartByIDController);
 
 export default router;
