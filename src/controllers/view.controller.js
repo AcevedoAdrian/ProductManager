@@ -9,8 +9,9 @@ import logger from '../services/logger.js';
 const viewAllProductsController = async (req, res) => {
   try {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
-    const productsAll = await ProductService.getAllPaginate();
-    console.log(productsAll);
+    // logger.info(req.query);
+    const productsAll = await ProductService.getAllPaginate(req);
+    // console.log(productsAll);
     const user = req.user;
     res.render('products/products', { productsAll, user });
   } catch (error) {
@@ -25,7 +26,7 @@ const viewRealTimeAllProductsController = async (req, res) => {
   try {
     const io = req.app.get('socketio');
     serverSocketio(io);
-    const products = await ProductService.getAllPaginate();
+    const products = await ProductService.getAllPaginate(req);
     res.render('products/realTimeProducts', { products });
   } catch (error) {
     res.status(500).json({ status: 'error', error: error.message });
@@ -52,20 +53,19 @@ const viewProductByIdController = async (req, res) => {
 const viewCartByIDController = async (req, res) => {
   try {
     const idCart = req.params.cid;
-
-    const cartByID = await CartService.getCart(cid);
+    const cartByID = await CartService.getById(idCart);
     console.log(!cartByID);
     if (!cartByID) {
-      return res.render('cart', { errror: 'No hay productos en este carrito' });
+      return res.render('cart', { errror: 'El carrito no existe' });
     }
 
     const cart = cartByID.products;
     res.render('cart', { cart });
   } catch (error) {
-    console.log(error);
+    logger.error(error.message);
     res
       .status(500)
-      .json({ status: 'error', message: 'Error no se encotro el producto' });
+      .json({ status: 'error', message: error.message });
   }
 };
 

@@ -8,7 +8,7 @@ export const generateProductFaker = async () => {
     _id: faker.database.mongodbObjectId(),
     title: faker.commerce.product(),
     description: faker.commerce.productDescription(),
-    price: faker.commerce.price({ min: 100000, max: 100000, symbol: '$' }),
+    price: faker.commerce.price({ min: 100000, max: 100000, dec: 0 }),
     thumbnails: [faker.image.url()],
     code: faker.string.alphanumeric(8),
     category: faker.commerce.productName(),

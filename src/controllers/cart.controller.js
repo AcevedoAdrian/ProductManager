@@ -27,7 +27,8 @@ const getCartByIDController = async (req, res) => {
 };
 const createCartController = async (req, res) => {
   try {
-    const cart = req.body;
+    // const cart = req.body;
+    const cart = {};
     // const resNewCart = await cartsModel.create(cart);
     const resNewCart = await CartService.create(cart);
     res.status(400).json({
@@ -107,6 +108,13 @@ const updateQuantityCartAndProductController = async (req, res) => {
         message: `Not Found: No se ENCONTRO carrito con el id ${idCart}`
       });
     }
+    const productById = await ProductService.getById(idCart);
+    if (!productById) {
+      return res.status(404).json({
+        status: 'error',
+        message: `Not Found: No se ENCONTRO el producto con el id ${productById}`
+      });
+    }
 
     const existingProduct = cartByID.products.findIndex((item) =>
       item.product._id == idProduct
@@ -120,10 +128,16 @@ const updateQuantityCartAndProductController = async (req, res) => {
     }
 
     const quantity = +req.body.quantity;
-    if (!Number.isInteger(quantity) || quantity < 0) {
-      // TODO: Mejorar el error
-      throw new Error('Cantidad incorrecta');
+    if (!quantity) {
+      return res.status(400).json({ status: 'error', message: 'No se encontro la cantidad en las opciones' });
     }
+    if (typeof quantity !== 'number') {
+      return res.status(400).json({ status: 'error', message: 'La cantidad no es numero' });
+    }
+    if (quantity === 0) {
+      return res.status(400).json({ status: 'error', message: 'No se acepta 0 como cantidad' });
+    }
+
     cartByID.products[existingProduct].quantity = quantity;
 
     // const cartProductUpdate = await cartByID.save();
@@ -160,6 +174,21 @@ const updateDataProductCartController = async (req, res) => {
         status: 'error',
         message: 'Datos del PRODUCTO incorrecto'
       });
+    }
+    for (let i = 0; i < dataProducts.length; i++) {
+      if (!dataProducts[i].hasOwnProperty('product') || !dataProducts[i].hasOwnProperty('quantity')) {
+        return res.status(400).json({ status: 'error', message: 'Error propiedaes incrrectas' });
+      }
+      if (typeof dataProducts[i].quantity !== 'number') {
+        return res.status(400).json({ status: 'error', message: 'La cantidad no es numero' });
+      }
+      if (dataProducts[i].quantity === 0) {
+        return res.status(400).json({ status: 'error', message: 'No se acepta 0 como cantidad' });
+      }
+      const productByID = await ProductService.getById(dataProducts[i].product);
+      if (!productByID) {
+        return res.status(400).json({ status: 'error', message: 'El producto que desa actualizar no existe' });
+      }
     }
     cartByID.products = dataProducts;
     // Guardamos el carrito actualizado
@@ -216,10 +245,11 @@ const deleteProductSelectCartController = async (req, res) => {
     );
 
     if (existingProduct !== -1) {
-      throw new Error('Producto no encontrado');
+      return res.json({ status: 'error', message: `El producto con el id=${idProduct} en el carrito` });
     }
     // Eliminamos el producto del carrito
-    cartByID.products.splice(existingProduct, 1);
+    // cartByID.products.filter(product => product._id !== idProduct);
+    // cartByID.products = cartByID.products.splice(existingProduct, 1);
     const cartProductUpdate = await CartService.update({ _id: idCart }, cartByID);
     res.status(200).json({
       status: 'succses',

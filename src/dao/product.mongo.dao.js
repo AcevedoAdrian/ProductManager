@@ -22,12 +22,13 @@ export default class ProductDAO {
       // ORDENO POR DES SOLO SI ASI VIENE POR PARAMETRO CASO CONTRARIO ORDENO POR LO QUE SEA ASC
       let optionsPrice = {};
       if (productBySort === 'desc') {
-        optionsPrice = { price: -1 };
+        optionsPrice = { price: -1 }; // DESC
       } else {
-        optionsPrice = { price: 1 };
+        optionsPrice = { price: 1 };// ASC
       }
 
       const optionsLimit = {
+        lean: true, // Para que lea los parametros como objeto
         limit: productByLimit,
         page: productByPage,
         sort: optionsPrice
