@@ -36,7 +36,7 @@ const loginController = async (req, res) => {
       // httpOnly: true //para que no sean accedidas por medio de codigo ajeno en una peticion
     }
   )
-    .redirect('/product');
+    .redirect('/products');
   // res.send({ status: 'success', payload: req.user });
 };
 

@@ -19,10 +19,9 @@ import viewRouter from './routes/view.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import loggerRouter from './routes/logger.routes.js';
 import mockingRouter from './routes/mocking.routes.js';
-import { serverSocketio } from './utils/serverSocketio.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
-
+export const PORT = config.port || 8080;
 // ARCHIVO STATICO
 // app.use(express.static('./src/public'));
 // Para manejar json las peticiones
@@ -77,6 +76,6 @@ app.use(errorHandler);
 // });
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER CON SOCKET IO
 
-httpServer.listen(config.port || 8000, () => {
+httpServer.listen(PORT, () => {
   console.log(`Servidor up en el puerto: ${config.port}`);
 });

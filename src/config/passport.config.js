@@ -5,6 +5,7 @@ import GitHubStrategy from 'passport-github2';
 import config from './config.js';
 
 import { userModel } from '../models/users.model.js';
+import cartModel from '../models/carts.model.js';
 import { cookieExtractor, generateToken } from '../utils.js';
 import logger from '../services/logger.js';
 
@@ -42,8 +43,9 @@ const initializePassport = () => {
             logger.error('User already exits');
             return done(null, false, { message: 'Usuario ya existe' });
           }
+          const cartForNewUser = await cartModel.create({});
           let role;
-          email === 'admin@coderhouse.com' && password === 'Cod3r123'
+          email === config.adminEmail && password === config.adminPassword
             ? (role = 'admin')
             : (role = 'user');
 
@@ -53,6 +55,7 @@ const initializePassport = () => {
             email,
             age,
             password,
+            cart: cartForNewUser._id,
             role
           };
           const userCreater = await userModel.create(newUser);
@@ -138,8 +141,7 @@ const initializePassport = () => {
         last_name: ' ',
         email: profile._json.email,
         age: 0,
-        password: ' ',
-        role: 'user'
+        password: ' '
       });
       const token = generateToken(user);
       newUser.token = token;

@@ -14,5 +14,7 @@ export default {
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
   githubCallBackURL: process.env.GITHUB_CALLBACK_URL,
   persistence: process.env.PERSISTENCE,
-  environment: process.env.ENVIRONMENT
+  environment: process.env.ENVIRONMENT,
+  adminEmail: process.env.ADMIN_ADMIN,
+  adminPassword: process.env.ADMIN_PASSWORD
 };

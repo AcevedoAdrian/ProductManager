@@ -11,7 +11,6 @@ const viewAllProductsController = async (req, res) => {
     // PREGUNTO SI LOS PARAMETROS SON NULL, UNDEFINED
     // logger.info(req.query);
     const productsAll = await ProductService.getAllPaginate(req);
-    // console.log(productsAll);
     const user = req.user;
     res.render('products/products', { productsAll, user });
   } catch (error) {

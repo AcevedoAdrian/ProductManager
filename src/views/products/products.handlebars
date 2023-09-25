@@ -1,6 +1,8 @@
 {{#if user}}
 <div>
-  <h1>Bienvenido <b class="font-bold">{{user.first_name}}, {{user.last_name}}</b> y su rol es: {{user.role}}</h1>
+  <h2>Bienvenido <b class="font-bold">{{user.first_name}}, {{user.last_name}}</b> 
+  (<a href="/profile">{{user.email}}</a>)- role: {{user.role}}
+  </h2>
   <a href="/sessions/logout" class="button">Logout</a>
 </div>
 {{/if}}
@@ -13,10 +15,41 @@
 
     <fieldset class="p-4">
       {{#if productsAll.hasPrevPage}}      
-        <a class="bg-gray-300  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 cursor-pointer rounded-l" href="http://localhost:8000/products?limit={{productsAll.limit}}&page={{productsAll.prevPage}}" >Anterior</a>
+        <a 
+        class="
+          bg-gray-300  
+          hover:bg-gray-400 
+          text-gray-800 
+          font-semibold 
+          py-2 px-4 
+          cursor-pointer 
+          rounded-l"
+           href="http://localhost:8000/products?limit={{productsAll.limit}}&page={{productsAll.prevPage}}"
+           {{!-- href="{{productsAll.prevLink}}"   --}}
+        >
+          Anterior
+        </a>
       {{/if}}
+      {{#each productsAll.totalPages}}
+        <a href="{{this.link}}">{{this.page}}</a>
+      {{/each}}
       {{#if productsAll.hasNextPage}}
-      <a class="bg-gray-300 checked:bg-green-400 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 cursor-pointer rounded-l" href="http://localhost:8000/products?limit={{productsAll.limit}}&page={{productsAll.nextPage}}" >Siguiente</a>
+      <a 
+        class="
+          bg-gray-300 
+          checked:bg-green-400 
+          hover:bg-gray-400 
+          text-gray-800 
+          font-semibold 
+          py-2 px-4 
+          cursor-pointer 
+          rounded-l" 
+          href="http://localhost:8000/products?limit={{productsAll.limit}}&page={{productsAll.nextPage}}"
+          {{!-- href="{{productsAll.nextLink}}" --}}
+      >
+        Siguiente
+      </a>
+
       {{/if}}
       
       </fieldset>
