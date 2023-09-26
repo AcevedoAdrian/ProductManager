@@ -31,7 +31,7 @@ export const generateToken = user => {
   const token = jwt.sign({ _id, last_name, first_name, email, role }, SECRET, { expiresIn: '24h' });
   return token;
 };
-// ECTRAE EL TOKEN DE UNA COOKIE
+// EXTRAE EL TOKEN DE UNA COOKIE
 export const cookieExtractor = req => {
   const COOKIENAME = config.jwtNameCookie;
   const token =

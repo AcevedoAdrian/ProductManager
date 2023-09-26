@@ -161,12 +161,11 @@ const initializePassport = () => {
       },
       async (jwt_payload, done) => {
         try {
-          logger.info(`passaport current${jwt_payload}`);
           const user = jwt_payload;
           if (!user) {
             return done(null, false, { message: 'No se proporcionó token' });
           }
-          const existingUser = await userModel.findById(user._id);
+          const existingUser = await userModel.findById(user._id).lean().exec();
           if (!existingUser) {
             return done(null, false, { message: 'No hay ningún usuario con sesión activa' });
           }

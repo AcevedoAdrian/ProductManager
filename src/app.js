@@ -19,6 +19,8 @@ import viewRouter from './routes/view.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import loggerRouter from './routes/logger.routes.js';
 import mockingRouter from './routes/mocking.routes.js';
+// MIDDLEWARE
+import { passportCallCurrent } from './middleware/passportCallCurrent.middleware.js';
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 export const PORT = config.port || 8080;
@@ -64,16 +66,16 @@ app.use('/api/carts', cartRouter);
 app.use('/api/mockingproducts', mockingRouter);
 app.use('/loggerTest', loggerRouter);
 app.use('/sessions', sessionsRouter);
-app.use('/chat', chatRouter);
-app.use('/', viewRouter);
+app.use('/chat', passportCallCurrent('current'), chatRouter);
+app.use('/products', passportCallCurrent('current'), viewRouter);
 // Para los errores
 app.use(errorHandler);
-// app.use((req, res) => {
-//   if (req.headers === 'application-json') {
-//     res.status(404).json({ status: 'error', messages: '4004' });
-//   }
-//   res.status(404).render('errors/erros', { error: '404' });
-// });
+app.use((req, res) => {
+  if (req.headers === 'application-json') {
+    res.status(404).json({ status: 'error', messages: '404' });
+  }
+  res.status(404).render('errors/error404', { status: 'error', message: 'Pagina no encontrada' });
+});
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER CON SOCKET IO
 
 httpServer.listen(PORT, () => {

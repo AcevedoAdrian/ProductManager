@@ -263,7 +263,15 @@ const deleteProductSelectCartController = async (req, res) => {
   }
 };
 const finishBuyCartController = async (req, res) => {
-
+  try {
+    const idCart = req.params.cid;
+    const cart = await CartService.getById(idCart);
+  } catch (error) {
+    res.status(500).send({
+      status: 'error',
+      message: `No se puedo finalizar la compra: ${error.message}`
+    });
+  }
 };
 
 export {

@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import uploadMiddleware from '../middleware/multer.js';
+import uploadMiddleware from '../middleware/multer.middleware.js';
+import { authorization } from '../middleware/authorization.middleware.js';
 import {
   getAllProductsController,
   getProductByIdController,

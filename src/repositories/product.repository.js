@@ -1,5 +1,5 @@
 export default class ProductRepository {
-  constructor (dao) {
+  constructor(dao) {
     this.dao = dao;
   }
 

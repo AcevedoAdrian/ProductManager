@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import { passportCallCurrent } from '../middleware/passportCallCurrent.js';
-import { authorization } from '../middleware/authorization.js';
-import { invitado } from '../middleware/invitado.js';
+import { authorization } from '../middleware/authorization.middleware.js';
 import {
   viewAllProductsController,
   viewRealTimeAllProductsController,
@@ -11,9 +9,9 @@ import {
 
 const router = Router();
 
-router.get('/products', invitado('jwt'), viewAllProductsController);
-router.get('/products/:pid', viewProductByIdController);
-router.get('/realtimeproducts', passportCallCurrent('current'), authorization('admin'), viewRealTimeAllProductsController);
-router.get('/carts/:cid', viewCartByIDController);
+router.get('/', authorization(['USER', 'ADMIN']), viewAllProductsController);
+router.get('/:pid', authorization(['USER', 'ADMIN']), viewProductByIdController);
+router.get('/realtimeproducts', authorization(['ADMIN']), viewRealTimeAllProductsController);
+router.get('/carts/:cid', authorization(['USER', 'ADMIN']), viewCartByIDController);
 
 export default router;
