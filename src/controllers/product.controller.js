@@ -1,5 +1,5 @@
 
-import { ProductService } from '../services/products.service..js';
+import { ProductService } from '../services/products.service.js';
 
 const getAllProductsController = async (req, res) => {
   // NUEVA IMPLEMNTACION

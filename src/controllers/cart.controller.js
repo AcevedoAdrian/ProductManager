@@ -1,7 +1,9 @@
 // import CartManager from "../dao/fileManager/CartManager.js";
 // const carts = new CartManager("Carts.json");
 import { CartService } from '../services/carts.services.js';
-import { ProductService } from '../services/products.service..js';
+import { ProductService } from '../services/products.service.js';
+import crypto from 'node:crypto';
+import logger from '../services/logger.js';
 
 const getCartByIDController = async (req, res) => {
   try {
@@ -265,13 +267,72 @@ const deleteProductSelectCartController = async (req, res) => {
 const finishBuyCartController = async (req, res) => {
   try {
     const idCart = req.params.cid;
+    const userEmail = req.user.user.email || 'sinNombre';
     const cart = await CartService.getById(idCart);
+    if (!cart) {
+      throw new Error('El carrito no existe');
+    }
+    const productAddPurchase = [];
+    const productDeleteCart = [];
+    // Recorrer cada producto en el carrito
+    for (const productCart of cart.products) {
+      const productID = productCart.product._id;
+      const productCartQuantity = productCart.quantity;
+      const product = await ProductService.getById(productID);
+      if (!product) {
+        productDeleteCart.push(productCart);
+      }
+      // Verifico cantidad de producto
+      if (product.stock === 0 || product.status === false) {
+        productDeleteCart.push(productCart);
+      }
+      if (product.stock >= productCartQuantity) {
+        product.stock -= productCartQuantity;
+        await ProductService.update(product._id, product);
+        productAddPurchase.push(productCart);
+      } else {
+        productDeleteCart.push(productCart);
+      }
+    }
+
+    if (productAddPurchase.length > 0) {
+      // Crea un nuevo ticket con los detalles de la compra
+      const newTicket = {
+        code: crypto.randomBytes(16).toString('hex'),
+        purchase_datetime: new Date(),
+        amount: await cartCalculateTotal(productAddPurchase),
+        purchaser: userEmail,
+        products: productAddPurchase.map((prod) => ({
+          product: prod.product._id,
+          quantity: prod.quantity
+        }))
+      };
+      console.log(newTicket);
+      const saveTicket = await CartService.createPurchase(newTicket);
+    }
   } catch (error) {
     res.status(500).send({
       status: 'error',
       message: `No se puedo finalizar la compra: ${error.message}`
     });
   }
+};
+
+// CALCULAR PRECIO TOTAL PRODUCT(precio*stock)
+export const cartCalculateTotal = async (carts) => {
+  let cartTotal = 0;
+  try {
+    for (const cart of carts) {
+      // const product = await ProductService.getById(cart.product);
+      // if (!product) {
+      //   throw new Error(`El producto no existe : ${cart.product}`);
+      // }
+      cartTotal += cart.product.price * cart.quantity;
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+  return cartTotal;
 };
 
 export {

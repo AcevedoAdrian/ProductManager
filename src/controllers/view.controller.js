@@ -1,6 +1,6 @@
 
 import productModel from '../models/products.model.js';
-import { ProductService } from '../services/products.service..js';
+import { ProductService } from '../services/products.service.js';
 import { CartService } from '../services/carts.services.js';
 import { serverSocketio } from '../utils/serverSocketio.js';
 import logger from '../services/logger.js';

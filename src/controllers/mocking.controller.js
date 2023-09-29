@@ -1,5 +1,5 @@
 import { generateProductFaker, createProductFacker } from '../services/faker.js';
-import { ProductService } from '../services/products.service..js';
+import { ProductService } from '../services/products.service.js';
 const products = [];
 export const getProductMockController = async (req, res, next) => {
   try {
