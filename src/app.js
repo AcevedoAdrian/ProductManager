@@ -12,13 +12,14 @@ import __dirname from './utils.js';
 import initializePassport from './config/passport.config.js';
 import errorHandler from './middleware/error.middleware.js';
 // RUTAS
+// import sessionViewsRouter from './routes/sessionsView.routes.js';
 import productsRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import chatRouter from './routes/chat.routes.js';
 import viewRouter from './routes/view.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import loggerRouter from './routes/logger.routes.js';
-import mockingRouter from './routes/mocking.routes.js';
+// import mockingRouter from './routes/mocking.routes.js';
 // MIDDLEWARE
 import { passportCallCurrent } from './middleware/passportCallCurrent.middleware.js';
 // CONFIGURACION INICIAL EXPRESS
@@ -61,13 +62,16 @@ app.use(passport.initialize());
 // app.use(passport.session());
 
 // RUTAS
+// app.use('/', sessionViewsRouter);
+app.use('/', passportCallCurrent('current'), viewRouter);
+app.use('/loggerTest', loggerRouter);
+app.use('/chat', passportCallCurrent('current'), chatRouter);
+
+app.use('/api/sessions', sessionsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
-app.use('/api/mockingproducts', mockingRouter);
-app.use('/loggerTest', loggerRouter);
-app.use('/sessions', sessionsRouter);
-app.use('/chat', passportCallCurrent('current'), chatRouter);
-app.use('/products', passportCallCurrent('current'), viewRouter);
+// app.use('/api/mockingproducts', mockingRouter);
+
 // Para los errores
 app.use(errorHandler);
 app.use((req, res) => {

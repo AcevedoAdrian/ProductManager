@@ -1,5 +1,14 @@
 import logger from '../services/logger.js';
 
+export const privateRoutes = (req, res, next) => {
+  if (req.user) return res.redirect('/profile');
+  next();
+};
+
+export const publicRoutes = (req, res, next) => {
+  if (!req.user) return res.redirect('/');
+  next();
+};
 export const authorization = (roles) => {
   return async (req, res, next) => {
     roles.forEach(role => {

@@ -1,13 +1,13 @@
 
 import config from '../config/config.js';
 
-const viewLoginController = (req, res) => {
-  res.render('sessions/login');
-};
+// const viewLoginController = (req, res) => {
+//   res.render('sessions/login');
+// };
 
-const viewRegisterController = (req, res) => {
-  res.render('sessions/register');
-};
+// const viewRegisterController = (req, res) => {
+//   res.render('sessions/register');
+// };
 
 const viewFeilRegisterController = (req, res) => {
   // res.status(401).json({ status: 'error', message: 'Error al registrar usuario' });
@@ -21,7 +21,7 @@ const viewFeilLoginController = (req, res) => {
 };
 
 const registerController = async (req, res) => {
-  res.redirect('/sessions/login');
+  res.redirect('/');
 };
 const loginController = async (req, res) => {
   if (!req.user) {
@@ -62,9 +62,9 @@ const viewErrorController = (req, res) => {
 };
 
 export {
-  viewLoginController,
+  // viewLoginController,
   viewErrorController,
-  viewRegisterController,
+  // viewRegisterController,
   loginController,
   registerController,
   logoutController,

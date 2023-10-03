@@ -1,9 +1,9 @@
-import { getProductMockController, createProductMockController } from '../controllers/mocking.controller.js';
-import { Router } from 'express';
+// import { getProductMockController, createProductMockController } from '../controllers/mocking.controller.js';
+// import { Router } from 'express';
 
-const router = Router();
+// const router = Router();
 
-router.get('/', getProductMockController);
-router.post('/', createProductMockController);
+// router.get('/', getProductMockController);
+// router.post('/', createProductMockController);
 
-export default router;
+// export default router;

@@ -1,10 +1,11 @@
 import passport from 'passport';
 import { Router } from 'express';
+
 import {
   loginController,
   registerController,
-  viewRegisterController,
-  viewLoginController,
+  // viewRegisterController,
+  // viewLoginController,
   logoutController,
   githubcallback,
   viewFeilLoginController,
@@ -15,13 +16,14 @@ import { passportCallCurrent } from '../middleware/passportCallCurrent.middlewar
 
 const router = Router();
 
-router.get('/register', viewRegisterController);
+// router.get('/register', viewRegisterController);
+
+// router.get('/login', viewLoginController);
 
 router.post('/register', passportCallCurrent('register'), registerController);
 
 router.get('/failregister', viewFeilRegisterController);
-
-router.get('/login', viewLoginController);
+router.get('/failregister', viewFeilRegisterController);
 
 router.post('/login', passportCallCurrent('login'), loginController);
 

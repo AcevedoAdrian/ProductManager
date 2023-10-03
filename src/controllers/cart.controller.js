@@ -270,28 +270,30 @@ const finishBuyCartController = async (req, res) => {
     const userEmail = req.user.user.email || 'sinNombre';
     const cart = await CartService.getById(idCart);
     if (!cart) {
-      throw new Error('El carrito no existe');
+      return res.status(404).json({ status: 'error', message: `El carrito con ${idCart} no existe` });
     }
     const productAddPurchase = [];
-    const productDeleteCart = [];
+    const productNotPurchase = [];
     // Recorrer cada producto en el carrito
     for (const productCart of cart.products) {
       const productID = productCart.product._id;
       const productCartQuantity = productCart.quantity;
       const product = await ProductService.getById(productID);
       if (!product) {
-        productDeleteCart.push(productCart);
+        // productNotPurchase.push(productCart);
+        return res.status(404).json({ status: 'error', message: `El producto con ${productID} no existe` });
       }
       // Verifico cantidad de producto
       if (product.stock === 0 || product.status === false) {
-        productDeleteCart.push(productCart);
+        productNotPurchase.push(productCart);
       }
+
       if (product.stock >= productCartQuantity) {
         product.stock -= productCartQuantity;
         await ProductService.update(product._id, product);
         productAddPurchase.push(productCart);
       } else {
-        productDeleteCart.push(productCart);
+        productNotPurchase.push(productCart);
       }
     }
 
@@ -307,8 +309,27 @@ const finishBuyCartController = async (req, res) => {
           quantity: prod.quantity
         }))
       };
-      console.log(newTicket);
       const saveTicket = await CartService.createPurchase(newTicket);
+      const cartUpdate = CartService.updateCart(
+        idCart,
+        { products: productNotPurchase },
+        { returnDocument: 'after' }
+      );
+      res.status(200).json({
+        status: 'success',
+        payload: { saveTicket, cartUpdate }
+      });
+    } else {
+      const cartUpdate = CartService.updateCart(
+        idCart,
+        { products: productNotPurchase },
+        { returnDocument: 'after' }
+      );
+      res.status(404).json({
+        status: 'error',
+        payload: cartUpdate,
+        message: 'No se pudo realizar la compra '
+      });
     }
   } catch (error) {
     res.status(500).send({

@@ -1,25 +1,11 @@
 // INSTANCIA AL SOCKET Y GUARDADO EN LA CONSTANTE
 const socket = io();
-let user = '';
+
 const chatbox = document.getElementById('chatbox');
-
-Swal.fire({
-  title: 'Ingrese su nick',
-  input: 'text',
-  icon: 'success',
-  text: '',
-  inputValidator: (value) => !value.trim() && 'Por favor, ingrese un nick',
-  allowOutsideClick: false
-}).then((result) => {
-  user = result.value;
-  document.getElementById('username').innerHTML = user;
-  socket.emit('controller', user);
-});
-
 chatbox.addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
     if (chatbox.value.trim().length > 0) {
-      const data = { user, message: chatbox.value };
+      const data = { user: document.getElementById('username').innerText, message: chatbox.value };
       socket.emit('crearMessage', data);
       chatbox.value = '';
     }
