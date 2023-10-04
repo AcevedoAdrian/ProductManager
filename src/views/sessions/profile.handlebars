@@ -1,32 +1,29 @@
 <div class=" py-10 ">
   <h1 class="text-4xl my-10 font-extrabold text-center"></h1>
-  <h2 class="text-center text-2xl font-extrabold"><span class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
-    <span class="relative text-white">Bienvenido</span>
+  <h2 class="text-center text-2xl font-extrabold"><span class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-teal-500 relative inline-block">
+    <span class="relative text-white">Datos Personales</span>
   </span></h2>
   <div class=" mt-8 mx-auto max-w-md">
-    <div class="bg-white py-8 px-4 shadow flex flex-col justify-center  content-center " >
-      <form class="space-y-5 " action="/api/sessions/login" method="post">
+    <div class="bg-white py-8 px-4 shadow " >
+      <form class="space-y-5 grid place-items-center"  action="/api/sessions/login" method="post">
         <div>          
-          <p class="text-sm font-semibold leading-6 text-gray-900">{{first_name}}</p>
+          <h2 class="font-semibold text-gray-800 dark:text-gray-800 sm:text-lg   ">{{full_name}}</h2>
         </div>
-        <div>
-         
-          <p class="font-bold text-gray-500">{{email}}</p>
+        <div>         
+          <p class="font-semibold text-gray-800 dark:text-gray-600 sm:text-lg  ">{{email}}</p>
         </div>
-        <div>
-          <label for="email">Role:</label>
-          <p class="text-sm leading-6 text-gray-900">{{role}}</p>
+        <div >
+          <p class="px-2 py-1 text-xs font-normal  uppercase bg-teal-200 text-teal-700 rounded-md dark:text-teal-700 dark:bg-teal-400 bg-opacity-40">{{role}}</p>
         </div>
         
         
-        <div class="flex item-center justify-between ">
-          <a class="text-gray-500 text-xs" href="/products">Ver Productos</a>
-          <a class="text-gray-500 text-xs" href="/api/sessions/logout">Logout</a>
-        </div>
 
         
       </form>
-
+      <div class="flex item-center justify-between ">
+        <a class="text-gray-500 text-xs  hover:text-teal-500 hover:font-semibold " href="/products">Ver Productos</a>
+        <a class="text-gray-500 text-xs  hover:text-teal-500 hover:font-semibold " href="/api/sessions/logout">Logout</a>
+      </div>
     </div>
   </div>
 </div>

@@ -14,6 +14,7 @@ const viewAllProductsController = async (req, res) => {
     // logger.info(req.query);
     const productsAll = await ProductService.getAllPaginate(req);
     const user = req.user;
+    console.log(productsAll);
     res.render('products/products', { productsAll, user });
   } catch (error) {
     res.status(500).send({
@@ -44,10 +45,11 @@ const viewProductByIdController = async (req, res) => {
         .status(404)
         .json({ status: 'error', message: 'El producto no existe' });
     }
-    res.render('product', { productByID });
+    // console.log({ productByID });
+    res.render('products/product', { productByID });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ status: 'error', error: error.message });
+    res.status(500).json({ status: 'error', message: error.message });
   }
 };
 

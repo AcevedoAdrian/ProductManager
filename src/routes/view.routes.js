@@ -16,7 +16,7 @@ import {
 const router = Router();
 
 router.get('/products', authorization(['USER', 'ADMIN']), viewAllProductsController);
-router.get('/products/:pid', authorization(['USER', 'ADMIN']), viewProductByIdController);
+router.get('/product/:pid', authorization(['USER', 'ADMIN']), viewProductByIdController);
 router.get('/realtimeproducts', authorization(['ADMIN']), viewRealTimeAllProductsController);
 router.get('/carts/:cid', authorization(['USER', 'ADMIN']), viewCartByIDController);
 router.get('/mockingproducts', getProductMockController);
