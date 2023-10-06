@@ -14,7 +14,8 @@ const viewAllProductsController = async (req, res) => {
     // logger.info(req.query);
     const productsAll = await ProductService.getAllPaginate(req);
     const user = req.user;
-    console.log(user)
+    productsAll.cartUser = user.cart;
+    // console.log(user);
     console.log(productsAll);
     res.render('products/products', { productsAll, user });
   } catch (error) {

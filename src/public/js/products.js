@@ -1,6 +1,6 @@
-const addToCart = async (idCart , idProduct) => {
+async function addToCart(idCart, idProduct) {
   try {
-    console.log({ idCart , idProduct });
+    console.log({ idCart, idProduct });
     const res = await fetch(`/api/carts/${idCart}/product/${idProduct}`, {
       method: 'POST'
     });
@@ -14,4 +14,4 @@ const addToCart = async (idCart , idProduct) => {
   } catch (error) {
     console.log(error);
   }
-};
+}

@@ -1,8 +1,9 @@
 {{#if user}}
 <div class="flex items-center justify-between p-2 shadow-[0px_2px_0px_rgba(0,0,0,0.2)]">
   <h2 class="text-2xl font-normal leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Bienvenido <b
-      class="font-bold text-teal-500">{{user.first_name}}, {{user.last_name}}</b></h2>
+      class="font-bold text-teal-500">{{user.first_name}}, {{user.last_name}} </b></h2>
   <div class="flex justify-end  ">
+      <a href="/carts/{{user.cart}}" class="text-lg font-semibold leading-6 text-gray-900 px-4 hover:text-teal-500">Carrito</a>
     <a href="/profile" class="text-lg font-semibold leading-6 text-gray-900 px-4 hover:text-teal-500">Perfil</a>
     <a href="/sessions/logout" class="text-lg font-semibold leading-6 text-gray-900 hover:text-teal-500">Logout </a>
   </div>
@@ -13,7 +14,8 @@
 <h2 class="text-center text-2xl font-extrabold my-20 "><span
     class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-teal-500 relative inline-block">
     <span class="relative text-white">Lista Productos</span>
-  </span></h2>
+  </span>
+  </h2>
   
 <div class="mt-8 mx-auto place-items-start">
 
@@ -73,8 +75,8 @@
     {{#each productsAll.payload}}
     <article class="rounded-xl bg-white p-3 shadow-lg hover:shadow-xl hover:transform hover:scale-105 duration-300 ">
 <!--      <a href="http://localhost:8080/product/{{this._id}}" target="_blank">-->
-
-        <a onclick="addToCart('{{ user.cart }}','{{ this._id}}')" >
+        {{!-- @@root.user.cart para acceder a los datos de user dentro del each, xq no se podia acceder dentro del each--}}
+        <a onclick="addToCart(`{{@root.user.cart}}`,`{{this._id}}`)" >
         <div class="relative flex items-end overflow-hidden rounded-xl">
           <img
             src="https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
@@ -94,6 +96,7 @@
 
         <div class="mt-1 p-2">
           <h2 class="text-slate-700">{{this.title}}</h2>
+          <p class="mt-1 text-sm text-slate-400">{{this.user.email}}</p>
           <p class="mt-1 text-sm text-slate-400">{{this.description}}</p>
 
           <div class="mt-3 flex items-end justify-between">
