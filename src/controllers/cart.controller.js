@@ -1,6 +1,6 @@
 // import CartManager from "../dao/fileManager/CartManager.js";
 // const carts = new CartManager("Carts.json");
-import { CartService } from '../services/carts.services.js';
+import { CartService, cartCalculateTotal } from '../services/carts.services.js';
 import { ProductService } from '../services/products.service.js';
 import crypto from 'node:crypto';
 import logger from '../services/logger.js';
@@ -16,6 +16,9 @@ const getCartByIDController = async (req, res) => {
         message: `No se ENCONTRO carrito con el id ${idCart}`
       });
     }
+    const totalcart = await cartCalculateTotal(cartByID);
+    console.log(cartByID);
+    cartByID.totalcart = totalcart;
     res.status(200).json({
       status: 'succses',
       payload: cartByID
@@ -229,6 +232,7 @@ const deleteProductForCartController = async (req, res) => {
     });
   }
 };
+
 const deleteProductSelectCartController = async (req, res) => {
   const idCart = req.params.cid;
   const idProduct = req.params.pid;
@@ -337,23 +341,6 @@ const finishBuyCartController = async (req, res) => {
       message: `No se puedo finalizar la compra: ${error.message}`
     });
   }
-};
-
-// CALCULAR PRECIO TOTAL PRODUCT(precio*stock)
-export const cartCalculateTotal = async (carts) => {
-  let cartTotal = 0;
-  try {
-    for (const cart of carts) {
-      // const product = await ProductService.getById(cart.product);
-      // if (!product) {
-      //   throw new Error(`El producto no existe : ${cart.product}`);
-      // }
-      cartTotal += cart.product.price * cart.quantity;
-    }
-  } catch (error) {
-    throw new Error(error);
-  }
-  return cartTotal;
 };
 
 export {

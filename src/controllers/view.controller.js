@@ -1,7 +1,7 @@
 
 import productModel from '../models/products.model.js';
 import { ProductService } from '../services/products.service.js';
-import { CartService } from '../services/carts.services.js';
+import { CartService, cartCalculateTotal } from '../services/carts.services.js';
 import { serverSocketio } from '../utils/serverSocketio.js';
 import { generateProductFaker, createProductFacker } from '../services/faker.js';
 import logger from '../services/logger.js';
@@ -58,14 +58,18 @@ const viewProductByIdController = async (req, res) => {
 const viewCartByIDController = async (req, res) => {
   try {
     const idCart = req.params.cid;
-    const cartByID = await CartService.getById(idCart);
+    const cartByID = await CartService.getByIdPopulate(idCart);
     console.log(!cartByID);
     if (!cartByID) {
       return res.render('cart', { errror: 'El carrito no existe' });
     }
-
-    const cart = cartByID.products;
-    res.render('cart', { cart });
+    const totalcart = await cartCalculateTotal(cartByID.products);
+    console.log(cartByID);
+    cartByID.totalCart = totalcart;
+    // const cart = cartByID.products;
+    console.log('----------');
+    console.log({ cartByID });
+    res.render('cart', { cartByID });
   } catch (error) {
     logger.error(error.message);
     res
