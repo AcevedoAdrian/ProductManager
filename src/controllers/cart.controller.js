@@ -17,7 +17,7 @@ const getCartByIDController = async (req, res) => {
       });
     }
     const totalcart = await cartCalculateTotal(cartByID);
-    console.log(cartByID);
+    // console.log(cartByID);
     cartByID.totalcart = totalcart;
     res.status(200).json({
       status: 'succses',
@@ -87,7 +87,7 @@ const addProductsToCartController = async (req, res) => {
       cartByID.products.push(newProduct);
     }
     const cartProductUpdate = await CartService.update(cartByID._id, cartByID);
-    console.log(cartProductUpdate);
+    // console.log(cartProductUpdate);
     res.status(200).json({
       status: 'succses',
       payload: cartProductUpdate
@@ -165,6 +165,7 @@ const updateDataProductCartController = async (req, res) => {
 
   try {
     // VERIFICO SI EXISTE EL CARRITO
+    // console.log(idCart);
     cartByID = await CartService.getById(idCart);
     if (!cartByID) {
       return res.status(404).json({
@@ -173,13 +174,17 @@ const updateDataProductCartController = async (req, res) => {
       });
     }
 
-    const dataProducts = req.body.products;
+    // const dataProducts = req.body.products;
+    const dataProducts = req.body;
+    // console.log('-----body-------');
+    // console.log(req.body);
     if (!Array.isArray(dataProducts)) {
       return res.status(400).json({
         status: 'error',
         message: 'Datos del PRODUCTO incorrecto'
       });
     }
+
     for (let i = 0; i < dataProducts.length; i++) {
       if (!dataProducts[i].hasOwnProperty('product') || !dataProducts[i].hasOwnProperty('quantity')) {
         return res.status(400).json({ status: 'error', message: 'Error propiedaes incrrectas' });

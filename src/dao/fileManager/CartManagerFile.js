@@ -1,36 +1,36 @@
-import fs from "fs";
+import fs from 'fs';
 
 export default class CartManager {
   #carts;
   #format;
   #path;
 
-  constructor(path = "Carts.json") {
+  constructor(path = 'Carts.json') {
     this.#path = path;
-    this.#format = "utf-8";
+    this.#format = 'utf-8';
     this.#carts = [];
     this.#initialFileCart();
   }
 
   #initialFileCart() {
     if (fs.existsSync(this.#path)) {
-      let fileCarts = fs.readFileSync(this.#path, this.#format);
-      if (fileCarts.toString() === "") {
-        return fs.writeFileSync(this.#path, "[]");
+      const fileCarts = fs.readFileSync(this.#path, this.#format);
+      if (fileCarts.toString() === '') {
+        return fs.writeFileSync(this.#path, '[]');
       } else {
         return (this.#carts = JSON.parse(
           fs.readFileSync(this.#path, this.#format)
         ));
       }
     } else {
-      return fs.writeFileSync(this.#path, "[]");
+      return fs.writeFileSync(this.#path, '[]');
     }
   }
 
   // Genera el id para los productos de marena incremental
   #generateID = () => {
     // const carts = await this.getAllCarts();
-    console.log(this.#carts.length);
+    // console.log(this.#carts.length);
     return this.#carts.length === 0
       ? 1
       : this.#carts[this.#carts.length - 1].id + 1;
@@ -40,7 +40,7 @@ export default class CartManager {
     try {
       const repuesta = await fs.promises.writeFile(
         this.#path,
-        JSON.stringify(this.#carts, null, "\t")
+        JSON.stringify(this.#carts, null, '\t')
       );
       return repuesta;
     } catch (error) {
@@ -49,8 +49,8 @@ export default class CartManager {
   };
 
   newCart = async () => {
-    let id = this.#generateID();
-    let product = [];
+    const id = this.#generateID();
+    const product = [];
     this.#carts.push({ id, product });
     return await this.#seveCartsFile();
   };
@@ -62,8 +62,8 @@ export default class CartManager {
 
   // Busca el id que se pasa por parametro en el array de producto, si lo encuentra lo retorna caso contrario devuelve un mensjae
   getCartByID = async (id) => {
-    let cartsFiles = await this.getAllCarts();
-    let resultadoBusqueda = cartsFiles.find((cart) => cart.id === id);
+    const cartsFiles = await this.getAllCarts();
+    const resultadoBusqueda = cartsFiles.find((cart) => cart.id === id);
     return resultadoBusqueda;
   };
 
@@ -88,7 +88,7 @@ export default class CartManager {
       // Agregar el producto al carrito
       const product = {
         product: productId,
-        quantity: 1,
+        quantity: 1
       };
       cart.product.push(product);
     }

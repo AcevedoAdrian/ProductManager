@@ -76,7 +76,7 @@
     <article class="rounded-xl bg-white p-3 shadow-lg hover:shadow-xl hover:transform hover:scale-105 duration-300 ">
 <!--      <a href="http://localhost:8080/product/{{this._id}}" target="_blank">-->
         {{!-- @@root.user.cart para acceder a los datos de user dentro del each, xq no se podia acceder dentro del each--}}
-        <a onclick="addToCart(`{{@root.user.cart}}`,`{{this._id}}`)" >
+        <a onClick="addToCart(`{{@root.user.cart}}`,`{{this._id}}`)" >
         <div class="relative flex items-end overflow-hidden rounded-xl">
           <img
             src="https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
