@@ -16,7 +16,7 @@ const viewAllProductsController = async (req, res) => {
     const user = req.user;
     productsAll.cartUser = user.cart;
     // console.log(user);
-    console.log(productsAll);
+    // console.log(productsAll);
     res.render('products/products', { productsAll, user });
   } catch (error) {
     res.status(500).send({
@@ -59,16 +59,16 @@ const viewCartByIDController = async (req, res) => {
   try {
     const idCart = req.params.cid;
     const cartByID = await CartService.getByIdPopulate(idCart);
-    console.log(!cartByID);
+    // console.log(!cartByID);
     if (!cartByID) {
       return res.render('cart', { errror: 'El carrito no existe' });
     }
     const totalcart = await cartCalculateTotal(cartByID.products);
-    console.log(cartByID);
+    // console.log(cartByID);
     cartByID.totalCart = totalcart;
     // const cart = cartByID.products;
-    console.log('----------');
-    console.log({ cartByID });
+    // console.log('----------');
+    // console.log({ cartByID });
     res.render('cart', { cartByID });
   } catch (error) {
     logger.error(error.message);
@@ -110,7 +110,9 @@ const getLoggerController = async (req, res) => {
   logger.fatal('Fatal');
   res.json({ status: 'success' });
 };
-
+const getTicketViewController = async (req, res) => {
+  req.render('/ticket', { user: req.user });
+};
 export {
   viewAllProductsController,
   viewRealTimeAllProductsController,
@@ -118,6 +120,7 @@ export {
   viewCartByIDController,
   getProductMockController,
   createProductMockController,
-  getLoggerController
+  getLoggerController,
+  getTicketViewController
 
 };

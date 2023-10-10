@@ -161,11 +161,14 @@ const updateQuantityCartAndProductController = async (req, res) => {
 
 const updateDataProductCartController = async (req, res) => {
   const idCart = req.params.cid;
+  const dataProducts = req.body;
   let cartByID = {};
 
   try {
     // VERIFICO SI EXISTE EL CARRITO
-    // console.log(idCart);
+    // console.log(typeof idCart);
+    // console.log('-----body-------');
+    // console.log(dataProducts);
     cartByID = await CartService.getById(idCart);
     if (!cartByID) {
       return res.status(404).json({
@@ -175,9 +178,7 @@ const updateDataProductCartController = async (req, res) => {
     }
 
     // const dataProducts = req.body.products;
-    const dataProducts = req.body;
-    // console.log('-----body-------');
-    // console.log(req.body);
+
     if (!Array.isArray(dataProducts)) {
       return res.status(400).json({
         status: 'error',
@@ -202,7 +203,7 @@ const updateDataProductCartController = async (req, res) => {
     }
     cartByID.products = dataProducts;
     // Guardamos el carrito actualizado
-    const updateCart = await CartService.updatedCart({ _id: cartByID }, cartByID);
+    const updateCart = await CartService.update({ _id: cartByID }, cartByID);
     // const result = await cartByID.save();
 
     res.status(200).json({
@@ -276,7 +277,8 @@ const deleteProductSelectCartController = async (req, res) => {
 const finishBuyCartController = async (req, res) => {
   try {
     const idCart = req.params.cid;
-    const userEmail = req.user.user.email || 'sinNombre';
+    console.log(req.user);
+    const userEmail = req.user.email || 'sinNombre';
     const cart = await CartService.getById(idCart);
     if (!cart) {
       return res.status(404).json({ status: 'error', message: `El carrito con ${idCart} no existe` });
@@ -295,11 +297,12 @@ const finishBuyCartController = async (req, res) => {
       // Verifico cantidad de producto
       if (product.stock === 0 || product.status === false) {
         productNotPurchase.push(productCart);
+        continue;
       }
 
       if (product.stock >= productCartQuantity) {
         product.stock -= productCartQuantity;
-        await ProductService.update(product._id, product);
+        await ProductService.update({ _id: product._id }, product);
         productAddPurchase.push(productCart);
       } else {
         productNotPurchase.push(productCart);
@@ -319,8 +322,9 @@ const finishBuyCartController = async (req, res) => {
         }))
       };
       const saveTicket = await CartService.createPurchase(newTicket);
-      const cartUpdate = CartService.updateCart(
-        idCart,
+      console.log(idCart);
+      const cartUpdate = await CartService.update(
+        { _id: idCart },
         { products: productNotPurchase },
         { returnDocument: 'after' }
       );
@@ -329,11 +333,12 @@ const finishBuyCartController = async (req, res) => {
         payload: { saveTicket, cartUpdate }
       });
     } else {
-      const cartUpdate = CartService.updateCart(
-        idCart,
+      const cartUpdate = await CartService.update(
+        { _id: idCart },
         { products: productNotPurchase },
         { returnDocument: 'after' }
       );
+      console.log({ cartUpdate });
       res.status(404).json({
         status: 'error',
         payload: cartUpdate,

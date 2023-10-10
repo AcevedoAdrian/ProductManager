@@ -22,7 +22,7 @@ const customLevelsOptions = {
 };
 
 const createLogger = (env) => {
-  console.log(env.environment);
+  // console.log(env.environment);
   if (env.environment === 'PROD') {
     return winston.createLogger({
       levels: customLevelsOptions.levels,

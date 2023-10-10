@@ -11,12 +11,17 @@ async function finishBuyCartController(idCart) {
 
     cartUpdate.push({
       product: productId,
-      quantity: productStock
+      quantity: +productStock
     });
   }
   if (cartUpdate.length !== 0) {
-    const result = await updateCartQuantity(idCart, cartUpdate);
-    console.log(result);
+    const responseUpdateCart = await updateCartQuantity(idCart, cartUpdate);
+    if (responseUpdateCart.status === 'error') {
+      console.log(responseUpdateCart.message);
+    } else {
+      const responseFinishBuyCart = await finishBuyCart(idCart);
+      console.log(responseFinishBuyCart);
+    }
   }
   // try {
   //   const res = await fetch(`/api/carts/${idCart}/purchase`, {
@@ -52,20 +57,28 @@ async function finishBuyCartController(idCart) {
 // };
 
 const updateCartQuantity = async (idCart, cartUpdate) => {
-  console.log(cartUpdate);
+  // console.log(cartUpdate);
   try {
     const res = await fetch(`/api/carts/${idCart}`, {
       method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cartUpdate)
     });
-
     const result = await res.json();
+    return (result);
+  } catch (error) {
+    return (error);
+  }
+};
 
-    if (result.status === 'error') {
-      throw new Error(result.error);
-    }
-
-    return ('Se agrego correctamente el producto');
+const finishBuyCart = async (idCart) => {
+  try {
+    const res = await fetch(`/api/carts/${idCart}/purchase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const result = await res.json();
+    return (result);
   } catch (error) {
     return (error);
   }

@@ -10,7 +10,8 @@ import {
   viewCartByIDController,
   getProductMockController,
   createProductMockController,
-  getLoggerController
+  getLoggerController,
+  getTicketViewController
 } from '../controllers/view.controller.js';
 
 const router = Router();
@@ -22,6 +23,7 @@ router.get('/carts/:cid', authorization(['USER', 'ADMIN']), viewCartByIDControll
 router.get('/mockingproducts', getProductMockController);
 router.post('/mockingproducts', createProductMockController);
 router.get('/loggerTest', getLoggerController);
+router.get('/ticket/:tid', getTicketViewController);
 
 router.get('/', privateRoutes, (req, res) => {
   res.render('sessions/login');

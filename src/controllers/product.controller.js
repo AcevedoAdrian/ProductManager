@@ -20,7 +20,7 @@ const getProductByIdController = async (req, res) => {
   try {
     const idProduct = req.params.pid;
     const productByID = await ProductService.getById(idProduct);
-    // console.log(productByID);
+    console.log(productByID);
 
     if (!productByID) {
       return res.status(404).json({

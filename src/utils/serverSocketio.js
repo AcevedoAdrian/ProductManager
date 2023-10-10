@@ -4,12 +4,12 @@ import messageModel from '../models/messages.model.js';
 export const serverSocketio = (io) => {
   // CONEXION SOCKET.IO
   io.on('connection', async (socket) => {
-    console.log('conectado');
+    // console.log('conectado');
     // LITADODO CHAT
     const messages = (await messageModel.find()) ? await messageModel.find() : [];
     socket.emit('cargarMensaje', messages);
     socket.on('crearMessage', (data) => {
-      console.log({ data });
+      // console.log({ data });
       messages.push(data);
       messageModel.create(messages);
       io.emit('cargarMensaje', messages);

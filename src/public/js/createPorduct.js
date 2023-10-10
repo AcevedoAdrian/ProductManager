@@ -21,12 +21,12 @@ formCreateProduct.addEventListener('submit', async (e) => {
   formData.append('stock', stock);
 
   for (let i = 0; i < files.files.length; i++) {
-    console.log(files.files);
-    console.log(files.files[i]);
+    // console.log(files.files);
+    // console.log(files.files[i]);
     formData.append('files', files);
   }
 
-  console.log(formData);
+  // console.log(formData);
   try {
     const result = await fetch('/api/products', {
       method: 'POST',
@@ -48,7 +48,7 @@ formCreateProduct.addEventListener('submit', async (e) => {
         throw new Error(allProductsJSON.error);
       } else {
         socket.emit('productsTable', allProductsJSON.payload);
-        console.log('Todo Ok');
+        // console.log('Todo Ok');
         formCreateProduct.reset();
       }
     }
@@ -88,7 +88,7 @@ const deleteProductById = async (id) => {
     if (allProducstJSON.status === 'error') {
       throw new Error(allProducstJSON.message);
     } else {
-      console.log(allProducstJSON);
+      // console.log(allProducstJSON);
       socket.emit('productsTable', allProducstJSON.payload);
     }
   } catch (error) {

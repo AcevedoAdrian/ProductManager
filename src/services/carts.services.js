@@ -5,7 +5,7 @@ export const CartService = new CartRepository(new Cart());
 
 // CALCULAR PRECIO TOTAL PRODUCT(precio*stock)
 export const cartCalculateTotal = async (carts) => {
-  console.log(carts);
+  // console.log(carts);
   let cartTotal = 0;
   try {
     for (const cart of carts) {
