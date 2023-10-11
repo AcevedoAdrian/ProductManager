@@ -251,14 +251,14 @@ const deleteProductSelectCartController = async (req, res) => {
         message: `Not Found: No se ENCONTRO carrito con el id ${idCart}`
       });
     }
-
     const existingProduct = cartByID.products.findIndex((item) =>
-      item.product._id == idProduct
+      item.product._id.toString() == idProduct
     );
-
-    if (existingProduct !== -1) {
+    console.log('holiis' + existingProduct);
+    if (existingProduct === -1) {
       return res.json({ status: 'error', message: `El producto con el id=${idProduct} en el carrito` });
     }
+    //! =TODO TENGO QUE QUITARLO DEL ARRAY< XQ RETORNA EL INDICE PERO NO LO QUITA
     // Eliminamos el producto del carrito
     // cartByID.products.filter(product => product._id !== idProduct);
     // cartByID.products = cartByID.products.splice(existingProduct, 1);

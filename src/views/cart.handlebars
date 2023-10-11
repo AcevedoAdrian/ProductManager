@@ -23,7 +23,12 @@
           <div class="mx-4">
             <input type="number" data-product-stock="{{this.quantity}}"  value={{this.quantity}} class="w-16 text-center">
           </div>
-          <span  class="font-bold">${{this.product.price}}</span>
+          <div class=" items-end">
+            <span class="font-bold">${{this.product.price}}</span>
+            <button type="button" onClick="deleteProductCart(`{{@root.cartByID._id}}`,`{{this.product._id}}`)"  class="font-medium text-red-600 hover:text-indigo-500">Remove</button>
+          </div>
+          
+          
         </div>
       </item>
       {{/each}}
@@ -34,8 +39,12 @@
         <span class="font-bold">Total:</span>
         <span class="font-bold">$ {{cartByID.totalCart}}</span>
       </div>
+     
       <div class="flex justify-center mt-6">
-        <input onClick="finishBuyCartController(`{{cartByID._id}}`)" class="w-full bg-teal-600 text-white font-bold py-3 cursor-pointer over:bg-teal-700" value="Checkout">
+        <button onClick="finishBuyCartController(`{{cartByID._id}}`)" class="w-full bg-teal-600 text-white font-bold py-3 cursor-pointer over:bg-teal-700" >Comprar</button>
+      </div>
+      <div class="flex item-center justify-between mt-5">
+        <a class="text-gray-500 text-xs  hover:text-teal-500 hover:font-semibold " href="/products">Ver Productos</a>
       </div>
       </div>
 

@@ -20,10 +20,10 @@ router.get('/products', authorization(['USER', 'ADMIN']), viewAllProductsControl
 router.get('/product/:pid', authorization(['USER', 'ADMIN']), viewProductByIdController);
 router.get('/realtimeproducts', authorization(['ADMIN']), viewRealTimeAllProductsController);
 router.get('/carts/:cid', authorization(['USER', 'ADMIN']), viewCartByIDController);
+router.get('/ticket/:tid', authorization(['USER', 'ADMIN']), getTicketViewController);
 router.get('/mockingproducts', getProductMockController);
 router.post('/mockingproducts', createProductMockController);
 router.get('/loggerTest', getLoggerController);
-router.get('/ticket/:tid', getTicketViewController);
 
 router.get('/', privateRoutes, (req, res) => {
   res.render('sessions/login');

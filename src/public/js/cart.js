@@ -20,41 +20,11 @@ async function finishBuyCartController(idCart) {
       console.log(responseUpdateCart.message);
     } else {
       const responseFinishBuyCart = await finishBuyCart(idCart);
-      console.log(responseFinishBuyCart);
+      console.log(responseFinishBuyCart.payload);
+      const result = await redirectTicketView(responseFinishBuyCart._id);
     }
   }
-  // try {
-  //   const res = await fetch(`/api/carts/${idCart}/purchase`, {
-  //     method: 'POST'
-  //   });
-  //   const result = await res.json();
-
-  //   if (result.status === 'error') {
-  //     throw new Error(result.error);
-  //   }
-
-  //   alert('Se agrego correctamente el producto');
-  // } catch (error) {
-  //   console.log(error);
-  // }
 }
-// const updateCartQuantity = async (idCart, idProduct, quantity) => {
-//   try {
-//     const res = await fetch(`/api/${idCart}/product/${idProduct}`, {
-//       method: 'PUT',
-//       body: quantity
-//     });
-//     const result = await res.json();
-
-//     if (result.status === 'error') {
-//       throw new Error(result.error);
-//     }
-
-//     console.log(('Se agrego correctamente el producto'));
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 const updateCartQuantity = async (idCart, cartUpdate) => {
   // console.log(cartUpdate);
@@ -70,11 +40,22 @@ const updateCartQuantity = async (idCart, cartUpdate) => {
     return (error);
   }
 };
+const redirectTicketView = async (idTicket) => {
+  try {
+    const res = await fetch(`/ticket/${idTicket}`, {
+      method: 'GET'
+    });
+    const result = await res.json();
+    return (result);
+  } catch (error) {
+    return (error);
+  }
+};
 
 const finishBuyCart = async (idCart) => {
   try {
     const res = await fetch(`/api/carts/${idCart}/purchase`, {
-      method: 'POST',
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
     const result = await res.json();
@@ -83,3 +64,38 @@ const finishBuyCart = async (idCart) => {
     return (error);
   }
 };
+async function deleteProductCart(idCart, idProduct) {
+  // const products = document.querySelectorAll('.form-products');
+  // const products = document.getElementById('form-products[type=item]');
+  try {
+    const res = await fetch(`/api/carts/${idCart}/product/${idProduct}`, {
+      method: 'DELETE'
+    });
+    const result = await res.json();
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+  // const productsCart = document.querySelector('#list-products-cart');
+  // const products = productsCart.querySelectorAll('item[data-product-id]');
+  // const cartUpdate = [];
+  // for (let i = 0; i < products.length; i++) {
+  //   const productId = products[i].dataset.productId;
+  //   const productStock = products[i].querySelector('input[data-product-stock]').value;
+
+  //   cartUpdate.push({
+  //     product: productId,
+  //     quantity: +productStock
+  //   });
+  // }
+  // if (cartUpdate.length !== 0) {
+  //   const responseUpdateCart = await updateCartQuantity(idCart, cartUpdate);
+  //   if (responseUpdateCart.status === 'error') {
+  //     console.log(responseUpdateCart.message);
+  //   } else {
+  //     const responseFinishBuyCart = await finishBuyCart(idCart);
+  //     console.log(responseFinishBuyCart.payload);
+  //     const result = await redirectTicketView(responseFinishBuyCart._id);
+  //   }
+  // }
+}

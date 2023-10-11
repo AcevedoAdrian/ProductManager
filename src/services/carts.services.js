@@ -9,10 +9,6 @@ export const cartCalculateTotal = async (carts) => {
   let cartTotal = 0;
   try {
     for (const cart of carts) {
-      // const product = await ProductService.getById(cart.product);
-      // if (!product) {
-      //   throw new Error(`El producto no existe : ${cart.product}`);
-      // }
       cartTotal += cart.product.price * cart.quantity;
     }
   } catch (error) {

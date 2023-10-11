@@ -2,9 +2,11 @@
 import productModel from '../models/products.model.js';
 import { ProductService } from '../services/products.service.js';
 import { CartService, cartCalculateTotal } from '../services/carts.services.js';
+import { TicketService } from '../services/ticket.services.js';
 import { serverSocketio } from '../utils/serverSocketio.js';
 import { generateProductFaker, createProductFacker } from '../services/faker.js';
 import logger from '../services/logger.js';
+import UserDTO from '../dto/user.dto.js';
 const products = [];
 // const productManager = new ProductManager("./ProductManager.json");
 
@@ -111,8 +113,18 @@ const getLoggerController = async (req, res) => {
   res.json({ status: 'success' });
 };
 const getTicketViewController = async (req, res) => {
-  req.render('/ticket', { user: req.user });
+  try {
+    const idTicket = req.params.tid;
+    const ticket = await TicketService.getByIdPopulate(idTicket);
+    ticket.purchase_datetime = ticket.purchase_datetime.toDateString();
+
+    const user = new UserDTO(req.user);
+    res.render('tickets/ticket', { ticket, user });
+  } catch (error) {
+
+  }
 };
+
 export {
   viewAllProductsController,
   viewRealTimeAllProductsController,

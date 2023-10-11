@@ -13,7 +13,7 @@ const ticketSchema = new mongoose.Schema({
         _id: false,
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'products'
+          ref: 'Products'
         },
         quantity: Number
       }
