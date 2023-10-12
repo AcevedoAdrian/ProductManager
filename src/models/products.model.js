@@ -32,7 +32,8 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: false
-  }
+  },
+  owner: { type: String, required: true, default: 'admin', ref: 'users' }
 });
 mongoosePaginate.paginate.options = {
   lean: true

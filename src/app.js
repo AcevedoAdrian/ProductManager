@@ -73,7 +73,7 @@ app.use('/api/carts', cartRouter);
 // app.use('/api/mockingproducts', mockingRouter);
 
 // Para los errores
-// app.use(errorHandler);
+app.use(errorHandler);
 app.use((req, res) => {
   if (req.headers === 'application-json') {
     res.status(404).json({ status: 'error', messages: '404' });

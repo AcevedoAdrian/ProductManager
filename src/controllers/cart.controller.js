@@ -257,14 +257,18 @@ const deleteProductSelectCartController = async (req, res) => {
     console.log('holiis' + existingProduct);
     if (existingProduct === -1) {
       return res.json({ status: 'error', message: `El producto con el id=${idProduct} en el carrito` });
+    } else {
+      // cartByID.products = cartByID.products.splice(+existingProduct, 1);
+
+      cartByID.products = cartByID.products.filter(item => item.product._id.toString() !== idProduct);
     }
-    //! =TODO TENGO QUE QUITARLO DEL ARRAY< XQ RETORNA EL INDICE PERO NO LO QUITA
+
     // Eliminamos el producto del carrito
     // cartByID.products.filter(product => product._id !== idProduct);
     // cartByID.products = cartByID.products.splice(existingProduct, 1);
     const cartProductUpdate = await CartService.update({ _id: idCart }, cartByID);
     res.status(200).json({
-      status: 'succses',
+      status: 'success',
       payload: cartProductUpdate
     });
   } catch (error) {
