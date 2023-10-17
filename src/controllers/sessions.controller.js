@@ -1,6 +1,6 @@
-
+import crypto from 'node:crypto';
 import config from '../config/config.js';
-
+import { UserService } from '../services/users.services.js';
 // const viewLoginController = (req, res) => {
 //   res.render('sessions/login');
 // };
@@ -59,6 +59,34 @@ const logoutController = (req, res) => {
 
 const viewErrorController = (req, res) => {
   res.render('errors/errorPage');
+};
+
+const forgetPasswordController = async (req, res) => {
+  const email = req.body.email;
+  const user = await UserService.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ status: 'error', error: 'Usuario no encontrado' });
+  }
+  // const token = generateRandomString(16);
+  const token = crypto.randomBytes(16).toString('hex').toUpperCase;
+  await UserPasswordModel.create({ email, token });
+  const mailerConfig = {
+    service: 'gmail',
+    auth: { user: config.nodemailer.user, pass: config.nodemailer.pass }
+  };
+  const transporter = nodemailer.createTransport(mailerConfig);
+  const message = {
+    from: config.nodemailer.user,
+    to: email,
+    subject: '[Coder e-comm API] Reset your password',
+    html: `<h1>[Coder e-comm API] Reset your password</h1><hr />You have asked to reset your password. You can do it here: <a href="http://${req.hostname}:${PORT}/reset-password/${token}">http://${req.hostname}:${PORT}/reset-password/${token}</a><hr />Best regards,<br><strong>The Coder e-comm API team</strong>`
+  };
+  try {
+    await transporter.sendMail(message);
+    res.json({ status: 'success', message: `Email successfully sent to ${email} in order to reset password` });
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message });
+  }
 };
 
 export {

@@ -23,6 +23,7 @@ const router = Router();
 router.post('/register', passportCallCurrent('register'), registerController);
 
 router.get('/failregister', viewFeilRegisterController);
+
 router.get('/failregister', viewFeilRegisterController);
 
 router.post('/login', passportCallCurrent('login'), loginController);
@@ -56,5 +57,38 @@ router.get('/githubcallback',
   passport.authenticate('github', { session: false, failureRedirect: '/login' }),
   githubcallback
 );
+
+// Restablecer la contrasena
+router.post('/forget-password', forgetPassword);
+
+router.get('/verify-token/:token', async (req, res) => {
+  const userPassword = await UserPasswordModel.findOne({ token: req.params.token });
+  if (!userPassword) {
+    return res.status(404).json({ status: 'error', error: 'Token no válido / El token ha expirado' });
+  }
+  const user = userPassword.email;
+  res.render('sessions/reset-password', { user });
+});
+
+router.post('/reset-password/:user', async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ email: req.params.user });
+    await UserModel.findByIdAndUpdate(user._id, { password: createHash(req.body.newPassword) });
+    res.json({ status: 'success', message: 'Se ha creado una nueva contraseña' });
+    await UserPasswordModel.deleteOne({ email: req.params.user });
+  } catch (err) {
+    res.json({ status: 'error', error: err.message });
+  }
+});
+
+router.get('/premium/:uid', async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.uid);
+    await UserModel.findByIdAndUpdate(req.params.uid, { role: user.role === 'user' ? 'premium' : 'user' });
+    res.json({ status: 'success', message: 'Se ha actualizado el rol del usuario' });
+  } catch (err) {
+    res.json({ status: 'error', error: err.message });
+  }
+});
 
 export default router;

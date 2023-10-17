@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
 
 export default {
-  port: process.env.PORT || 8000,
+  port: process.env.PORT || 8080,
   mongoURL: process.env.DATABASE,
   database: process.env.NAME_DATABASE,
   jwtNameCookie: process.env.JWT_NAME_COOKIE,
