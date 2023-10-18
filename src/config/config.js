@@ -16,5 +16,9 @@ export default {
   persistence: process.env.PERSISTENCE,
   environment: process.env.ENVIRONMENT,
   adminEmail: process.env.ADMIN_ADMIN,
-  adminPassword: process.env.ADMIN_PASSWORD
+  adminPassword: process.env.ADMIN_PASSWORD,
+  nodemailer: {
+    user: process.env.MAIL_USER,
+    password: process.env.MAIL_PASSWORD
+  }
 };

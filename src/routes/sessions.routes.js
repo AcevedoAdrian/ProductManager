@@ -6,6 +6,8 @@ import {
   registerController,
   // viewRegisterController,
   // viewLoginController,
+  forgetPasswordController,
+  verifyTokenController,
   logoutController,
   githubcallback,
   viewFeilLoginController,
@@ -59,16 +61,9 @@ router.get('/githubcallback',
 );
 
 // Restablecer la contrasena
-router.post('/forget-password', forgetPassword);
+router.post('/forget-password', forgetPasswordController);
 
-router.get('/verify-token/:token', async (req, res) => {
-  const userPassword = await UserPasswordModel.findOne({ token: req.params.token });
-  if (!userPassword) {
-    return res.status(404).json({ status: 'error', error: 'Token no válido / El token ha expirado' });
-  }
-  const user = userPassword.email;
-  res.render('sessions/reset-password', { user });
-});
+router.get('/verify-token/:token', verifyTokenController);
 
 router.post('/reset-password/:user', async (req, res) => {
   try {

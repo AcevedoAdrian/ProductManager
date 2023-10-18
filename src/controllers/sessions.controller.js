@@ -1,6 +1,8 @@
 import crypto from 'node:crypto';
 import config from '../config/config.js';
 import { UserService } from '../services/users.services.js';
+import UserPasswordModel from '../models/userPassword.model.js';
+import { sendMail } from '../utils/nodemailer.js';
 // const viewLoginController = (req, res) => {
 //   res.render('sessions/login');
 // };
@@ -67,36 +69,37 @@ const forgetPasswordController = async (req, res) => {
   if (!user) {
     return res.status(404).json({ status: 'error', error: 'Usuario no encontrado' });
   }
-  // const token = generateRandomString(16);
-  const token = crypto.randomBytes(16).toString('hex').toUpperCase;
-  await UserPasswordModel.create({ email, token });
-  const mailerConfig = {
-    service: 'gmail',
-    auth: { user: config.nodemailer.user, pass: config.nodemailer.pass }
-  };
-  const transporter = nodemailer.createTransport(mailerConfig);
-  const message = {
-    from: config.nodemailer.user,
-    to: email,
-    subject: '[Coder e-comm API] Reset your password',
-    html: `<h1>[Coder e-comm API] Reset your password</h1><hr />You have asked to reset your password. You can do it here: <a href="http://${req.hostname}:${PORT}/reset-password/${token}">http://${req.hostname}:${PORT}/reset-password/${token}</a><hr />Best regards,<br><strong>The Coder e-comm API team</strong>`
-  };
+  const token = (crypto.randomBytes(16).toString('hex').toLocaleUpperCase());
+
   try {
-    await transporter.sendMail(message);
+    await UserPasswordModel.create({ email, token });
+    const respueta = await sendMail(req.hostname, req.port, email, token);
+
     res.json({ status: 'success', message: `Email successfully sent to ${email} in order to reset password` });
-  } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
   }
+};
+
+const verifyTokenController = async (req, res) => {
+  const userPassword = await UserPasswordModel.findOne({ token: req.params.token });
+  if (!userPassword) {
+    return res.status(404).json({ status: 'error', error: 'Token no válido / El token ha expirado' });
+  }
+  const user = userPassword.email;
+  res.render('sessions/reset-password', { user });
 };
 
 export {
   // viewLoginController,
   viewErrorController,
   // viewRegisterController,
+  verifyTokenController,
   loginController,
   registerController,
   logoutController,
   viewFeilRegisterController,
   viewFeilLoginController,
-  githubcallback
+  githubcallback,
+  forgetPasswordController
 };
