@@ -3,6 +3,7 @@ import config from '../config/config.js';
 import { UserService } from '../services/users.services.js';
 import UserPasswordModel from '../models/userPassword.model.js';
 import { sendMail } from '../utils/nodemailer.js';
+import { createHash } from '../utils.js';
 // const viewLoginController = (req, res) => {
 //   res.render('sessions/login');
 // };
@@ -89,12 +90,31 @@ const verifyTokenController = async (req, res) => {
   const user = userPassword.email;
   res.render('sessions/reset-password', { user });
 };
-
+const resetPasswordController = async (req, res) => {
+  try {
+    const newPassword = req.body.password;
+    const user = await UserService.findOne({ email: req.params.user });
+    const passwordValid = await user.isValidPassword(newPassword);
+    if (!passwordValid) {
+      const passwordHasheado = createHash(newPassword);
+      console.log(passwordHasheado);
+      const respuesta = await UserService.update(user._id, { password: passwordHasheado });
+      console.log(respuesta);
+    } else {
+      console.log('Contrasena igual');
+    }
+    // res.json({ status: 'success', message: 'Se ha creado una nueva contraseña' });
+    // await UserPasswordModel.deleteOne({ email: req.params.user });
+  } catch (err) {
+    res.json({ status: 'error', error: err.message });
+  }
+};
 export {
   // viewLoginController,
   viewErrorController,
   // viewRegisterController,
   verifyTokenController,
+  resetPasswordController,
   loginController,
   registerController,
   logoutController,

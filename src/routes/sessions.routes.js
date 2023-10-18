@@ -8,6 +8,7 @@ import {
   // viewLoginController,
   forgetPasswordController,
   verifyTokenController,
+  resetPasswordController,
   logoutController,
   githubcallback,
   viewFeilLoginController,
@@ -65,16 +66,7 @@ router.post('/forget-password', forgetPasswordController);
 
 router.get('/verify-token/:token', verifyTokenController);
 
-router.post('/reset-password/:user', async (req, res) => {
-  try {
-    const user = await UserModel.findOne({ email: req.params.user });
-    await UserModel.findByIdAndUpdate(user._id, { password: createHash(req.body.newPassword) });
-    res.json({ status: 'success', message: 'Se ha creado una nueva contraseña' });
-    await UserPasswordModel.deleteOne({ email: req.params.user });
-  } catch (err) {
-    res.json({ status: 'error', error: err.message });
-  }
-});
+router.post('/reset-password/:user', resetPasswordController);
 
 router.get('/premium/:uid', async (req, res) => {
   try {
