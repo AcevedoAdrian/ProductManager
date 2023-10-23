@@ -60,7 +60,8 @@ const createProductController = async (req, res) => {
     if (req.files) {
       thumbnail = req.files.map(file => file.filename);
     }
-    const product = { title, description, price, code, stock, category, thumbnail };
+    const owner = res.user.role === 'premium' ? res.user.email : 'admin';
+    const product = { title, description, price, code, stock, category, thumbnail, owner };
 
     const resAddProduct = await ProductService.create(product);
 

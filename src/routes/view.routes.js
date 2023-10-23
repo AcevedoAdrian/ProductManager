@@ -33,7 +33,7 @@ router.get('/register', privateRoutes, async (req, res) => {
 });
 
 router.get('/reset-password', (req, res) => {
-  res.render('sessions/reset-password');
+  res.render('sessions/forget-password');
 });
 
 router.get('/reset-password/:token', (req, res) => {

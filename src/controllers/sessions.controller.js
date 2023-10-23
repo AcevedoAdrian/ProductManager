@@ -97,16 +97,14 @@ const resetPasswordController = async (req, res) => {
     const passwordValid = await user.isValidPassword(newPassword);
     if (!passwordValid) {
       const passwordHasheado = createHash(newPassword);
-      console.log(passwordHasheado);
       const respuesta = await UserService.update(user._id, { password: passwordHasheado });
-      console.log(respuesta);
+      await UserPasswordModel.deleteOne({ email: req.params.user });
+      res.json({ status: 'success', message: 'Se ha creado una nueva contraseña' });
     } else {
-      console.log('Contrasena igual');
+      res.json({ status: 'error', message: 'La contraseña no puede ser igual a la que ya tenias' });
     }
-    // res.json({ status: 'success', message: 'Se ha creado una nueva contraseña' });
-    // await UserPasswordModel.deleteOne({ email: req.params.user });
   } catch (err) {
-    res.json({ status: 'error', error: err.message });
+    res.json({ status: 'error', message: err.message });
   }
 };
 export {
