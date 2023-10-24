@@ -69,7 +69,9 @@ const addProductsToCartController = async (req, res) => {
         message: `Not Found: No se ENCONTRO el PRODUCTO con el id ${idProduct}`
       });
     }
-
+    if (productByID.owner === req.session.user._id) {
+      return res.status(400).json({ status: 'error', message: 'No puedes comprar tus propios productos.' });
+    }
     // PARA REALIZAR LA ACTUALIZACION
     const existingProduct = cartByID.products.findIndex((item) => {
       // TODO: cambiar a string  item.product._id para poder usar el ===

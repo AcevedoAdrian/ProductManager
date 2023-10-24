@@ -60,7 +60,8 @@ const createProductController = async (req, res) => {
     if (req.files) {
       thumbnail = req.files.map(file => file.filename);
     }
-    const owner = res.user.role === 'premium' ? res.user.email : 'admin';
+    console.log(req.user);
+    const owner = req.user.role === 'premium' ? req.user._id : 'admin';
     const product = { title, description, price, code, stock, category, thumbnail, owner };
 
     const resAddProduct = await ProductService.create(product);
@@ -96,7 +97,11 @@ const updateProductController = async (req, res) => {
         message: `Not Found: No se encontro prudcto con el id ${idProduct}`
       });
     }
-
+    if (req.user.role === 'premium') {
+      if (productByID.owner !== req.user._id) {
+        return res.status(403).json({ status: 'error', message: 'No Esta Autorizado' });
+      }
+    }
     // UPDATEONE: ACTUALIZO EL PRODUCTO CON EL ID DE PARAMS
     const dataProductUpdate = req.body;
 
@@ -135,7 +140,11 @@ const deleteProductController = async (req, res) => {
         message: `Not Found: No se encontro prudcto con el id ${idProduct}`
       });
     }
-
+    if (req.user.role === 'premium') {
+      if (productByID.owner !== req.user._id) {
+        return res.status(403).json({ status: 'error', message: 'No Esta Autorizado' });
+      }
+    }
     const productDelete = await ProductService.delete(idProduct);
     if (!productDelete) {
       return res.status(400).json({

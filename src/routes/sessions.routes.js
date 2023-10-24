@@ -4,8 +4,6 @@ import { Router } from 'express';
 import {
   loginController,
   registerController,
-  // viewRegisterController,
-  // viewLoginController,
   forgetPasswordController,
   verifyTokenController,
   resetPasswordController,
@@ -16,26 +14,15 @@ import {
 } from '../controllers/sessions.controller.js';
 import { authorization } from '../middleware/authorization.middleware.js';
 import { passportCallCurrent } from '../middleware/passportCallCurrent.middleware.js';
+import { UserService } from '../services/users.services.js';
 
 const router = Router();
-
-// router.get('/register', viewRegisterController);
-
-// router.get('/login', viewLoginController);
-
+// RESGISTRAR USUARIO
 router.post('/register', passportCallCurrent('register'), registerController);
-
-router.get('/failregister', viewFeilRegisterController);
-
-router.get('/failregister', viewFeilRegisterController);
-
+// LOGIN
 router.post('/login', passportCallCurrent('login'), loginController);
-
-router.get('/faillogin', viewFeilLoginController);
-
-// Cerrar Session
+// CERRAR SESION
 router.get('/logout', logoutController);
-
 // Current
 router.get('/current',
   passportCallCurrent('current'),
@@ -48,6 +35,10 @@ router.get('/current',
     // Si hay un usuario autenticado, retornar los datos del usuario en el payload
     res.status(200).json({ status: 'success', payload: req.user });
   });
+
+router.get('/failregister', viewFeilRegisterController);
+
+router.get('/faillogin', viewFeilLoginController);
 
 // github
 // Rutas para autentificacion por github
@@ -70,8 +61,8 @@ router.post('/reset-password/:user', resetPasswordController);
 
 router.get('/premium/:uid', async (req, res) => {
   try {
-    const user = await UserModel.findById(req.params.uid);
-    await UserModel.findByIdAndUpdate(req.params.uid, { role: user.role === 'user' ? 'premium' : 'user' });
+    const user = await UserService.findById(req.params.uid);
+    await UserService.update(req.params.uid, { role: user.role === 'user' ? 'premium' : 'user' });
     res.json({ status: 'success', message: 'Se ha actualizado el rol del usuario' });
   } catch (err) {
     res.json({ status: 'error', error: err.message });

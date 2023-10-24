@@ -10,9 +10,9 @@ import {
 } from '../controllers/product.controller.js';
 
 const router = Router();
-router.get('/', getAllProductsController);
-router.get('/:pid', getProductByIdController);
-router.post('/', uploadMiddleware, createProductController);
-router.put('/:pid', updateProductController);
-router.delete('/:pid', deleteProductController);
+router.get('/', authorization(['USER', 'ADMIN', 'PREMIUM']), getAllProductsController);
+router.get('/:pid', authorization(['USER', 'ADMIN']), getProductByIdController);
+router.post('/', authorization(['ADMIN', 'PREMIUM']), uploadMiddleware, createProductController);
+router.put('/:pid', authorization(['ADMIN', 'PREMIUM']), updateProductController);
+router.delete('/:pid', authorization(['ADMIN', 'PREMIUM']), deleteProductController);
 export default router;

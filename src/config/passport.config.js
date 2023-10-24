@@ -27,7 +27,7 @@ const initializePassport = () => {
       },
       async (req, username, password, done) => {
         try {
-          logger.info('REGISTER');
+          // logger.info('REGISTER');
           const { first_name, last_name, age, email } = req.body;
           if ((!first_name, !last_name, !age, !email, !password)) {
             logger.error('Campos vacios');
@@ -74,6 +74,7 @@ const initializePassport = () => {
     }, async (username, password, done) => {
       try {
         const user = await userModel.findOne({ email: username });
+
         if (!user) {
           logger.error('usuario no existe');
           return done(null, false, { message: 'Usuario o Password incorrecto ' });
@@ -85,7 +86,6 @@ const initializePassport = () => {
         }
         const token = generateToken(user);
         user.token = token;
-
         return done(null, user, { message: 'LOGIN CORRECTO' });
       } catch (error) {
         return done(error);
