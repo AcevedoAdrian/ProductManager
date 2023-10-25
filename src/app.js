@@ -6,22 +6,23 @@ import config from './config/config.js';
 import cookieParser from 'cookie-parser';
 import { createServer } from 'node:http';
 import passport from 'passport';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 // PROPIOS
 import { connectDBMongo } from './config/db.js';
 import __dirname from './utils.js';
 import initializePassport from './config/passport.config.js';
 import errorHandler from './middleware/error.middleware.js';
 // RUTAS
-// import sessionViewsRouter from './routes/sessionsView.routes.js';
 import productsRouter from './routes/products.routes.js';
 import cartRouter from './routes/carts.routes.js';
 import chatRouter from './routes/chat.routes.js';
 import viewRouter from './routes/view.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import loggerRouter from './routes/logger.routes.js';
-// import mockingRouter from './routes/mocking.routes.js';
 // MIDDLEWARE
 import { passportCallCurrent } from './middleware/passportCallCurrent.middleware.js';
+
 // CONFIGURACION INICIAL EXPRESS
 const app = express();
 export const PORT = config.port || 8080;
@@ -35,12 +36,32 @@ app.use(express.static(__dirname + '/public'));
 
 // CONEXION A BASE DE DATOS MONGO
 connectDBMongo();
+// DOCUMENTACION SWAGGER
+// definicion de la configuracion
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Documentacion de API Ecommers',
+      description: 'Aplicacion de Ecommers proyecto final del curso backend'
+    }
+  },
+  // archivos donde se encuentran las explicaciones de cada ruta
+  apis: [
+    './docs/**/*.yaml'
+  ]
+};
+// uso de la deficiniones
+const specs = swaggerJSDoc(swaggerOptions);
+// uso de swagger ui con la configuracion de swaggerjsdocs
+app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 // ARRANCANDO SERVER EXPRES -- SOLO SERVER HTTP
 // const httpServer = app.listen(PORT | 8000, () => {
 //   console.log(`Servidor up en el puerto: ${PORT}`);
 // });
 const httpServer = createServer(app);
+
 // CREACION SERVIDOR PARA SOCKET
 const io = new WebSocketServer(httpServer);
 // MIDDELWARE SOCKET.IO
@@ -64,12 +85,12 @@ app.use(passport.initialize());
 // RUTAS
 // app.use('/', sessionViewsRouter);
 app.use('/', passportCallCurrent('current'), viewRouter);
-app.use('/loggerTest', loggerRouter);
 app.use('/chat', passportCallCurrent('current'), chatRouter);
+app.use('/loggerTest', loggerRouter);
 
-app.use('/api/sessions', sessionsRouter);
-app.use('/api/products', productsRouter);
 app.use('/api/carts', cartRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/sessions', sessionsRouter);
 // app.use('/api/mockingproducts', mockingRouter);
 
 // Para los errores
