@@ -43,7 +43,7 @@ const swaggerOptions = {
     openapi: '3.0.1',
     info: {
       title: 'Documentacion de API Ecommers',
-      description: 'Aplicacion de Ecommers proyecto final del curso backend'
+      description: 'Descripcion de los endpoint de Products y Carts de la aplicacion de Ecommers proyecto final del curso backend'
     }
   },
   // archivos donde se encuentran las explicaciones de cada ruta

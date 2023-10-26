@@ -13,11 +13,11 @@ import {
 const router = Router();
 
 router.post('/', createCartController);
-router.post('/:cid/product/:pid', addProductsToCartController);
 router.get('/:cid', getCartByIDController);
-router.put('/:cid/product/:pid', updateQuantityCartAndProductController);
 router.put('/:cid', updateDataProductCartController);
 router.delete('/:cid', deleteProductForCartController);
+router.post('/:cid/product/:pid', addProductsToCartController);
+router.put('/:cid/product/:pid', updateQuantityCartAndProductController);
 router.delete('/:cid/product/:pid', deleteProductSelectCartController);
 router.post('/:cid/purchase', finishBuyCartController);
 export default router;
