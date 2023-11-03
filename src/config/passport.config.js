@@ -216,7 +216,7 @@ export default initializePassport;
 //         logger.error('User ya existe');
 //         done(null, false);
 //       }
-//       const role = email === 'admin@coderhouse.com' && password === 'Cod3r123'
+//       const role = email === 'admin@house.com' && password === 'Cod3r123'
 //         ? 'admin'
 //         : 'user';
 

@@ -15,7 +15,7 @@ export default {
   githubCallBackURL: process.env.GITHUB_CALLBACK_URL,
   persistence: process.env.PERSISTENCE,
   environment: process.env.ENVIRONMENT,
-  adminEmail: process.env.ADMIN_ADMIN,
+  adminEmail: process.env.ADMIN_EMAIL,
   adminPassword: process.env.ADMIN_PASSWORD,
   nodemailer: {
     user: process.env.MAIL_USER,
