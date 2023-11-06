@@ -11,9 +11,9 @@ describe('Testing E-Commerce - Rutas de productos', () => {
     email: config.adminEmail,
     password: config.adminPassword
   };
-  
+
   it('Debe loggear un usuario para ver los productos', async () => {
-    const result = await requester.post('/api/sessions/login').send(user);    
+    const result = await requester.post('/api/sessions/login').send(user);
     const cookieResult = result.headers['set-cookie'][0];
     expect(cookieResult).to.be.ok;
     cookie = {
@@ -34,7 +34,7 @@ describe('Testing E-Commerce - Rutas de productos', () => {
   });
 
   it('El Endpoint GET /api/products/:id debe devolver un producto por su ID', async () => {
-    const pid = '6544ef9cdc49e1adeb4ba509';
+    const pid = '65490b916676fff6242d86e1';
     const response = await requester
       .get(`/api/products/${pid}`)
       .set('Cookie', [`${cookie.name}=${cookie.value}`]);

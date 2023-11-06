@@ -1,0 +1,98 @@
+<div class=" py-10 ">
+  <h1 class="text-4xl my-10 font-extrabold text-center"></h1>
+  <h2 class="text-center text-2xl font-extrabold"><span
+      class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-teal-500 relative inline-block">
+      <span class="relative text-white">Listado Usuarios</span>
+    </span></h2>
+  <div class=" mt-8 mx-auto max-w-md">
+    <div class="bg-white py-8 px-4 shadow ">
+      <form class="space-y-5 grid place-items-center" action="/api/sessions/login" method="post">
+        {{#each users}}
+        <div>
+          <h2 class="font-semibold text-gray-800 dark:text-gray-800 sm:text-lg   ">{{this.full_name}}</h2>
+        </div>
+        <div>
+          <p class="font-semibold text-gray-800 dark:text-gray-600 sm:text-lg  ">{{this.email}}</p>
+        </div>
+        <div>
+          <p
+            class="px-2 py-1 text-xs font-normal  uppercase bg-teal-200 text-teal-700 rounded-md dark:text-teal-700 dark:bg-teal-400 bg-opacity-40">
+            {{this.role}}</p>
+        </div>
+        <div class=" items-end">
+          <button type="button" onClick="deleteUser(`{{this.id}}`)"
+            class="font-medium text-red-600 hover:text-indigo-500">Remove</button>
+          <button type="button" onClick="updateUser(`{{this.id}}`)"
+            class="font-medium text-blue-600 hover:text-indigo-500">Modificar Role</button>
+        </div>
+
+
+
+        {{/each}}
+
+        <div class=" items-end">
+          <button type="button" onClick="deleteUserInactivity()"
+            class=" w-full text-white bg-teal-500  font-bold py-3 cursor-pointer hover:text-indigo-500">Eliminar
+            usuarios inactivos</button>
+        </div>
+      </form>
+
+      <div>
+
+
+      </div>
+      <div class="flex item-center justify-between ">
+        <a class="text-gray-500 text-xs  hover:text-teal-500 hover:font-semibold " href="/products">Ver Productos</a>
+        <a class="text-gray-500 text-xs  hover:text-teal-500 hover:font-semibold "
+          href="/api/sessions/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  deleteUser = (id) => {
+    console.log(id)
+    fetch(`/api/users/${id}`, {
+      method: 'delete',
+    })
+      .then(result => result.json())
+      .then(result => {
+        if (result.status === 'error') throw new Error(result.error)
+        alert(`Ok. Todo salió bien! :)\nEl Usuario eliminado con éxito!`)
+        location.reload();
+
+      })
+      .catch(err => alert(`Ocurrió un error :(\n${err}`))
+  }
+  updateUser = (id) => {
+    console.log(id)
+    fetch(`/api/users/${id}`, {
+      method: 'put',
+    })
+      .then(result => result.json())
+      .then(result => {
+        if (result.status === 'error') throw new Error(result.error)
+        alert(`Ok. Todo salió bien! :)\nEl Usuario cambio de rol con éxito!`)
+        location.reload();
+
+      })
+      .catch(err => alert(`Ocurrió un error :(\n${err}`))
+  }
+  deleteUserInactivity = (id) => {
+    console.log(id)
+    fetch(`/api/users/`, {
+      method: 'delete',
+    })
+      .then(result => result.json())
+      .then(result => {
+        if (result.status === 'error') throw new Error(result.error)
+        alert(result.message)
+        location.reload();
+
+      })
+      .catch(err => alert(`Ocurrió un error :(\n${err}`))
+  }
+
+
+</script>

@@ -1,3 +1,16 @@
+{{#if user}}
+<div class="flex items-center justify-between p-2 shadow-[0px_2px_0px_rgba(0,0,0,0.2)]">
+  <h2 class="text-2xl font-normal leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Bienvenido <b
+      class="font-bold text-teal-500">{{user.first_name}}, {{user.last_name}} </b></h2>
+  <div class="flex justify-end  ">
+    <a href="/carts/{{user.cart}}"
+      class="text-lg font-semibold leading-6 text-gray-900 px-4 hover:text-teal-500">Carrito</a>
+    <a href="/profile" class="text-lg font-semibold leading-6 text-gray-900 px-4 hover:text-teal-500">Perfil</a>
+    <a href="/api/sessions/logout" class="text-lg font-semibold leading-6 text-gray-900 hover:text-teal-500">Logout </a>
+  </div>
+</div>
+{{/if}}
+
 <div class="flex flex-column  flex-nowrap">
   <div>
     <h3 class="text-2xl my-10 font-extrabold text-center">Formulario de carga</h3>

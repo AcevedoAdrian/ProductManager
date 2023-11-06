@@ -8,6 +8,9 @@ export const cartCalculateTotal = async (carts) => {
   // console.log(carts);
   let cartTotal = 0;
   try {
+    if (carts.length === 0) {
+      return cartTotal;
+    }
     for (const cart of carts) {
       cartTotal += cart.product.price * cart.quantity;
     }

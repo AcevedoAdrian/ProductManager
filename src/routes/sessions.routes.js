@@ -44,7 +44,9 @@ router.get('/faillogin', viewFeilLoginController);
 // Rutas para autentificacion por github
 router.get('/github',
   passport.authenticate('github', { session: false, scope: ['user:email'] }),
-  async (req, res) => { }
+  async (req, res) => {
+
+  }
 );
 
 router.get('/githubcallback',

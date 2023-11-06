@@ -30,10 +30,11 @@ const viewAllProductsController = async (req, res) => {
 
 const viewRealTimeAllProductsController = async (req, res) => {
   try {
+    const user = req.user;
     const io = req.app.get('socketio');
     serverSocketio(io);
     const products = await ProductService.getAllPaginate(req);
-    res.render('products/realTimeProducts', { products });
+    res.render('products/realTimeProducts', { products, user });
   } catch (error) {
     res.status(500).json({ status: 'error', error: error.message });
   }
@@ -52,7 +53,7 @@ const viewProductByIdController = async (req, res) => {
     // console.log({ productByID });
     res.render('products/product', { productByID });
   } catch (error) {
-    console.log(error);
+    // console.log(error)
     res.status(500).json({ status: 'error', message: error.message });
   }
 };

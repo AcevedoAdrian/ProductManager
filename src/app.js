@@ -20,6 +20,7 @@ import chatRouter from './routes/chat.routes.js';
 import viewRouter from './routes/view.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import loggerRouter from './routes/logger.routes.js';
+import usersRouter from './routes/users.routes.js';
 // MIDDLEWARE
 import { passportCallCurrent } from './middleware/passportCallCurrent.middleware.js';
 
@@ -91,6 +92,7 @@ app.use('/loggerTest', loggerRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/users', usersRouter);
 // app.use('/api/mockingproducts', mockingRouter);
 
 // Para los errores

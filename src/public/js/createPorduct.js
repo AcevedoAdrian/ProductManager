@@ -116,9 +116,7 @@ socket.on('updateProducts', (products) => {
         <button class="hover:bg-red-700 w-full bg-red-600 text-white font-bold p-2 cursor-pointer rounded-md" onclick="deleteProduct('${product._id})'">
           Eliminar
         </button>
-        <button class="hover:bg-blue-700 w-full bg-red-600 text-white font-bold p-2 cursor-pointer rounded-md" onclick="deleteProduct('${product._id}')">
-          Eliminar
-        </button>
+      
       </td>
       <td class="border px-8 py-4">${product.title}</td>
       <td class="border px-8 py-4">${product.description}</td>

@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { authorization, privateRoutes, publicRoutes } from '../middleware/authorization.middleware.js';
 import UserDTO from '../dto/user.dto.js';
-import loggers from '../services/logger.js';
 
 import {
   viewAllProductsController,

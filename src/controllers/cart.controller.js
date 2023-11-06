@@ -16,9 +16,9 @@ const getCartByIDController = async (req, res) => {
         message: `No se ENCONTRO carrito con el id ${idCart}`
       });
     }
-    const totalcart = await cartCalculateTotal(cartByID);
+    // const totalcart = await cartCalculateTotal(cartByID);
     // console.log(cartByID);
-    cartByID.totalcart = totalcart;
+    // cartByID.totalcart = totalcart;
     res.status(200).json({
       status: 'succses',
       payload: cartByID
@@ -256,7 +256,6 @@ const deleteProductSelectCartController = async (req, res) => {
     const existingProduct = cartByID.products.findIndex((item) =>
       item.product._id.toString() == idProduct
     );
-    console.log('holiis' + existingProduct);
     if (existingProduct === -1) {
       return res.json({ status: 'error', message: `El producto con el id=${idProduct} en el carrito` });
     } else {
@@ -283,7 +282,6 @@ const deleteProductSelectCartController = async (req, res) => {
 const finishBuyCartController = async (req, res) => {
   try {
     const idCart = req.params.cid;
-    console.log(req.user);
     const userEmail = req.user.email || 'sinNombre';
     const cart = await CartService.getById(idCart);
     if (!cart) {
@@ -328,7 +326,7 @@ const finishBuyCartController = async (req, res) => {
         }))
       };
       const saveTicket = await CartService.createPurchase(newTicket);
-      console.log(idCart);
+      
       const cartUpdate = await CartService.update(
         { _id: idCart },
         { products: productNotPurchase },
@@ -344,7 +342,6 @@ const finishBuyCartController = async (req, res) => {
         { products: productNotPurchase },
         { returnDocument: 'after' }
       );
-      console.log({ cartUpdate });
       res.status(404).json({
         status: 'error',
         payload: cartUpdate,

@@ -1,5 +1,7 @@
 
 import { ProductService } from '../services/products.service.js';
+import { UserService } from '../services/users.services.js';
+import { sendMailDeleteProduct } from '../utils/nodemailer.js';
 
 const getAllProductsController = async (req, res) => {
   // NUEVA IMPLEMNTACION
@@ -20,8 +22,6 @@ const getProductByIdController = async (req, res) => {
   try {
     const idProduct = req.params.pid;
     const productByID = await ProductService.getById(idProduct);
-    console.log(productByID);
-
     if (!productByID) {
       return res.status(404).json({
         status: 'error',
@@ -60,7 +60,6 @@ const createProductController = async (req, res) => {
     if (req.files) {
       thumbnail = req.files.map(file => file.filename);
     }
-    console.log(req.user);
     const owner = req.user.role === 'premium' ? req.user._id : 'admin';
     const product = { title, description, price, code, stock, category, thumbnail, owner };
 
@@ -144,6 +143,10 @@ const deleteProductController = async (req, res) => {
       if (productByID.owner !== req.user._id) {
         return res.status(403).json({ status: 'error', message: 'No Esta Autorizado' });
       }
+    }
+    if (productByID.owner !== 'admin') {
+      const owner = await UserService.findById(productByID.owner);
+      await sendMailDeleteProduct(owner, productByID);
     }
     const productDelete = await ProductService.delete(idProduct);
     if (!productDelete) {

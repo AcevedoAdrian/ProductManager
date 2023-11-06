@@ -6,20 +6,19 @@ paths:
       summary: Obtiene todos los productos
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Product'
-      # Include a description of the required permissions
       security:
         - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
     post:
       tags:
         - Products
-      summary: Create a new product
+      summary: Crear un nuevo producto
       requestBody:
         required: true
         content:
@@ -28,7 +27,7 @@ paths:
               $ref: '#/components/schemas/Product'
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
@@ -38,33 +37,32 @@ paths:
     get:
       tags:
         - Products
-      summary: Get a product by ID
+      summary: Obtener producto por id
       parameters:
         - name: pid
           in: path
           required: true
-          description: ID of the product
+          description: Id del producto
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
-      # Include a description of the required permissions
       security:
         - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
     put:
       tags:
         - Products
-      summary: Update a product by ID
+      summary: Actualizar producto por Id
       parameters:
         - name: pid
           in: path
           required: true
-          description: ID of the product
+          description: Id del producto
           schema:
             type: string
       requestBody:
@@ -75,33 +73,31 @@ paths:
               $ref: '#/components/schemas/Product'
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
-      # Include a description of the required permissions
       security:
         - bearerAuth: ["ADMIN", "PREMIUM"]
     delete:
       tags:
         - Products
-      summary: Delete a product by ID
+      summary: Eliminar productor por id
       parameters:
         - name: pid
           in: path
           required: true
-          description: ID of the product
+          description: Id del producto
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
-      # Include a description of the required permissions
       security:
         - bearerAuth: ["ADMIN", "PREMIUM"]
 

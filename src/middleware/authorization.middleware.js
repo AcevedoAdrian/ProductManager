@@ -14,7 +14,7 @@ export const authorization = (roles) => {
     roles.forEach(role => {
       if (role === 'PUBLIC') return next();
     });
-    logger.info(req.user);
+    logger.info('Holis');
     if (!req.user) {
       return res.status(401).render('errors/errorPage', {
         status: 'error',

@@ -17,10 +17,10 @@ async function finishBuyCartController(idCart) {
   if (cartUpdate.length !== 0) {
     const responseUpdateCart = await updateCartQuantity(idCart, cartUpdate);
     if (responseUpdateCart.status === 'error') {
-      console.log(responseUpdateCart.message);
+      // console.log(responseUpdateCart.message);
     } else {
       const responseFinishBuyCart = await finishBuyCart(idCart);
-      console.log(responseFinishBuyCart.payload);
+      // console.log(responseFinishBuyCart.payload);
       const result = await redirectTicketView(responseFinishBuyCart._id);
     }
   }
@@ -76,7 +76,7 @@ async function deleteProductCart(idCart, idProduct) {
       location.reload();
     }
   } catch (error) {
-    console.log(error);
+    console.loglo(error);
   }
   // const productsCart = document.querySelector('#list-products-cart');
   // const products = productsCart.querySelectorAll('item[data-product-id]');

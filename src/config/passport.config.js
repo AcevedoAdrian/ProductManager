@@ -119,13 +119,14 @@ const initializePassport = () => {
   // GITHUB
   passport.use('github', new GitHubStrategy({
     clientID: config.githubClientID,
-    clientSecret: config.clientSecret,
-    callbackURL: config.callbackURL
+    clientSecret: config.githubClientSecret,
+    callbackURL: config.githubCallBackURL
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      // logger.error(profile._json.email);
+      logger.error(profile._json.email);
 
-      const user = await userModel.findOne({ email: profile._json.email });
+      let user = await userModel.findOne({ email: profile._json.email });
+      logger.error(user);
       if (user) {
         // return done(null, user, { message: 'El usuario ya existe' });
         // Si el usuario ya existe en la base de datos, generamos el token
@@ -136,7 +137,7 @@ const initializePassport = () => {
       }
       // Para crear un carrtio nuevo
       // const cartNewUser = await cartModel.create({});
-      const newUser = await userModel.create({
+      user = await userModel.create({
         first_name: profile._json.name || profile.username,
         last_name: ' ',
         email: profile._json.email,
@@ -144,9 +145,9 @@ const initializePassport = () => {
         password: ' '
       });
       const token = generateToken(user);
-      newUser.token = token;
+      user.token = token;
 
-      return done(null, newUser, { message: 'Se creo el uruario correctamente' });
+      return done(null, user, { message: 'Se creo el uruario correctamente' });
     } catch (err) {
       return done(`Error to login with GitHub => ${err.message}`);
     }
@@ -188,105 +189,3 @@ const initializePassport = () => {
 };
 
 export default initializePassport;
-
-// import passport from 'passport';
-// import local from 'passport-local';
-// import GitHubStrategy from 'passport-github2';
-// import { userModel } from '../models/users.model.js';
-// import { createHash, isValidPassword } from '../utils.js';
-
-// const LocalStrategy = local.Strategy;
-// const initializePassport = () => {
-//   passport.use('register', new LocalStrategy({
-//     passReqToCallback: true,
-//     usernameField: 'email'
-//   }, async (req, username, password, done) => {
-//     const { first_name, last_name, age, email } = req.body;
-//     try {
-//       if ((!first_name, !last_name, !age, !email, !password)) {
-//         logger.error('Campos vacios');
-//         done(null, false);
-//       }
-//       if (password.length < 4) {
-//         logger.error('Password corto');
-//         done(null, false);
-//       }
-//       const user = await userModel.findOne({ email: username });
-//       if (user) {
-//         logger.error('User ya existe');
-//         done(null, false);
-//       }
-//       const role = email === 'admin@house.com' && password === 'Cod3r123'
-//         ? 'admin'
-//         : 'user';
-
-//       const newUser = {
-//         first_name,
-//         last_name,
-//         email,
-//         role,
-//         age,
-//         password: createHash(password)
-//       };
-//       const result = await userModel.create(newUser);
-//       return done(null, result);
-//     } catch (error) {
-//       return done('Error al loguear un usuario');
-//     }
-//   }));
-
-//   passport.use('login', new LocalStrategy({
-
-//     usernameField: 'email'
-//   }, async (username, password, done) => {
-//     try {
-//       const user = await userModel.findOne({ email: username });
-//       if (!user) {
-//         logger.error('usuario no existe');
-//         return done(null, false);
-//       }
-//       if (!isValidPassword(user, password)) {
-//         logger.error('password icorrecto');
-//         return done(null, false);
-//       }
-
-//       return done(null, user);
-//     } catch (error) {
-//       return done('Error al obtner al loguear');
-//     }
-//   }));
-
-//   passport.use('github', new GitHubStrategy({
-//     clientID: process.env.GITHUB_CLIENT_ID,
-//     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-//     callbackURL: process.env.GITHUB_CALLBACK_URL
-//   }, async (accessToken, refreshToken, profile, done) => {
-//     try {
-//       logger.error(profile._json.email);
-//       const user = await userModel.findOne({ email: profile._json.email });
-//       if (user) return done(null, user);
-//       const newUser = await userModel.create({
-//         first_name: profile._json.name,
-//         last_name: ' ',
-//         email: profile._json.email,
-//         age: 0,
-//         password: ' ',
-//         role: 'user'
-//       });
-//       return done(null, newUser);
-//     } catch (err) {
-//       return done(`Error to login with GitHub => ${err.message}`);
-//     }
-//   }));
-
-//   passport.serializeUser((user, done) => {
-//     done(null, user._id);
-//   });
-
-//   passport.deserializeUser(async (id, done) => {
-//     const user = await userModel.findById(id);
-//     done(null, user);
-//   });
-// };
-
-// export default initializePassport;

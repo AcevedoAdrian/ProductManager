@@ -3,10 +3,10 @@ paths:
     post:
       tags:
         - Carts
-      summary: Create a new cart
+      summary: Crear un nuevo carrito
       responses:
         '201':
-          description: Cart created successfully
+          description: Creacion del carrito exitosa
           content:
             application/json:
               schema:
@@ -18,17 +18,17 @@ paths:
     get:
       tags:
         - Carts
-      summary: Get cart by ID
+      summary: Obtener un carrito por Id
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
@@ -39,12 +39,12 @@ paths:
     put:
       tags:
         - Carts
-      summary: Update cart by ID
+      summary: Actualizar carrito por Id
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
       requestBody:
@@ -55,7 +55,7 @@ paths:
               $ref: '#/components/schemas/Cart'
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
@@ -66,17 +66,17 @@ paths:
     delete:
       tags:
         - Carts
-      summary: Delete cart by ID
+      summary: Eliminar un carrito
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
@@ -88,12 +88,12 @@ paths:
     post:
       tags:
         - Carts
-      summary: Add product to cart
+      summary: Agregar un producto al carrito
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
       requestBody:
@@ -104,7 +104,7 @@ paths:
               $ref: '#/components/schemas/CartProduct'
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
@@ -115,29 +115,29 @@ paths:
     put:
       tags:
         - Carts
-      summary: Update product quantity in cart
+      summary: Actualizar cantidad de producto del carrito
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
         - name: pid
           in: query
           required: true
-          description: ID of the product to update
+          description: Id del producto a actualizar
           schema:
             type: string
         - name: quantity
           in: query
           required: true
-          description: New quantity of the product in the cart
+          description: Nueva cantidad de producto a actualizar 
           schema:
             type: integer
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
@@ -148,45 +148,44 @@ paths:
     delete:
       tags:
         - Carts
-      summary: Remove product from cart
+      summary: Eliminar producto del carrito
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
         - name: pid
           in: query
           required: true
-          description: ID of the product to remove
+          description: Id de producto a eliminar
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Cart'
-      # Include a description of the required permissions
       security:
         - bearerAuth: ["USER", "PREMIUM"]
   /api/carts/{cid}/purchase:
     get:
       tags:
         - Carts
-      summary: Get purchase details for the cart
+      summary: Obtener productos que estan en el ticket
       parameters:
         - name: cid
           in: path
           required: true
-          description: ID of the cart
+          description: Id del carrito
           schema:
             type: string
       responses:
         '200':
-          description: Successful operation
+          description: Operaccion exitosa
           content:
             application/json:
               schema:
