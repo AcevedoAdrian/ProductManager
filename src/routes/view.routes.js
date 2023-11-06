@@ -15,9 +15,9 @@ import {
 
 const router = Router();
 
-router.get('/products', authorization(['USER', 'ADMIN']), viewAllProductsController);
-router.get('/product/:pid', authorization(['USER', 'ADMIN']), viewProductByIdController);
-router.get('/realtimeproducts', authorization(['ADMIN']), viewRealTimeAllProductsController);
+router.get('/products', authorization(['USER', 'ADMIN', 'PREMIUM']), viewAllProductsController);
+router.get('/product/:pid', authorization(['USER', 'ADMIN', 'PREMIUM']), viewProductByIdController);
+router.get('/realtimeproducts', authorization(['ADMIN', 'PREMIUM']), viewRealTimeAllProductsController);
 router.get('/carts/:cid', authorization(['USER', 'ADMIN']), viewCartByIDController);
 router.get('/ticket/:tid', authorization(['USER', 'ADMIN']), getTicketViewController);
 router.get('/mockingproducts', getProductMockController);

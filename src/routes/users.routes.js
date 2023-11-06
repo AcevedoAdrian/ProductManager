@@ -2,10 +2,10 @@ import express from 'express';
 import UserDTO from '../dto/user.dto.js';
 import { sendMailDeleteUser } from '../utils/nodemailer.js';
 import { UserService } from '../services/users.services.js';
-import { CartService } from '../services/carts.services.js';
+import { CartService } from '../services/carts.services.js'; import { authorization } from '../middleware/authorization.middleware.js';
 const router = express.Router();
 
-router.get('/',
+router.get('/', authorization(['ADMIN', 'PREMIUM']),
   async (req, res) => {
     try {
       const result = await UserService.getAll();
@@ -24,7 +24,7 @@ router.get('/',
   }
 );
 
-router.delete('/:uid', async (req, res) => {
+router.delete('/:uid', authorization(['ADMIN']), async (req, res) => {
   try {
     const idUsuario = req.params.uid;
     console.log(idUsuario);
@@ -69,7 +69,7 @@ router.delete('/:uid', async (req, res) => {
     });
   }
 });
-router.delete('/',
+router.delete('/', authorization(['ADMIN']),
   async (req, res) => {
     try {
       const currentDate = new Date();
@@ -106,7 +106,7 @@ router.delete('/',
   }
 );
 
-router.put('/:uid', async (req, res) => {
+router.put('/:uid', authorization(['ADMIN']), async (req, res) => {
   try {
     const idUsuario = req.params.uid;
 
